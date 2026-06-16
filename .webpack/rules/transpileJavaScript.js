@@ -16,6 +16,12 @@ function transpileJavaScript(mode) {
           // 'dicom-microscopy-viewer',
           // https://github.com/openlayers/openlayers#supported-browsers
           // 'ol', --> Should be fine
+          // LBL-12: 3_labels packages are installed via file: deps (not yarn
+          // workspace symlinks), so webpack sees them as node_modules and skips
+          // babel transpilation. Force-include both so their TS/JSX source is
+          // transpiled by the monorepo babel config (rootMode: upward).
+          '@blackvoxel/extension-labeling',
+          '@blackvoxel/mode-labeling',
         ])
       : excludeNodeModulesExcept([]);
 
