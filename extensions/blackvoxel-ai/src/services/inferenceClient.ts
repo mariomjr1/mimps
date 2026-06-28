@@ -389,3 +389,118 @@ export async function classifyMeasurements(
 
   return response.json() as Promise<MeasurementClassifyResponse>;
 }
+
+// ---------------------------------------------------------------------------
+// Multi-modality demo lanes (MIMPS-45): brain-age + limb.
+//
+// Both POST a rendered-frame PNG and return the SAME InferenceResponse shape the
+// chest lane returns, so the existing findings renderer shows them unchanged. The
+// VIEWER classifier decides which lane to call (chest → getInference UNCHANGED,
+// brain → getBrainAge, limb → getLimbInference); the chest model is never reachable
+// for a non-chest study (SD-004). Both reuse the same SESSION_KEY JWT, baseUrl, 8s
+// AbortController, and 401 → SSO redirect as getInference, via the shared helper.
+// ---------------------------------------------------------------------------
+
+/** POST helper carrying the established auth/timeout/401 behavior (returns the raw Response). */
+async function postInference(path: string, body: unknown): Promise<Response> {
+  const jwt = sessionStorage.getItem(SESSION_KEY);
+  if (!jwt) {
+    throw new InferenceError('No auth token in session');
+  }
+
+  // Literal read for DefinePlugin; try/catch fail-safe so a missing define never
+  // throws `process is not defined` (degrades to the default platform origin).
+  let baseUrl: string;
+  try {
+    baseUrl = (process.env.BLACKVOXEL_API_URL as string | undefined) ?? 'https://blackvoxel.ai';
+  } catch {
+    baseUrl = 'https://blackvoxel.ai';
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  let response: Response;
+  try {
+    response = await fetch(`${baseUrl}${path}`, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+  } catch (err: unknown) {
+    clearTimeout(timeoutId);
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new InferenceError('Request timed out');
+    }
+    const message = err instanceof Error ? err.message : String(err);
+    throw new InferenceError(message);
+  }
+
+  clearTimeout(timeoutId);
+
+  if (response.status === 401) {
+    // Same INT-05 SSO handoff as getInference: evict the stale token and bounce
+    // through login, returning the user to this exact viewer URL.
+    sessionStorage.removeItem(SESSION_KEY);
+    const redirect = encodeURIComponent(window.location.href);
+    window.location.href = `https://blackvoxel.ai/login?redirect=${redirect}`;
+    throw new InferenceError('Unauthorized', 401);
+  }
+
+  return response;
+}
+
+export interface BrainAgeRequest {
+  study_uid: string;
+  series_uid?: string | null;
+  /** REQUIRED — the mid-axial slice the viewer already renders, as a PNG data URL. */
+  image_data_url: string;
+  image_id?: string | null;
+  /** Optional chronological age; when given the response includes the brain-age gap. */
+  chronological_age?: number | null;
+}
+
+/**
+ * MIMPS-45 — brain-age research lane (POST /api/v1/inference/brainage).
+ * 503 when the lane is gated off → surfaced as InferenceError(..., 503) so the
+ * panel shows an honest "lane disabled" state (never a fabricated finding, SD-004).
+ */
+export async function getBrainAge(request: BrainAgeRequest): Promise<InferenceResponse> {
+  const response = await postInference('/api/v1/inference/brainage', request);
+  if (!response.ok) {
+    if (response.status === 503) {
+      throw new InferenceError('Brain-age disabled', 503);
+    }
+    throw new InferenceError(`API error ${response.status}`, response.status);
+  }
+  return response.json() as Promise<InferenceResponse>;
+}
+
+export interface LimbRequest {
+  study_uid: string;
+  series_uid?: string | null;
+  modality: string;
+  /** REQUIRED — the rendered limb X-ray frame as a PNG data URL. */
+  image_data_url: string;
+  image_id?: string | null;
+  /** Optional body-part hint from the classifier (e.g. "knee") for a future model. */
+  region_hint?: string | null;
+}
+
+/**
+ * MIMPS-45 — limb/extremity lane (POST /api/v1/inference/limb). Always answered
+ * honestly (200): with no commercially-clean limb model wrapped, the backend
+ * returns an honest "no model for this region" response (empty findings). The chest
+ * model is never run on a limb (SD-004).
+ */
+export async function getLimbInference(request: LimbRequest): Promise<InferenceResponse> {
+  const response = await postInference('/api/v1/inference/limb', request);
+  if (!response.ok) {
+    throw new InferenceError(`API error ${response.status}`, response.status);
+  }
+  return response.json() as Promise<InferenceResponse>;
+}

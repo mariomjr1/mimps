@@ -4,6 +4,8 @@ import { utilities as cornerstoneUtilities } from '@cornerstonejs/core';
 import { LanguageToggle } from '../components/LanguageToggle';
 import {
   getInference,
+  getBrainAge,
+  getLimbInference,
   classifyMeasurements,
   InferenceError,
   InferenceFinding,
@@ -32,8 +34,8 @@ import { useLengthMeasurements } from '../hooks/useLengthMeasurements';
 // MIMPS-33/36: clinical-mode flag + ephemeral clinical-context store
 import { CLINICAL_MODE_ENABLED } from '../config/clinicalMode';
 import { useClinicalContext } from '../stores/useClinicalContextStore';
-// MIMPS-41: modality gate — AI is CR/DR/DX (chest X-ray) only.
-import { useActiveModality, isCxrModality } from '../hooks/useActiveModality';
+// MIMPS-44/45: multi-modality demo — classify the study + route to the right lane.
+import { useStudyClassification } from '../hooks/useStudyClassification';
 // MIMPS-40/42: worklist gate + persisted-AIResult fetch (persisted-first, live fallback).
 import { isWorklistEnabled } from '../config/worklist';
 import { getWorklistDetail, toInferenceResponse } from '../services/worklistClient';
@@ -243,6 +245,15 @@ function ConfidenceBar({ confidence }: { confidence: number }): React.ReactEleme
   );
 }
 
+// MIMPS-44: emoji for the study-class chip in the panel header (matches the
+// useStudyClassification badgeIcon keys).
+const BADGE_EMOJI: Record<string, string> = {
+  lungs: '🫁',
+  brain: '🧠',
+  bone: '🦴',
+  help: '❔',
+};
+
 // CXR-12: calibration-band chip (provável / indeterminado / improvável).
 const BAND_STYLE: Record<string, { bg: string; fg: string }> = {
   'provável': { bg: 'rgba(124,58,237,0.25)', fg: '#C4B5FD' },
@@ -262,6 +273,18 @@ function BandChip({ band }: { band?: string }): React.ReactElement | null {
         style={{ backgroundColor: 'rgba(239,68,68,0.28)', color: '#FCA5A5' }}
       >
         experimental
+      </span>
+    );
+  }
+  if (band === 'measurement') {
+    // MIMPS-45: brain-age pseudo-finding — a neutral MEASUREMENT chip (never a
+    // clinical calibration band, never the red improvável fallback). SD-004.
+    return (
+      <span
+        className="inline-block rounded px-1.5 py-0.5 text-[10px] font-semibold"
+        style={{ backgroundColor: 'rgba(59,130,246,0.22)', color: '#93C5FD' }}
+      >
+        medição
       </span>
     );
   }
@@ -890,22 +913,26 @@ function AIFindingsPanel({
   // attached to the InferenceRequest in clinical mode only.
   const { context: clinicalContext } = useClinicalContext();
 
-  // MIMPS-41: modality gate — the proxy-txv-v1 lane is chest-radiograph only
-  // (CR/DR/DX). MR/CT/other are transport-only (no model): the panel shows a
-  // neutral "not available for this modality" message and fires NO inference and
-  // NO persisted-result fetch. The CXR path below is unchanged.
-  const modality = useActiveModality(servicesManager);
-  // null modality = study not yet resolved; treat as eligible so the CXR demo
-  // (single-CR study) is byte-identical to today and we never flash the gate on
-  // a study whose displaySets just haven't loaded. The gate trips only once a
-  // concrete non-CXR modality is known.
-  const modalityEligible = modality === null || isCxrModality(modality);
+  // MIMPS-44/45: classify the active study (chest / brain / limb / other) → model
+  // lane. `null` until a concrete modality resolves (study/display-sets still
+  // loading) — the panel renders that as a LOADING state and starts NO inference,
+  // so we never run a model on an unknown lane (this also structurally avoids the
+  // 2026-06-27 cancelled-drop class of bug: there is no in-flight call to cancel
+  // while the modality is still resolving).
+  const classInfo = useStudyClassification(servicesManager);
+  const modelLane = classInfo?.modelLane ?? null; // null = pending (modality unresolved)
 
   // MIMPS-33: AI inference runs in research mode, OR clinical mode when the
   // CLINICAL_MODE_ENABLED flag is on. Default (flag off) is research-only —
   // identical to the legacy behaviour.
   const clinicalEnabled = CLINICAL_MODE_ENABLED && mode === 'clinical';
-  const inferenceAllowed = (mode === 'research' || clinicalEnabled) && modalityEligible;
+  const modeAllowed = mode === 'research' || clinicalEnabled;
+  // A lane is RUNNABLE once classified to chest/brain/limb. 'other' (CT/US/…) is
+  // transport-only (no model); `null` is still pending → loading. The chest model
+  // (proxy-txv-v1) is reachable ONLY for the 'chest' lane (SD-004) — a brain/limb
+  // study can never hit it.
+  const laneRunnable = modelLane === 'chest' || modelLane === 'brain' || modelLane === 'limb';
+  const inferenceAllowed = modeAllowed && laneRunnable;
 
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<InferenceResponse | null>(null);
@@ -987,6 +1014,90 @@ function AIFindingsPanel({
         capture = await captureActiveViewportImage(servicesManager);
       } catch (err) {
         console.warn('[blackvoxel-ai] viewport capture failed:', err);
+      }
+
+      // MIMPS-45: brain-age lane (research, non-diagnostic). The viewer sends the
+      // mid-axial slice it already renders — no NIfTI, no worklist/persisted path.
+      // A 503 (lane gated off) shows an HONEST disabled state, never a fabricated
+      // finding (SD-004). The chest model is never reached on this path.
+      if (modelLane === 'brain') {
+        setSource('live');
+        try {
+          const result = await getBrainAge({
+            study_uid: studyUid,
+            series_uid: seriesUid,
+            image_data_url: capture.imageDataUrl ?? '',
+            image_id: capture.imageId,
+          });
+          if (!cancelled) {
+            setData(result);
+            setLoading(false);
+            drawOverlay(result, capture.imageId);
+          }
+        } catch (err: unknown) {
+          if (cancelled) {
+            return;
+          }
+          if (err instanceof InferenceError && err.status === 401) {
+            setSessionExpired(true);
+            setLoading(false);
+            return;
+          }
+          const message =
+            err instanceof InferenceError && err.status === 503
+              ? 'Análise de idade cerebral indisponível (lane de pesquisa desabilitada).'
+              : err instanceof Error
+                ? err.message
+                : 'Erro desconhecido';
+          clearAIBoundingBoxes();
+          setData(null);
+          setError(message);
+          setUsingFallback(false);
+          setLoading(false);
+        }
+        return;
+      }
+
+      // MIMPS-45: limb/extremity lane — ALWAYS an honest response (empty findings
+      // when no commercially-clean model is wrapped). The chest model is NEVER run
+      // on a limb (SD-004); that safety property is the whole point of the lane.
+      if (modelLane === 'limb') {
+        setSource('live');
+        try {
+          const result = await getLimbInference({
+            study_uid: studyUid,
+            series_uid: seriesUid,
+            // A limb study is always CR/DR/DX and the backend's honest "no model"
+            // response does not branch on the exact code, so a 'CR' literal keeps
+            // the effect free of the churning `modality`/`classInfo` deps (avoids
+            // the cancelled-drop class of bug). region_hint is for a future model.
+            modality: 'CR',
+            image_data_url: capture.imageDataUrl ?? '',
+            image_id: capture.imageId,
+            region_hint: null,
+          });
+          if (!cancelled) {
+            setData(result);
+            setLoading(false);
+            drawOverlay(result, capture.imageId);
+          }
+        } catch (err: unknown) {
+          if (cancelled) {
+            return;
+          }
+          if (err instanceof InferenceError && err.status === 401) {
+            setSessionExpired(true);
+            setLoading(false);
+            return;
+          }
+          const message = err instanceof Error ? err.message : 'Erro desconhecido';
+          clearAIBoundingBoxes();
+          setData(null);
+          setError(message);
+          setUsingFallback(false);
+          setLoading(false);
+        }
+        return;
       }
 
       // MIMPS-42: persisted-first. When the worklist gate is on, fetch the
@@ -1091,16 +1202,18 @@ function AIFindingsPanel({
   }, [
     mode,
     inferenceAllowed,
-    // NOTE (2026-06-26 regression fix): `modality` is deliberately NOT a
-    // dependency. It resolves null→'CR' asynchronously on DISPLAY_SETS_ADDED and
-    // can briefly oscillate as the hanging protocol re-runs. Including it re-ran
-    // THIS effect mid-inference; the cleanup set `cancelled=true`, so the
-    // in-flight 200 landed in the `if (!cancelled)` guard and was DROPPED before
-    // `setLoading(false)` + `drawOverlay` ever ran — the read spun forever and no
-    // box drew. Modality *eligibility* transitions (the only thing that should
-    // re-run this effect) are already folded into `inferenceAllowed`, which is
-    // what the body actually reads; the raw `modality` string is never
-    // referenced here, so excluding it is exhaustive-deps clean.
+    // MIMPS-45: the active lane (a STRING) drives which model the body calls. It is
+    // stable across spurious DISPLAY_SETS_ADDED re-fires (same modality → same lane
+    // string → React bails the dep compare → no re-run), so adding it does NOT
+    // reintroduce the cancelled-drop bug; it re-runs only on a genuine lane
+    // transition (pending → chest/brain/limb, or a study switch).
+    modelLane,
+    // NOTE (2026-06-26 regression fix): the raw `modality` string is deliberately
+    // NOT a dependency (it resolves null→'CR' asynchronously and can briefly
+    // oscillate as the hanging protocol re-runs; including it re-ran THIS effect
+    // mid-inference and dropped the in-flight 200). The body never references the
+    // raw `modality`/`classInfo` (the limb lane uses a 'CR' literal), only the
+    // stable `modelLane` string above — so excluding them is exhaustive-deps clean.
     clinicalEnabled,
     clinicalContext,
     servicesManager,
@@ -1108,13 +1221,12 @@ function AIFindingsPanel({
     seriesInstanceUID,
   ]);
 
-  // --- MIMPS-41: modality gate — non-CXR (MR/CT/other) is transport-only ---
-  // The mode is allowed but the active study is not a chest radiograph, so the
-  // proxy-txv-v1 lane does not apply. Show a NEUTRAL "not available for this
-  // modality" message (info icon, not a lock/error) and render no inference
-  // state. The effect above already fired no inference and no worklist fetch
-  // for this study, so no request was ever made. PT/EN via i18n.
-  const isModalityBlocked = (mode === 'research' || clinicalEnabled) && !modalityEligible;
+  // --- MIMPS-44/45: lane gate — 'other' modalities (CT/US/…) have no model ---
+  // The mode is allowed but the study classified to no runnable lane (CT, US, …),
+  // so no model applies. Show a NEUTRAL "not available for this modality" message
+  // (info icon, not a lock/error); the effect fired no inference. A pending /
+  // unresolved modality is NOT blocked here — it falls through to the loading state.
+  const isModalityBlocked = modeAllowed && modelLane === 'none';
   if (isModalityBlocked) {
     return (
       <div className="flex h-full flex-col bg-black text-[13px]">
@@ -1165,7 +1277,10 @@ function AIFindingsPanel({
   // Render a bilingual placeholder; no inference state is shown. Reached in
   // research-disabled states: no mode yet, or clinical mode with the flag off.
   // (MIMPS-26: DICOM import now lives at the top of the study list, not here.)
-  if (!inferenceAllowed) {
+  // MIMPS-45: gate on !modeAllowed (NOT !inferenceAllowed) so a study whose lane
+  // is still resolving (pending) falls through to the LOADING state below instead
+  // of flashing "AI off".
+  if (!modeAllowed) {
     return (
       <div className="flex h-full flex-col bg-black text-[13px]">
         {/* Keep the panel header so the panel feels anchored */}
@@ -1313,6 +1428,18 @@ function AIFindingsPanel({
         style={{ backgroundColor: BRAND_VIOLET }}
       >
         <span className="text-[13px] font-bold text-white">{t('panel.title')}</span>
+        {/* MIMPS-44: the metadata classification — makes "what kind of study this
+            is + which lane ran" explicit (🫁 Tórax / 🧠 Cérebro / 🦴 Membro). A
+            `?` suffix flags a low-confidence classification. */}
+        {classInfo && (
+          <span
+            className="rounded bg-white/15 px-1.5 py-0.5 text-[10px] font-semibold text-white"
+            title={`${classInfo.label_en}${classInfo.confidence === 'low' ? ' (classificação incerta)' : ''}`}
+          >
+            {BADGE_EMOJI[classInfo.badgeIcon]} {classInfo.label_pt}
+            {classInfo.confidence === 'low' ? ' ?' : ''}
+          </span>
+        )}
         <span className="ml-auto flex items-center gap-1">
           <LanguageToggle />
           <span className="text-[10px] text-white/70">{result.model_version}</span>

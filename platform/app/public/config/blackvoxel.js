@@ -52,6 +52,19 @@ window.config = {
     enabled: false,
     apiBaseUrl: null,
   },
+  // UX-05 — multi-modality "Demo" mode (DARK: default off). When `enabled: true`
+  // the study-list toolbar shows a one-click "Demo" button that loads the bundled
+  // mixed-modality DICOM set (Brain MRI / Chest X-ray / Limb X-ray) client-side so
+  // the AI panel classifies each and runs the matching model (chest → proxy-txv-v1
+  // live; brain → brain-age research lane, also needs the platform
+  // BRAINAGE_INFERENCE_ENABLED flag; limb → honest "no model yet"). With
+  // `enabled: false` the toolbar is byte-identical to today. `manifestUrl` points
+  // at the bundled manifest; `modePath` is the OHIF mode route to open studies in.
+  blackvoxelDemo: {
+    enabled: false,
+    manifestUrl: '/demo/demo-manifest.json',
+    modePath: 'viewer',
+  },
   showStudyList: true,
   maxNumberOfWebWorkers: 3,
   showWarningMessageForCrossOrigin: false, // same-origin: no cross-origin warning needed

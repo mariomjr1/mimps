@@ -9,6 +9,7 @@ import { StudyList, InvestigationalUseDialog, type StudyRow } from '@ohif/ui-nex
 import { StudyListSettingsPopover } from './StudyListSettingsPopover';
 import { SidePanelPreview } from './SidePanelPreview';
 import { StudyListImportButton } from './StudyListImportButton';
+import { DemoButton } from './DemoButton';
 
 type Props = withAppTypes & {
   data: any[];
@@ -139,6 +140,9 @@ export default function WorkList({
               toolbarLeftComponent={logoComponent}
               toolbarRightActionsComponent={
                 <div className="flex items-center gap-1">
+                  {/* UX-05: one-click multi-modality Demo loader (dark — renders
+                      only when window.config.blackvoxelDemo.enabled === true). */}
+                  <DemoButton />
                   {/* MIMPS-26: local DICOM import, relocated to the top of the
                       study list so it's reachable from an empty worklist. */}
                   <StudyListImportButton />
