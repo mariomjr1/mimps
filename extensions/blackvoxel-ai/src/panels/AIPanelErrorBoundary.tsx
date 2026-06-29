@@ -33,12 +33,6 @@ class AIPanelErrorBoundary extends React.Component<
     if (this.state.hasError) {
       return (
         <div className="flex h-full flex-col items-center justify-center gap-2 bg-black p-6 text-center">
-          <span
-            className="text-2xl"
-            aria-hidden="true"
-          >
-            ⚠
-          </span>
           <p className="m-0 text-[13px] font-semibold text-white">
             O painel de IA encontrou um erro.
           </p>

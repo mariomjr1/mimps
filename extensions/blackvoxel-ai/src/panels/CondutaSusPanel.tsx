@@ -125,7 +125,7 @@ function ColorChip({ color }: { color: CondutaColor }): React.ReactElement {
   );
 }
 
-/** The "✦ rascunho" badge — same visual language as the report-draft beta badge. */
+/** The "rascunho" badge — same visual language as the report-draft beta badge. */
 function RascunhoBadge(): React.ReactElement {
   const { t } = useTranslation('blackvoxel-ai');
   return (
@@ -133,7 +133,7 @@ function RascunhoBadge(): React.ReactElement {
       className="rounded px-1.5 py-0.5 text-[9px] font-bold"
       style={{ backgroundColor: 'rgba(124,58,237,0.25)', color: '#C4B5FD' }}
     >
-      ✦ {t('conduta.rascunhoBadge')}
+      {t('conduta.rascunhoBadge')}
     </span>
   );
 }

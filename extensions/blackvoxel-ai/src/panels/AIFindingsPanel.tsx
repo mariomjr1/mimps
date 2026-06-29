@@ -245,15 +245,6 @@ function ConfidenceBar({ confidence }: { confidence: number }): React.ReactEleme
   );
 }
 
-// MIMPS-44: emoji for the study-class chip in the panel header (matches the
-// useStudyClassification badgeIcon keys).
-const BADGE_EMOJI: Record<string, string> = {
-  lungs: '🫁',
-  brain: '🧠',
-  bone: '🦴',
-  help: '❔',
-};
-
 // CXR-12: calibration-band chip (provável / indeterminado / improvável).
 const BAND_STYLE: Record<string, { bg: string; fg: string }> = {
   'provável': { bg: 'rgba(124,58,237,0.25)', fg: '#C4B5FD' },
@@ -458,7 +449,7 @@ function CollapsibleReport({ report }: CollapsibleReportProps): React.ReactEleme
             className="rounded px-1.5 py-0.5 text-[9px] font-bold"
             style={{ backgroundColor: 'rgba(124,58,237,0.25)', color: '#C4B5FD' }}
           >
-            ✦ {t('report.beta')}
+            {t('report.beta')}
           </span>
         </span>
         <span
@@ -680,7 +671,7 @@ function FindingMeasurementRow({
           className="w-full cursor-pointer rounded-md border border-white/10 px-3 py-1.5 text-[11px] font-semibold text-white max-md:min-h-[44px]"
           style={{ backgroundColor: 'rgba(16,185,129,0.20)', color: '#34D399' }}
         >
-          ✓ {t('measurement.confirmed')} · {t('measurement.unconfirm')}
+          {t('measurement.confirmed')} · {t('measurement.unconfirm')}
         </button>
       ) : (
         <button
@@ -1459,14 +1450,14 @@ function AIFindingsPanel({
       >
         <span className="text-[13px] font-bold text-white">{t('panel.title')}</span>
         {/* MIMPS-44: the metadata classification — makes "what kind of study this
-            is + which lane ran" explicit (🫁 Tórax / 🧠 Cérebro / 🦴 Membro). A
-            `?` suffix flags a low-confidence classification. */}
+            is + which lane ran" explicit (Tórax / Cérebro / Membro). A `?` suffix
+            flags a low-confidence classification. */}
         {classInfo && (
           <span
             className="rounded bg-white/15 px-1.5 py-0.5 text-[10px] font-semibold text-white"
             title={`${classInfo.label_en}${classInfo.confidence === 'low' ? ' (classificação incerta)' : ''}`}
           >
-            {BADGE_EMOJI[classInfo.badgeIcon]} {classInfo.label_pt}
+            {classInfo.label_pt}
             {classInfo.confidence === 'low' ? ' ?' : ''}
           </span>
         )}
