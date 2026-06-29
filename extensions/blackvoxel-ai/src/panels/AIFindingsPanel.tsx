@@ -1043,12 +1043,15 @@ function AIFindingsPanel({
             setLoading(false);
             return;
           }
-          const message =
-            err instanceof InferenceError && err.status === 503
-              ? 'Análise de idade cerebral indisponível (lane de pesquisa desabilitada).'
-              : err instanceof Error
-                ? err.message
-                : 'Erro desconhecido';
+          // 503 (lane gated off) or 404 (route not deployed here) → the same honest
+          // "research lane unavailable" message, never a fabricated finding (SD-004).
+          const laneUnavailable =
+            err instanceof InferenceError && (err.status === 503 || err.status === 404);
+          const message = laneUnavailable
+            ? 'Análise de idade cerebral indisponível neste ambiente (lane de pesquisa não publicada).'
+            : err instanceof Error
+              ? err.message
+              : 'Erro desconhecido';
           clearAIBoundingBoxes();
           setData(null);
           setError(message);
@@ -1063,6 +1066,30 @@ function AIFindingsPanel({
       // on a limb (SD-004); that safety property is the whole point of the lane.
       if (modelLane === 'limb') {
         setSource('live');
+        // The honest "no model for this region" state — what the backend's Mode-A
+        // returns, and ALSO what we render if the limb endpoint is unavailable
+        // (e.g. not yet deployed → 404): the truthful reality is identical (there
+        // is no limb model), so we degrade to it gracefully rather than show a raw
+        // "API error". Empty findings — never a chest finding, never fabricated.
+        const limbNoModel: InferenceResponse = {
+          study_uid: studyUid,
+          model_version: 'limb-none-v0',
+          findings: [],
+          report_draft: {
+            tecnica: 'Radiografia de membro/extremidade.',
+            achados: 'Nenhum modelo de IA disponível para esta região no momento.',
+            impressao: 'Sem análise de IA — revisão pelo radiologista.',
+          },
+          inference_time_ms: 0,
+          is_mock: false,
+          is_research: true,
+          disclaimer:
+            'Não há modelo de IA para radiografia de membro nesta versão (pesquisa). ' +
+            'O modelo de tórax NÃO é executado em exames de membro.',
+          report_source: 'template',
+          paid_report_available: false,
+          report_fallback_reason: 'paid_disabled',
+        };
         try {
           const result = await getLimbInference({
             study_uid: studyUid,
@@ -1090,12 +1117,15 @@ function AIFindingsPanel({
             setLoading(false);
             return;
           }
-          const message = err instanceof Error ? err.message : 'Erro desconhecido';
-          clearAIBoundingBoxes();
-          setData(null);
-          setError(message);
-          setUsingFallback(false);
-          setLoading(false);
+          // Endpoint unavailable / any non-auth error → the honest "no model"
+          // state above (the limb reality is the same whether the backend answered
+          // it or the route is not deployed). Never a fabricated finding (SD-004).
+          if (!cancelled) {
+            clearAIBoundingBoxes();
+            setData(limbNoModel);
+            setUsingFallback(false);
+            setLoading(false);
+          }
         }
         return;
       }
