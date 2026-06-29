@@ -519,6 +519,74 @@
       "source": "brain-development.org/ixi-dataset via HF radiata-ai/brain-structure"
     },
     {
+      "study_id": "chest-01",
+      "study_instance_uid": "1.2.826.0.1.3680043.10.1421.46947342.42067628",
+      "files": [
+        "studies/chest-01/image-001.dcm"
+      ],
+      "expected_class": "chest_xray",
+      "meta": {
+        "modality": "CR",
+        "body_part_examined": "CHEST",
+        "study_description": "RX de torax (demo)",
+        "series_description": "Torax PA"
+      },
+      "analysis_frame_index": 0,
+      "license": "NIH ChestX-ray14, CC0",
+      "source": "NIH ChestX-ray14"
+    },
+    {
+      "study_id": "chest-02",
+      "study_instance_uid": "1.2.826.0.1.3680043.10.1421.46947342.6094370",
+      "files": [
+        "studies/chest-02/image-001.dcm"
+      ],
+      "expected_class": "chest_xray",
+      "meta": {
+        "modality": "CR",
+        "body_part_examined": "CHEST",
+        "study_description": "RX de torax (demo)",
+        "series_description": "Torax PA"
+      },
+      "analysis_frame_index": 0,
+      "license": "NIH ChestX-ray14, CC0",
+      "source": "NIH ChestX-ray14"
+    },
+    {
+      "study_id": "chest-03",
+      "study_instance_uid": "1.2.826.0.1.3680043.10.1421.46947342.1041360",
+      "files": [
+        "studies/chest-03/image-001.dcm"
+      ],
+      "expected_class": "chest_xray",
+      "meta": {
+        "modality": "CR",
+        "body_part_examined": "CHEST",
+        "study_description": "RX de torax (demo)",
+        "series_description": "Torax PA"
+      },
+      "analysis_frame_index": 0,
+      "license": "NIH ChestX-ray14, CC0",
+      "source": "NIH ChestX-ray14"
+    },
+    {
+      "study_id": "chest-04",
+      "study_instance_uid": "1.2.826.0.1.3680043.10.1421.46947342.72877343",
+      "files": [
+        "studies/chest-04/image-001.dcm"
+      ],
+      "expected_class": "chest_xray",
+      "meta": {
+        "modality": "CR",
+        "body_part_examined": "CHEST",
+        "study_description": "RX de torax (demo)",
+        "series_description": "Torax PA"
+      },
+      "analysis_frame_index": 0,
+      "license": "NIH ChestX-ray14, CC0",
+      "source": "NIH ChestX-ray14"
+    },
+    {
       "study_id": "limb-01-hand",
       "study_instance_uid": "1.2.826.0.1.3680043.10.1421.7558504.50467955",
       "files": [

@@ -125,3 +125,11 @@ unlink-cs3d.js
 # Python (audit-service)
 __pycache__/
 *.pyc
+
+# Multi-modality demo set (UX-05): commit the REDISTRIBUTABLE CC0 chest + limb
+# DICOMs + manifest so a clean rebuild keeps the live Demo button working. The
+# IXI brain set is CC-BY-SA 3.0 (share-alike) → stays ignored / LOCAL-ONLY,
+# never hosted/redistributed (see models/demo_data/README.md).
+!platform/app/public/demo/demo-manifest.json
+!platform/app/public/demo/studies/chest-*/*.dcm
+!platform/app/public/demo/studies/limb-*/*.dcm
