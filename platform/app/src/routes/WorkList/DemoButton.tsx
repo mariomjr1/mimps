@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Icons } from '@ohif/ui-next';
 
@@ -21,8 +21,6 @@ import filesToStudies from '../Local/filesToStudies';
  * directly to avoid coupling platform/app to the blackvoxel-ai extension bundle.
  */
 
-const VIEWER_MODE_KEY = 'bv.viewerMode';
-
 interface DemoConfig {
   enabled?: boolean;
   manifestUrl?: string;
@@ -42,14 +40,6 @@ interface DemoManifest {
 function readDemoConfig(): DemoConfig {
   const cfg = (window as unknown as { config?: { blackvoxelDemo?: unknown } }).config?.blackvoxelDemo;
   return cfg && typeof cfg === 'object' ? (cfg as DemoConfig) : {};
-}
-
-function readViewerMode(): string | null {
-  try {
-    return sessionStorage.getItem(VIEWER_MODE_KEY);
-  } catch {
-    return null;
-  }
 }
 
 /** Resolve a manifest-relative file path against the manifest URL directory. */
@@ -73,23 +63,16 @@ async function fetchAsFile(url: string): Promise<File> {
 
 export function DemoButton(): React.ReactElement | null {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<string | null>(() => readViewerMode());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === VIEWER_MODE_KEY) {
-        setMode(readViewerMode());
-      }
-    };
-    window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
-  }, []);
-
   const cfg = readDemoConfig();
-  // Hidden unless explicitly enabled, and never in clinical mode.
-  if (cfg.enabled !== true || mode === 'clinical') {
+  // Hidden unless explicitly enabled. NOT mode-gated: the demo loader is a
+  // research/demo affordance that must appear whenever the demo is on, regardless
+  // of an inherited viewer mode. (Gating on `mode === 'clinical'` previously hid it
+  // for any session carrying a stale 'clinical' mode — clinical ships disabled, so
+  // such a value is invalid anyway. See useViewerModeStore self-heal.)
+  if (cfg.enabled !== true) {
     return null;
   }
 

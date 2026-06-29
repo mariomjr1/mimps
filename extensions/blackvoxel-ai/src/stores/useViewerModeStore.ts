@@ -14,6 +14,8 @@
  * (listeners + getters) avoids the overhead of Zustand/Redux at this scope.
  */
 
+import { CLINICAL_MODE_ENABLED } from '../config/clinicalMode';
+
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
@@ -42,8 +44,22 @@ const SESSION_KEY = 'bv.viewerMode';
 function readFromSession(): ViewerMode | null {
   try {
     const raw = sessionStorage.getItem(SESSION_KEY);
-    if (raw === 'research' || raw === 'clinical') {
-      return raw;
+    if (raw === 'research') {
+      return 'research';
+    }
+    if (raw === 'clinical') {
+      // MIMPS-33: clinical ships gated (CLINICAL_MODE_ENABLED default off). A
+      // persisted 'clinical' — e.g. left in sessionStorage by an older build where
+      // it was selectable — is INVALID when clinical is disabled, and it silently
+      // gates off the AI panel (research-only) and the demo affordances. Migrate it
+      // to 'research' (the only enabled mode) and write the correction back so every
+      // consumer that reads sessionStorage directly (e.g. the study-list DemoButton)
+      // also sees the healed value.
+      if (!CLINICAL_MODE_ENABLED) {
+        writeToSession('research');
+        return 'research';
+      }
+      return 'clinical';
     }
   } catch {
     // sessionStorage may be blocked in some sandboxed frames — degrade to null.
