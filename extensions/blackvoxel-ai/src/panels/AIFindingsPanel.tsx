@@ -105,7 +105,19 @@ async function captureActiveViewportImage(
     return {};
   }
 
-  const imageId = getCurrentImageId.call(viewport);
+  // The inference effect can fire BEFORE the DICOM has finished loading into the
+  // viewport — getCurrentImageId() is null until the image is set on the stack.
+  // Previously the research/clinical mode-gate click delayed inference long enough
+  // for the image to load; now that research is the default (no gate), inference
+  // fires immediately and would capture nothing → send NO image → get the backend's
+  // mock (instead of the REAL proxy-txv-v1 result). Poll briefly for the imageId so
+  // we always capture the real rendered image and run the real model.
+  let imageId = getCurrentImageId.call(viewport) as string | undefined;
+  const deadline = Date.now() + 10000;
+  while (!imageId && Date.now() < deadline) {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    imageId = getCurrentImageId.call(viewport) as string | undefined;
+  }
   if (!imageId) {
     return {};
   }

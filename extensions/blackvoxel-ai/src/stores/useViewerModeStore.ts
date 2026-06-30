@@ -86,7 +86,14 @@ function writeToSession(mode: ViewerMode | null): void {
 
 type Listener = (mode: ViewerMode | null) => void;
 
-let _mode: ViewerMode | null = readFromSession();
+// Default to 'research' when no valid mode is persisted AND clinical is disabled.
+// Rationale: clinical ships gated off (CLINICAL_MODE_ENABLED=false), so the
+// research/clinical gate offers NO real choice — it only blocks the (research-only)
+// AI behind a mandatory "select Pesquisa + Confirmar" click. Most users never clear
+// it, so the model silently never runs ("model not working"). Defaulting to research
+// (the safe, de-identified, non-diagnostic mode) lets inference run immediately. When
+// clinical IS enabled, fall back to null so the gate prompts the genuine choice.
+let _mode: ViewerMode | null = readFromSession() ?? (CLINICAL_MODE_ENABLED ? null : 'research');
 const _listeners = new Set<Listener>();
 
 function _notify(): void {
