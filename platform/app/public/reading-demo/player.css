@@ -99,6 +99,12 @@ b{font-weight:600;color:var(--txt)}
 .signbtn:hover{filter:brightness(1.08)}
 .signbtn:disabled{background:#232833;color:var(--dim);cursor:default}
 .signed{margin-top:.5rem;text-align:center;color:var(--teal);font-size:.74rem}
+.pdfbtn{width:100%;margin-top:.55rem;padding:.62rem;border:1px solid var(--teal);border-radius:6px;
+  background:transparent;color:var(--teal);font-weight:600;font-size:.84rem;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:.45rem;transition:.15s}
+.pdfbtn:hover{background:rgba(52,194,172,.12)}
+.pdfbtn:active{transform:translateY(1px)}
+.pdfbtn .pico{font-size:.95rem;line-height:1}
 
 /* controls */
 .controls{display:flex;align-items:center;gap:1rem;padding:.7rem 1.1rem;background:var(--panel);border-top:1px solid var(--border);flex-wrap:wrap}
@@ -115,5 +121,25 @@ b{font-weight:600;color:var(--txt)}
 .thumbs .t.on{opacity:1;border-color:var(--teal);box-shadow:0 0 0 1px var(--teal)}
 .thumbs .t .pg{position:absolute;left:0;bottom:0;height:2px;background:var(--teal);width:0}
 .credit{font-size:.62rem;color:var(--dim);white-space:nowrap}
-@media(max-width:640px){.bmodel,.credit{display:none}}
+/* ---- mobile / tablet ---- */
+@media(max-width:900px){
+  .viewport{min-height:auto;padding:.7rem}
+  .stage{width:min(94vw,56vh)}
+  .panel{border-left:0;border-top:1px solid var(--border);padding:.95rem 1rem 1.1rem}
+  .controls{position:sticky;bottom:0;z-index:6}   /* keep play/next reachable while scrolling */
+}
+@media(max-width:640px){
+  .bmodel,.credit{display:none}
+  .bar{gap:.5rem;padding:.55rem .7rem}
+  .bmid{margin-left:0;font-size:.68rem}
+  .brand .bname{font-size:.84rem}
+  .mark{width:26px;height:26px}
+  .phead h2{font-size:.96rem}
+  .rtext{font-size:.8rem}
+  .conf-name{font-size:.96rem}
+  .cbtn{width:46px;height:40px;font-size:1.05rem}   /* bigger touch targets */
+  .thumbs .t{width:40px;height:40px}
+  .demo-tag{font-size:.55rem;padding:.35rem .6rem;line-height:1.3}
+  .signbtn,.pdfbtn{padding:.8rem}
+}
 @media(prefers-reduced-motion:reduce){.cam{transition:none}.f .fill{transition:none}.scan{display:none}}

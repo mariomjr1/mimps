@@ -9,13 +9,66 @@
   var xray = $('xray'), cam = $('cam'), box = $('box'), stage = $('stage'),
       counter = $('counter'), studyid = $('studyid'), findings = $('findings'),
       rtec = $('rtec'), rach = $('rach'), rimp = $('rimp'), hudmod = $('hudmod'),
-      signbtn = $('signbtn'), signed = $('signed'), thumbs = $('thumbs'),
-      rv1 = document.querySelector('.rv1'), playBtn = $('play'), prevBtn = $('prev'), nextBtn = $('next');
-  var cases = [], N = 0, cur = 0, playing = true, timers = [];
+      signbtn = $('signbtn'), signed = $('signed'), thumbs = $('thumbs'), pdfbtn = $('pdfbtn'),
+      rv1 = document.querySelector('.rv1'), rv2 = document.querySelector('.rv2'),
+      playBtn = $('play'), prevBtn = $('prev'), nextBtn = $('next');
+  var cases = [], N = 0, cur = 0, playing = true, timers = [], META = {};
+  var DOCTOR = { nome: 'Dra. Helena Marques', crm: '123456', uf: 'SP' };  // demo persona (report watermarked)
+  var lastSignedHuman = '';
+  var LN = ['Silva', 'Santos', 'Oliveira', 'Souza', 'Lima', 'Pereira', 'Costa', 'Almeida', 'Nascimento',
+    'Araújo', 'Ferreira', 'Rocha', 'Carvalho', 'Gomes', 'Ribeiro', 'Martins', 'Barbosa', 'Teixeira'];
+  var FN_M = ['José', 'Antônio', 'João', 'Carlos', 'Paulo', 'Pedro', 'Rafael', 'Marcos', 'Bruno', 'Ricardo'];
+  var FN_F = ['Maria', 'Ana', 'Francisca', 'Sandra', 'Marta', 'Luiza', 'Beatriz', 'Helena', 'Cláudia', 'Fernanda'];
+  var INST = ['Hospital São Lucas', 'Santa Casa de Misericórdia', 'Hospital das Clínicas', 'Instituto do Tórax', 'Hospital Santa Helena'];
+  var REQ = ['Dr. A. Ferreira', 'Dra. C. Ramos', 'Dr. L. Tavares', 'Dra. P. Nogueira', 'Dr. R. Batista'];
 
   function pad(n) { return String(n).padStart(2, '0'); }
   function clearTimers() { timers.forEach(clearTimeout); timers = []; }
   function esc(s) { return s.replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+
+  // ---- PDF: deterministic (clearly-demo) demographics + image compositing ----
+  function h32(s) { var h = 2166136261 >>> 0; for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function fmtNow() { var d = new Date(); return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function demographics(c) {
+    var h = h32(c.id + c.src), sexo = (h & 1) ? 'M' : 'F';
+    var fn = (sexo === 'M' ? FN_M : FN_F);
+    var nome = fn[h % fn.length] + ' ' + LN[(h >> 3) % LN.length] + ' ' + LN[(h >> 8) % LN.length];
+    var idade = 32 + (h % 55), year = 2026 - idade;
+    return {
+      nome: nome, prontuario: String(100000 + (h % 900000)), idade: idade + ' anos', sexo: sexo,
+      nascimento: pad(1 + ((h >> 9) % 28)) + '/' + pad(1 + ((h >> 5) % 12)) + '/' + year,
+      acesso: 'CR2026' + String(1000 + ((h >> 4) % 9000)),
+      dataExame: pad(1 + ((h >> 7) % 28)) + '/' + pad(1 + ((h >> 11) % 7)) + '/2026 ' + pad(8 + ((h >> 2) % 9)) + ':' + pad((h >> 6) % 60),
+      solicitante: REQ[(h >> 12) % REQ.length], instituicao: INST[(h >> 13) % INST.length],
+    };
+  }
+  function composeImage(c) {
+    try {
+      var S = 620, cv = document.createElement('canvas'); cv.width = S; cv.height = S;
+      var g = cv.getContext('2d');
+      g.fillStyle = '#000'; g.fillRect(0, 0, S, S);
+      if (xray.complete && xray.naturalWidth) g.drawImage(xray, 0, 0, S, S);
+      if (cam.complete && cam.naturalWidth) { g.globalAlpha = 0.55; g.drawImage(cam, 0, 0, S, S); g.globalAlpha = 1; }
+      var b = c.gt && c.gt.box;
+      if (b) {
+        g.strokeStyle = '#8b8bff'; g.lineWidth = 3; g.strokeRect(b[0] * S, b[1] * S, b[2] * S, b[3] * S);
+        g.font = 'bold 15px Inter, sans-serif'; var lbl = 'IA · realce', tw = g.measureText(lbl).width;
+        g.fillStyle = '#8b8bff'; g.fillRect(b[0] * S - 1, b[1] * S - 20, tw + 10, 18);
+        g.fillStyle = '#0a0a14'; g.fillText(lbl, b[0] * S + 4, b[1] * S - 6);
+      }
+      return cv.toDataURL('image/png');
+    } catch (e) { return null; }
+  }
+  function generatePdf(c) {
+    if (!c || !(window.BVPdf && window.jspdf)) { alert('Gerador de PDF indisponível.'); return; }
+    window.BVPdf.generate(c, {
+      patient: demographics(c), doctor: DOCTOR,
+      model: { name: META.model || 'proxy-txv-v1', benchmark: META.benchmark || '' },
+      imageDataUrl: composeImage(c),
+      signatureHash: (h32(c.id + DOCTOR.crm).toString(16) + h32(c.src).toString(16)).slice(0, 12),
+      signedAtHuman: lastSignedHuman || fmtNow(),
+    });
+  }
 
   function renderPanel(c) {
     var html = '<div class="conf">'
@@ -69,6 +122,9 @@
   function doSign() {
     if (signbtn.disabled) return;
     signbtn.disabled = true; signed.hidden = false; rv1.textContent = 'Assinado (demonstração)';
+    rv2.textContent = DOCTOR.nome + ' · CRM ' + DOCTOR.crm + '/' + DOCTOR.uf;
+    lastSignedHuman = fmtNow();
+    pdfbtn.hidden = false;
   }
 
   function updateThumbs() {
@@ -87,6 +143,7 @@
     updateThumbs();
     cam.classList.remove('on'); box.hidden = true; box.classList.remove('on');
     signed.hidden = true; signbtn.disabled = false; rv1.textContent = 'Aguardando assinatura';
+    rv2.textContent = 'Dr. ____ · CRM ____ / SP'; pdfbtn.hidden = true;
     rtec.textContent = ''; rach.innerHTML = ''; rimp.innerHTML = '';
     xray.src = 'data/img/' + pad(cur) + '.jpg';
     cam.src = 'data/cam/' + pad(cur) + '.png';
@@ -117,6 +174,7 @@
   prevBtn.addEventListener('click', function () { show(cur - 1); });
   nextBtn.addEventListener('click', function () { show(cur + 1); });
   signbtn.addEventListener('click', doSign);
+  pdfbtn.addEventListener('click', function () { generatePdf(cases[cur]); });
   document.addEventListener('keydown', function (e) {
     if (e.key === 'ArrowRight') show(cur + 1);
     else if (e.key === 'ArrowLeft') show(cur - 1);
@@ -124,7 +182,7 @@
   });
 
   fetch('data/session.json').then(function (r) { return r.json(); }).then(function (meta) {
-    cases = meta.cases || []; N = cases.length;
+    META = meta; cases = meta.cases || []; N = cases.length;
     if (!N) { rach.textContent = 'Sem dados de sessão.'; return; }
     buildThumbs();
     show(0);

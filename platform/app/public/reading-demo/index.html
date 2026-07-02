@@ -62,6 +62,7 @@
       </div>
       <button id="signbtn" class="signbtn">Assinar laudo</button>
       <div id="signed" class="signed mono" hidden>✓ Laudo assinado</div>
+      <button id="pdfbtn" class="pdfbtn" hidden><span class="pico">⬇</span> Gerar PDF do laudo</button>
     </div>
   </aside>
 </main>
@@ -76,6 +77,8 @@
   <div class="credit mono">Software descreve; o médico assina.</div>
 </footer>
 
+<script src="vendor/jspdf.umd.min.js"></script>
+<script src="pdf.js"></script>
 <script src="player.js"></script>
 </body>
 </html>
