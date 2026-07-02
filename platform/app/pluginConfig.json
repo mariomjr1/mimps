@@ -9,22 +9,18 @@
     },
     {
       "packageName": "@ohif/extension-measurement-tracking",
-      "default": false,
       "version": "3.0.0"
     },
     {
       "packageName": "@ohif/extension-cornerstone-dicom-sr",
-      "default": false,
       "version": "3.0.0"
     },
     {
       "packageName": "@ohif/extension-cornerstone-dicom-seg",
-      "default": false,
       "version": "3.0.0"
     },
     {
       "packageName": "@ohif/extension-cornerstone-dicom-pmap",
-      "default": false,
       "version": "3.0.0"
     },
     {
@@ -59,7 +55,6 @@
     },
     {
       "packageName": "@ohif/extension-cornerstone-dicom-rt",
-      "default": false,
       "version": "3.0.0"
     },
     {
