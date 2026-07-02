@@ -18,6 +18,8 @@
 // Types
 // ---------------------------------------------------------------------------
 
+import { CLINICAL_MODE_ENABLED } from '../config/clinicalMode';
+
 export type ViewerMode = 'research' | 'clinical';
 
 export interface ViewerModeState {
@@ -42,8 +44,20 @@ const SESSION_KEY = 'bv.viewerMode';
 function readFromSession(): ViewerMode | null {
   try {
     const raw = sessionStorage.getItem(SESSION_KEY);
-    if (raw === 'research' || raw === 'clinical') {
-      return raw;
+    if (raw === 'research') {
+      return 'research';
+    }
+    if (raw === 'clinical') {
+      // MIMPS-33: clinical ships gated (CLINICAL_MODE_ENABLED default off). A
+      // persisted 'clinical' — e.g. left over from an older build — is INVALID
+      // when clinical is disabled, and it silently gates off the AI panel
+      // (research-only). Migrate it to 'research' (the only enabled mode) and
+      // write the correction back so every consumer sees the healed value.
+      if (!CLINICAL_MODE_ENABLED) {
+        writeToSession('research');
+        return 'research';
+      }
+      return 'clinical';
     }
   } catch {
     // sessionStorage may be blocked in some sandboxed frames — degrade to null.
@@ -70,7 +84,14 @@ function writeToSession(mode: ViewerMode | null): void {
 
 type Listener = (mode: ViewerMode | null) => void;
 
-let _mode: ViewerMode | null = readFromSession();
+// Default to 'research' when no valid mode is persisted AND clinical is disabled.
+// Rationale: clinical ships gated off, so the research/clinical gate offers NO
+// real choice — it only blocks the (research-only) AI behind a mandatory
+// "select Pesquisa + Confirmar" click that most users never clear, so the model
+// silently never runs. Defaulting to research (safe, de-identified, non-
+// diagnostic) lets inference run immediately. When clinical IS enabled, fall
+// back to null so the gate prompts the genuine choice.
+let _mode: ViewerMode | null = readFromSession() ?? (CLINICAL_MODE_ENABLED ? null : 'research');
 const _listeners = new Set<Listener>();
 
 function _notify(): void {

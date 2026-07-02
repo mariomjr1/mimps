@@ -42,7 +42,10 @@ import { getWorklistDetail, toInferenceResponse } from '../services/worklistClie
 // Brand constants (MIMPS-02 palette)
 // ---------------------------------------------------------------------------
 
-const BRAND_VIOLET = '#7C3AED';
+// VWR-BRAND-01 (2026-07): canonical BlackVoxel accent-dim (brand.css
+// --bv-accent-dim), verified >=4.5:1 white-on-fill for the panel-header/
+// button uses of this const.
+const BRAND_VIOLET = '#5d5da0';
 const TEXT_SECONDARY = '#A0ADB4';
 const AMBER = '#D97706';
 
@@ -68,57 +71,98 @@ function isObject(value: unknown): value is Record<string, unknown> {
 async function captureActiveViewportImage(
   servicesManager?: unknown
 ): Promise<ViewerCaptureResult> {
-  if (!isObject(servicesManager)) {
+  const sleep = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+  // Surface WHY a capture failed to the browser console so a "model/boxes not
+  // working" report is diagnosable (no image → backend mock → no findings, and
+  // no imageId → no box overlay). This is the SINGLE root cause of both symptoms.
+  const fail = (reason: string): ViewerCaptureResult => {
+    console.warn(`[blackvoxel-ai] viewport capture unavailable: ${reason}`);
     return {};
+  };
+
+  if (!isObject(servicesManager)) {
+    return fail('no-servicesManager');
   }
   const services = servicesManager.services;
   if (!isObject(services)) {
-    return {};
+    return fail('no-services');
   }
-
   const viewportGridService = services.viewportGridService;
   const cornerstoneViewportService = services.cornerstoneViewportService;
   if (!isObject(viewportGridService) || !isObject(cornerstoneViewportService)) {
-    return {};
+    return fail('no-viewport-services');
   }
-
   const getActiveViewportId = viewportGridService.getActiveViewportId;
   const getCornerstoneViewport = cornerstoneViewportService.getCornerstoneViewport;
   if (typeof getActiveViewportId !== 'function' || typeof getCornerstoneViewport !== 'function') {
-    return {};
+    return fail('no-viewport-getters');
   }
 
-  const activeViewportId = getActiveViewportId.call(viewportGridService);
-  if (!activeViewportId) {
-    return {};
+  // The inference effect can fire BEFORE the viewport grid + DICOM are ready
+  // (getCurrentImageId() is null until the image is set on the stack). Poll for
+  // both the active cornerstone viewport AND its current imageId. Without this the
+  // capture silently returned {} → no image sent → backend mock.
+  let viewport: Record<string, unknown> | null = null;
+  let imageId: string | undefined;
+  const deadline = Date.now() + 12000;
+  while (Date.now() < deadline) {
+    const activeId = getActiveViewportId.call(viewportGridService) as string | undefined;
+    if (activeId) {
+      const vp = getCornerstoneViewport.call(cornerstoneViewportService, activeId);
+      if (isObject(vp) && typeof vp.getCurrentImageId === 'function') {
+        viewport = vp;
+        imageId = (vp.getCurrentImageId as () => string | undefined)();
+        if (imageId) {
+          break;
+        }
+      }
+    }
+    await sleep(200);
   }
-
-  const viewport = getCornerstoneViewport.call(cornerstoneViewportService, activeViewportId);
-  if (!isObject(viewport)) {
-    return {};
+  if (!viewport) {
+    return fail('no-active-viewport');
   }
-
-  const getCurrentImageId = viewport.getCurrentImageId;
-  if (typeof getCurrentImageId !== 'function') {
-    return {};
-  }
-
-  const imageId = getCurrentImageId.call(viewport);
   if (!imageId) {
-    return {};
+    return fail('no-imageId (image not loaded in time)');
   }
 
-  const canvas = document.createElement('canvas');
-  await cornerstoneUtilities.loadImageToCanvas({
-    canvas,
-    imageId,
-    thumbnail: false,
-  });
+  // PRIMARY: the viewport's own on-screen rendered canvas. Cornerstone3D renders
+  // every viewport into a shared WebGL buffer and COPIES each into a per-viewport
+  // 2D <canvas>, so canvas.toDataURL() is reliable and captures exactly what the
+  // radiologist sees (WYSIWYG). The previous path (loadImageToCanvas) spun up a
+  // SECOND rendering engine / WebGL context — the fragile part that silently
+  // failed in real browsers, sending no image → mock.
+  try {
+    const getCanvas = viewport.getCanvas as (() => HTMLCanvasElement) | undefined;
+    const csCanvas =
+      typeof getCanvas === 'function'
+        ? getCanvas.call(viewport)
+        : (viewport.canvas as HTMLCanvasElement | undefined);
+    if (
+      csCanvas &&
+      typeof csCanvas.toDataURL === 'function' &&
+      csCanvas.width > 0 &&
+      csCanvas.height > 0
+    ) {
+      const url = csCanvas.toDataURL('image/png');
+      // A blank canvas serialises to a very short data URL; require a real payload.
+      if (url && url.length > 3000) {
+        return { imageDataUrl: url, imageId };
+      }
+    }
+  } catch (err) {
+    console.warn('[blackvoxel-ai] on-screen canvas capture failed, trying fallback:', err);
+  }
 
-  return {
-    imageDataUrl: canvas.toDataURL('image/png'),
-    imageId,
-  };
+  // FALLBACK: re-render the imageId onto a fresh 2D canvas.
+  try {
+    const canvas = document.createElement('canvas');
+    await cornerstoneUtilities.loadImageToCanvas({ canvas, imageId, thumbnail: false });
+    return { imageDataUrl: canvas.toDataURL('image/png'), imageId };
+  } catch (err) {
+    console.warn('[blackvoxel-ai] loadImageToCanvas fallback failed:', err);
+    return { imageId };
+  }
 }
 
 // ---------------------------------------------------------------------------
