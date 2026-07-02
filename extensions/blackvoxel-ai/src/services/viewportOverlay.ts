@@ -16,12 +16,13 @@
  *  - Re-running the panel must not duplicate boxes: every UID we add is
  *    tracked and cleared before the next draw (and on panel unmount).
  *  - bounding_box coordinates arrive in image pixel space for a specific
- *    imageId; they are converted to world space with imageToWorldCoords.
+ *    imageId (mapped with imageToWorldCoords); the served Grad-CAM `region` is
+ *    normalized to the captured viewport frame and mapped with canvasToWorld.
+ *    See cornersForFinding for the coordinate-frame contract (MIMPS-52).
  */
 
 import {
   getEnabledElementByViewportId,
-  metaData,
   utilities as csUtils,
 } from '@cornerstonejs/core';
 import type { Types as CoreTypes } from '@cornerstonejs/core';
@@ -210,40 +211,66 @@ export interface ShowBoundingBoxesArgs {
   findings: InferenceFinding[];
 }
 
-interface PixelBox {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
+interface BoxViewport {
+  canvasToWorld: (p: CoreTypes.Point2) => CoreTypes.Point3;
+  element: HTMLElement;
 }
 
 /**
- * Pixel-space box for a finding: its explicit `bounding_box`, or its normalized
- * Grad-CAM `region` (CXR-10) scaled by the image dimensions. Returns null when
- * neither is usable (e.g. image metadata unavailable) — we never synthesize a box.
+ * The four world-space corners of a finding's box (TL, TR, BL, BR), or null.
+ *
+ * Two coordinate frames, two mappings — this is the fix for MIMPS-52 (box
+ * dislocation):
+ *
+ *  - `bounding_box` is in **image pixel space** for `imageId` → mapped with
+ *    `imageToWorldCoords` (unchanged; this path was always correct).
+ *  - `region` (the served Grad-CAM lane) is normalized [0,1] to the **captured
+ *    viewport frame** — the on-screen canvas that was rasterized and sent to
+ *    the model (`AIFindingsPanel` `viewport.getCanvas().toDataURL()`), which
+ *    includes letterbox margins and reflects the current pan/zoom/flip. It is
+ *    therefore mapped through the viewport's **canvasToWorld**, which natively
+ *    inverts exactly that on-screen transform. The old code scaled `region` by
+ *    the DICOM image dimensions (`region.x * columns`) and used
+ *    `imageToWorldCoords` — correct only when the image exactly filled the
+ *    viewport at default zoom, hence "off most of the time".
+ *
+ * DPR-proof: `canvasToWorld` takes CSS pixels and applies `devicePixelRatio`
+ * internally against the backing-store canvas size, while the backend
+ * normalized `region` by the backing-store PNG dimensions — so multiplying the
+ * normalized region by the element's CSS client size makes every DPR factor
+ * cancel.
  */
-function pixelBoxFor(finding: InferenceFinding, imageId: string): PixelBox | null {
-  if (finding.bounding_box) {
-    return finding.bounding_box;
+function cornersForFinding(
+  finding: InferenceFinding,
+  imageId: string,
+  viewport: BoxViewport
+): CoreTypes.Point3[] | null {
+  const box = finding.bounding_box;
+  if (box) {
+    return [
+      csUtils.imageToWorldCoords(imageId, [box.x, box.y]),
+      csUtils.imageToWorldCoords(imageId, [box.x + box.width, box.y]),
+      csUtils.imageToWorldCoords(imageId, [box.x, box.y + box.height]),
+      csUtils.imageToWorldCoords(imageId, [box.x + box.width, box.y + box.height]),
+    ];
   }
   const region = finding.region;
   if (!region) {
     return null;
   }
-  const px = metaData.get('imagePixelModule', imageId) as
-    | { rows?: number; columns?: number }
-    | undefined;
-  const columns = px?.columns;
-  const rows = px?.rows;
-  if (!columns || !rows) {
+  const w = viewport.element.clientWidth;
+  const h = viewport.element.clientHeight;
+  if (!w || !h) {
     return null;
   }
-  return {
-    x: region.x * columns,
-    y: region.y * rows,
-    width: region.width * columns,
-    height: region.height * rows,
-  };
+  const toWorld = (fx: number, fy: number): CoreTypes.Point3 =>
+    viewport.canvasToWorld([fx * w, fy * h]);
+  return [
+    toWorld(region.x, region.y),
+    toWorld(region.x + region.width, region.y),
+    toWorld(region.x, region.y + region.height),
+    toWorld(region.x + region.width, region.y + region.height),
+  ];
 }
 
 /**
@@ -289,26 +316,15 @@ export function showAIBoundingBoxes({
   let drawn = 0;
 
   for (const finding of localized) {
-    const box = pixelBoxFor(finding, imageId);
-    if (!box) {
-      continue;
-    }
-
-    let corners: CoreTypes.Point3[];
+    let corners: CoreTypes.Point3[] | null;
     try {
-      // Image pixel space -> world space for the analyzed frame.
-      corners = [
-        csUtils.imageToWorldCoords(imageId, [box.x, box.y]), // top-left
-        csUtils.imageToWorldCoords(imageId, [box.x + box.width, box.y]), // top-right
-        csUtils.imageToWorldCoords(imageId, [box.x, box.y + box.height]), // bottom-left
-        csUtils.imageToWorldCoords(imageId, [box.x + box.width, box.y + box.height]), // bottom-right
-      ];
+      corners = cornersForFinding(finding, imageId, viewport as unknown as BoxViewport);
     } catch (err) {
       console.warn('[blackvoxel-ai] could not map bounding box to world coords:', err);
       continue;
     }
 
-    if (corners.some(corner => !corner)) {
+    if (!corners || corners.some(corner => !corner)) {
       continue;
     }
 
