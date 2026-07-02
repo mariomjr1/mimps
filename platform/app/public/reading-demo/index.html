@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-<link rel="stylesheet" href="player.css?v=20260702b" />
+<link rel="stylesheet" href="player.css?v=20260703" />
 </head>
 <body>
 <div class="demo-tag mono">Demo · saída real do modelo · achados descritivos, não diagnósticos · dados NIH ChestX-ray14 (pesquisa)</div>
@@ -74,8 +74,22 @@
   <div class="credit mono">Software descreve; o médico assina.</div>
 </footer>
 
-<script src="vendor/jspdf.umd.min.js?v=20260702b"></script>
-<script src="pdf.js?v=20260702b"></script>
-<script src="player.js?v=20260702b"></script>
+<div id="pdfmodal" class="pdfmodal" hidden role="dialog" aria-modal="true" aria-label="Pré-visualização do laudo">
+  <div class="pdfm-card">
+    <div class="pdfm-bar">
+      <span class="pdfm-title mono">Rascunho de laudo · pré-visualização</span>
+      <div class="pdfm-actions">
+        <a id="pdfopen" class="pdfm-btn ghost" target="_blank" rel="noopener">Abrir em nova aba</a>
+        <button id="pdfdownload" class="pdfm-btn" type="button">⬇ Baixar PDF</button>
+        <button id="pdfclose" class="pdfm-btn ghost" type="button" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+    <iframe id="pdfframe" class="pdfm-frame" title="Pré-visualização do laudo"></iframe>
+  </div>
+</div>
+
+<script src="vendor/jspdf.umd.min.js?v=20260703"></script>
+<script src="pdf.js?v=20260703"></script>
+<script src="player.js?v=20260703"></script>
 </body>
 </html>

@@ -125,8 +125,11 @@ b{font-weight:600;color:var(--txt)}
 @media(max-width:900px){
   .viewport{min-height:auto;padding:.7rem}
   .stage{width:min(94vw,56vh)}
-  .panel{border-left:0;border-top:1px solid var(--border);padding:.95rem 1rem 1.1rem}
-  .controls{position:sticky;bottom:0;z-index:6}   /* keep play/next reachable while scrolling */
+  .panel{border-left:0;border-top:1px solid var(--border);padding:.95rem 1rem calc(1.2rem + env(safe-area-inset-bottom))}
+  /* controls are NOT sticky on mobile: sticky pinned the bar over the panel's
+     bottom text (report / signature), which read as overlapping. Let it sit at
+     the end of the flow instead. */
+  .controls{padding-bottom:calc(.7rem + env(safe-area-inset-bottom))}
 }
 @media(max-width:640px){
   .bmodel,.credit{display:none}
@@ -143,3 +146,27 @@ b{font-weight:600;color:var(--txt)}
   .signbtn,.pdfbtn{padding:.8rem}
 }
 @media(prefers-reduced-motion:reduce){.cam{transition:none}.f .fill{transition:none}.scan{display:none}}
+
+/* ---- PDF preview modal (in-page viewer before download) ---- */
+.pdfmodal{position:fixed;inset:0;z-index:50;background:rgba(6,8,11,.84);display:flex;
+  align-items:center;justify-content:center;padding:2vh 2vw}
+.pdfmodal[hidden]{display:none}
+.pdfm-card{display:flex;flex-direction:column;width:min(920px,96vw);height:min(94vh,100%);
+  background:var(--panel);border:1px solid var(--border-hi);border-radius:10px;overflow:hidden;
+  box-shadow:0 40px 90px -30px rgba(0,0,0,.8)}
+.pdfm-bar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;
+  padding:.55rem .75rem;background:var(--panel2);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.pdfm-title{font-size:.72rem;color:var(--txt)}
+.pdfm-actions{display:flex;gap:.4rem;align-items:center;margin-left:auto}
+.pdfm-btn{padding:.5rem .8rem;border-radius:6px;border:0;background:var(--teal);color:#07201c;
+  font-weight:600;font-size:.8rem;cursor:pointer;text-decoration:none;display:inline-flex;
+  align-items:center;line-height:1;min-height:40px}
+.pdfm-btn.ghost{background:transparent;border:1px solid var(--border-hi);color:var(--txt)}
+.pdfm-btn:hover{filter:brightness(1.08)}
+.pdfm-frame{flex:1;width:100%;border:0;background:#525659}
+@media(max-width:640px){
+  .pdfmodal{padding:0}
+  .pdfm-card{width:100vw;height:100dvh;border-radius:0;border:0}
+  .pdfm-title{display:none}
+  .pdfm-bar{padding-top:calc(.55rem + env(safe-area-inset-top))}
+}

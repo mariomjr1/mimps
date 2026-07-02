@@ -414,11 +414,12 @@
       doc.text('1 / 1', PAGE_W / 2, 816, { align: 'center' });
       doc.text('Gerado em ' + (ctx.signedAtHuman || '—'), RX, 816, { align: 'right' });
 
-      // -------------------------------------------------------------- save
-      doc.save('laudo-' + (caseObj.id || 'demo') + '.pdf');
+      // ------ return the built doc; the caller previews it, then downloads ------
+      return doc;
     } catch (e) {
       if (window.console && console.error) { console.error(e); }
       alert('Falha ao gerar o PDF.');
+      return null;
     }
   }
 
