@@ -4,7 +4,8 @@
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var CASE_MS = 8500;
+  var CASE_MS = 8500;      // floor/typical budget; caseDuration() extends it for longer reports
+  var TYPE_START_MS = 1500, SIGN_LEAD_MS = 1500;
   var $ = function (id) { return document.getElementById(id); };
   var xray = $('xray'), cam = $('cam'), box = $('box'), stage = $('stage'),
       counter = $('counter'), studyid = $('studyid'), findings = $('findings'),
@@ -104,9 +105,12 @@
     box.classList.add('on');
   }
 
+  // Shared by typeInto() (actual typing) and caseDuration() (schedule budget) so the two
+  // can never drift apart — the scheduler always knows exactly how long typing will take.
+  function typeStep(len) { return Math.max(9, Math.min(22, 1400 / len)); }
   function typeInto(el, txt, done) {
     if (reduce) { el.textContent = txt; if (done) done(); return; }
-    var n = 0, step = Math.max(9, Math.min(22, 1400 / txt.length));
+    var n = 0, step = typeStep(txt.length);
     (function tick() {
       n++;
       el.innerHTML = esc(txt.slice(0, n)) + '<span class="caret">.</span>';
@@ -117,6 +121,18 @@
   function typeReport(rep) {
     rtec.textContent = rep.tecnica;
     typeInto(rach, rep.achados, function () { typeInto(rimp, rep.impressao); });
+  }
+  // How long this case's full typewriter sequence (achados + impressão) actually takes,
+  // plus headroom for real-world setTimeout drift (image decode / GC / slow devices) — so
+  // auto-advance/sign never cut typing off mid-sentence and reset the DOM out from under it.
+  function typingMs(rep) {
+    var ach = rep.achados || '', imp = rep.impressao || '';
+    return (ach.length ? ach.length * typeStep(ach.length) : 0)
+      + (imp.length ? imp.length * typeStep(imp.length) : 0);
+  }
+  function caseDuration(c) {
+    var needed = TYPE_START_MS + typingMs(c.report) + 600 /* jitter headroom */ + SIGN_LEAD_MS;
+    return Math.max(CASE_MS, needed);
   }
 
   function doSign() {
@@ -141,6 +157,9 @@
     studyid.textContent = c.id;
     hudmod.textContent = 'DX · CHEST ' + (c.view || 'PA');
     updateThumbs();
+    // Hard-reset every bit of visual state the previous case may have left mid-transition
+    // (fade-in on .cam, the finding-confidence bars, the box) so nothing from case N can
+    // still be visually settling while case N+1 starts drawing on top of it.
     cam.classList.remove('on'); box.hidden = true; box.classList.remove('on');
     signed.hidden = true; signbtn.disabled = false; rv1.textContent = 'Aguardando assinatura';
     rv2.textContent = 'Dr. ____ · CRM ____ / SP'; pdfbtn.hidden = true;
@@ -148,12 +167,19 @@
     xray.src = 'data/img/' + pad(cur) + '.jpg';
     cam.src = 'data/cam/' + pad(cur) + '.png';
     renderPanel(c);
+    // renderPanel() just rebuilt .fill bars at width 0 via fresh markup, so they already start
+    // clean — no leftover width from the previous case's animateFills() to force-reset here.
     stage.classList.remove('reading'); void stage.offsetWidth; stage.classList.add('reading');
+    // Budget this case's auto-advance/sign timing off its own report length (with jitter
+    // headroom), not a fixed constant — a fixed CASE_MS can be shorter than the time the
+    // typewriter actually needs on a loaded/slow device, which cuts typing off mid-sentence
+    // and immediately resets+retypes into the same nodes, reading as garbled/overlapping text.
+    var dur = caseDuration(c);
     timers.push(setTimeout(function () { animateFills(c); }, 260));
     timers.push(setTimeout(function () { cam.classList.add('on'); placeBox(c.gt.box); }, 950));
-    timers.push(setTimeout(function () { typeReport(c.report); }, 1500));
-    timers.push(setTimeout(function () { if (playing) doSign(); }, CASE_MS - 1500));
-    if (playing) timers.push(setTimeout(function () { show(cur + 1); }, CASE_MS));
+    timers.push(setTimeout(function () { typeReport(c.report); }, TYPE_START_MS));
+    timers.push(setTimeout(function () { if (playing) doSign(); }, dur - SIGN_LEAD_MS));
+    if (playing) timers.push(setTimeout(function () { show(cur + 1); }, dur));
   }
 
   function buildThumbs() {
