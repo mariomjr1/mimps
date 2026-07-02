@@ -144,14 +144,22 @@
       drawWatermark(doc);
 
       // ------------------------------------------------------------ 1. HEADER
-      // Vector mark: ink square + offset teal square + filled teal center square.
-      dc(doc, INK);
-      doc.setLineWidth(1.5);
-      doc.rect(M, 44, 18, 18, 'S');
-      dc(doc, TEAL);
-      doc.rect(M + 8, 52, 18, 18, 'S');
-      fc(doc, TEAL);
-      doc.rect(M + 13 - 2.5, 57 - 2.5, 5, 5, 'F'); // center of the overlap zone
+      // Real BlackVoxel tesseract mark — exact geometry from blackvoxel-mark.svg
+      // (cube-in-cube hexagon; palette: surface #131318, edge #b9b9c4, links
+      // #5d5da0, inner #1c1c3a, accent #8585ff). Matches the viewer's icon.
+      (function () {
+        var s = 26 / 64, ox = M, oy = 43;
+        var X = function (p) { return ox + p * s; }, Y = function (p) { return oy + p * s; };
+        var outer = [[32, 9], [51.9, 20.5], [51.9, 43.5], [32, 55], [12.1, 43.5], [12.1, 20.5]];
+        var inner = [[32, 21.5], [41.1, 26.75], [41.1, 37.25], [32, 42.5], [22.9, 37.25], [22.9, 26.75]];
+        var D = function (p) { var a = [], i; for (i = 1; i < p.length; i++) a.push([(p[i][0] - p[i - 1][0]) * s, (p[i][1] - p[i - 1][1]) * s]); return a; };
+        doc.setFillColor(19, 19, 24); doc.setDrawColor(185, 185, 196); doc.setLineWidth(2.5 * s);
+        doc.lines(D(outer), X(outer[0][0]), Y(outer[0][1]), [1, 1], 'FD', true);
+        doc.setDrawColor(93, 93, 160); doc.setLineWidth(1.5 * s);
+        [[[32, 9], [32, 21.5]], [[51.9, 20.5], [41.1, 26.75]], [[51.9, 43.5], [41.1, 37.25]], [[32, 55], [32, 42.5]], [[12.1, 43.5], [22.9, 37.25]], [[12.1, 20.5], [22.9, 26.75]]].forEach(function (c) { doc.line(X(c[0][0]), Y(c[0][1]), X(c[1][0]), Y(c[1][1])); });
+        doc.setFillColor(28, 28, 58); doc.setDrawColor(133, 133, 255); doc.setLineWidth(2.5 * s);
+        doc.lines(D(inner), X(inner[0][0]), Y(inner[0][1]), [1, 1], 'FD', true);
+      })();
       // Wordmark
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(17);
