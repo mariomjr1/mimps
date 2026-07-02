@@ -63,9 +63,13 @@ export function StudyListImportButton(): React.ReactElement | null {
       className="gap-1"
       onClick={() => navigate('/local')}
       title={t('ImportDICOM')}
+      aria-label={t('ImportDICOM')}
     >
       <Icons.Upload className="h-4 w-4" />
-      {t('ImportDICOM')}
+      {/* Mobile toolbar fix: the full "Importar DICOM" label (~110px of
+          text-base) doesn't fit a phone-width worklist toolbar next to
+          Filtros + pagination + settings — icon-only below md. */}
+      <span className="hidden md:inline">{t('ImportDICOM')}</span>
     </Button>
   );
 }

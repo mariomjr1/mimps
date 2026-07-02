@@ -136,6 +136,13 @@ window.config = {
         // Client/investor demo: the live model reading 20 real chest X-rays with
         // Grad-CAM + a pt-BR draft. Opens the standalone reading-session player
         // served as a static asset from /reading-demo (public/reading-demo).
+        // Mobile toolbar fix: the full nowrap "▶ Demo IA" chip (inline styles,
+        // no responsive handling) overflowed the phone-width worklist toolbar
+        // and pushed Settings off-screen. Below md the chip is icon-only (▶),
+        // mirroring the mark-only logo pattern above; from md up it renders the
+        // full label exactly as before. NOTE: this config file is NOT scanned
+        // by Tailwind — only classes already emitted by scanned sources may be
+        // used here ('hidden' / 'md:block' are, via Header.tsx et al.).
         React.createElement(
           'a',
           {
@@ -143,6 +150,7 @@ window.config = {
             target: '_blank',
             rel: 'noopener noreferrer',
             title: 'Demonstração — leitura de tórax assistida por IA (20 exames)',
+            'aria-label': 'Demo IA',
             style: {
               marginLeft: '14px',
               display: 'inline-flex',
@@ -160,7 +168,8 @@ window.config = {
               whiteSpace: 'nowrap',
             },
           },
-          '▶ Demo IA'
+          React.createElement('span', null, '▶'),
+          React.createElement('span', { className: 'hidden md:block' }, 'Demo IA')
         )
       );
     },
