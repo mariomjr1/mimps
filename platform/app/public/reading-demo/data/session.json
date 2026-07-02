@@ -1,0 +1,669 @@
+{
+ "model": "proxy-txv-v1",
+ "arch": "torchxrayvision densenet121-res224-all",
+ "benchmark": "macro-AUROC 0.82 · teste NIH ChestX-ray14",
+ "gt_source": "NIH ChestX-ray14 · BBox_List_2017 (caixas de radiologista)",
+ "note": "Achado e caixa = referência de radiologista (NIH). Pontuação = saída real, não calibrada, do modelo. Rascunho descritivo, não diagnóstico.",
+ "cases": [
+  {
+   "id": "BV-7000",
+   "src": "00021179_011.png",
+   "view": "PA",
+   "gt": {
+    "name": "Mass",
+    "pt": "Massa",
+    "box": [
+     0.1217,
+     0.1692,
+     0.3467,
+     0.6511
+    ]
+   },
+   "model_score": 0.945,
+   "secondary": [
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.76
+    },
+    {
+     "name": "Enlarged Cardiomediastinum",
+     "pt": "Mediastino",
+     "score": 0.61
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência posteroanterior (PA), em inspiração adequada.",
+    "achados": "Opacidade de contornos relativamente definidos no terço médio do campo pulmonar direito, sugestiva de massa; recomenda-se caracterização complementar por tomografia. Adicionalmente, o classificador sinaliza opacidade como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Massa no terço médio do campo pulmonar direito, a correlacionar com o quadro clínico e com exames prévios, se disponíveis. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7001",
+   "src": "00019625_002.png",
+   "view": "AP",
+   "gt": {
+    "name": "Infiltration",
+    "pt": "Infiltrado",
+    "box": [
+     0.1861,
+     0.3048,
+     0.6411,
+     0.4
+    ]
+   },
+   "model_score": 0.884,
+   "secondary": [
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.994
+    },
+    {
+     "name": "Pneumonia",
+     "pt": "Pneumonia",
+     "score": 0.989
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência anteroposterior (AP), exame portátil, com limitações técnicas.",
+    "achados": "Achado no terço médio do campo pulmonar esquerdo. Adicionalmente, o classificador sinaliza opacidade como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Infiltrado no terço médio do campo pulmonar esquerdo, a correlacionar com o quadro clínico e com exames prévios, se disponíveis. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7002",
+   "src": "00000661_000.png",
+   "view": "PA",
+   "gt": {
+    "name": "Cardiomegaly",
+    "pt": "Cardiomegalia",
+    "box": [
+     0.2918,
+     0.4272,
+     0.536,
+     0.4184
+    ]
+   },
+   "model_score": 0.875,
+   "secondary": [
+    {
+     "name": "Infiltration",
+     "pt": "Infiltrado",
+     "score": 0.544
+    },
+    {
+     "name": "Enlarged Cardiomediastinum",
+     "pt": "Mediastino",
+     "score": 0.536
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência posteroanterior (PA), em inspiração adequada.",
+    "achados": "Área cardíaca aumentada, com índice cardiotorácico acima de 0,5; silhueta cardiomediastinal alargada. Adicionalmente, o classificador sinaliza infiltrado como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Cardiomegalia, a correlacionar com o quadro clínico e com exames prévios, se disponíveis. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7003",
+   "src": "00022369_013.png",
+   "view": "AP",
+   "gt": {
+    "name": "Effusion",
+    "pt": "Derrame pleural",
+    "box": [
+     0.1639,
+     0.3892,
+     0.17,
+     0.1833
+    ]
+   },
+   "model_score": 0.874,
+   "secondary": [
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.692
+    },
+    {
+     "name": "Pneumonia",
+     "pt": "Pneumonia",
+     "score": 0.633
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência anteroposterior (AP), exame portátil, com limitações técnicas.",
+    "achados": "Velamento do seio costofrênico com opacidade homogênea de limite superior côncavo no terço médio do campo pulmonar direito, compatível com derrame pleural. Adicionalmente, o classificador sinaliza opacidade como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Derrame pleural no terço médio do campo pulmonar direito, a correlacionar com o quadro clínico e com exames prévios, se disponíveis. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7004",
+   "src": "00017214_015.png",
+   "view": "AP",
+   "gt": {
+    "name": "Mass",
+    "pt": "Massa",
+    "box": [
+     0.5994,
+     0.3414,
+     0.0778,
+     0.14
+    ]
+   },
+   "model_score": 0.863,
+   "secondary": [
+    {
+     "name": "Enlarged Cardiomediastinum",
+     "pt": "Mediastino",
+     "score": 0.663
+    },
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.624
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência anteroposterior (AP), exame portátil, com limitações técnicas.",
+    "achados": "Opacidade de contornos relativamente definidos no terço médio do campo pulmonar esquerdo, sugestiva de massa; recomenda-se caracterização complementar por tomografia. Adicionalmente, o classificador sinaliza mediastino como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Massa no terço médio do campo pulmonar esquerdo, a correlacionar com o quadro clínico e com exames prévios, se disponíveis. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7005",
+   "src": "00015078_013.png",
+   "view": "PA",
+   "gt": {
+    "name": "Effusion",
+    "pt": "Derrame pleural",
+    "box": [
+     0.0606,
+     0.5536,
+     0.88,
+     0.2278
+    ]
+   },
+   "model_score": 0.873,
+   "secondary": [
+    {
+     "name": "Pleural_Thickening",
+     "pt": "Espess. pleural",
+     "score": 0.533
+    },
+    {
+     "name": "Atelectasis",
+     "pt": "Atelectasia",
+     "score": 0.517
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência posteroanterior (PA), em inspiração adequada.",
+    "achados": "Velamento do seio costofrênico com opacidade homogênea de limite superior côncavo na base do campo pulmonar esquerdo, compatível com derrame pleural. Adicionalmente, o classificador sinaliza espess. pleural como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Derrame pleural na base do campo pulmonar esquerdo, a correlacionar com o quadro clínico e com exames prévios, se disponíveis. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7006",
+   "src": "00010815_006.png",
+   "view": "PA",
+   "gt": {
+    "name": "Mass",
+    "pt": "Massa",
+    "box": [
+     0.3039,
+     0.2359,
+     0.1433,
+     0.25
+    ]
+   },
+   "model_score": 0.859,
+   "secondary": [
+    {
+     "name": "Enlarged Cardiomediastinum",
+     "pt": "Mediastino",
+     "score": 0.716
+    },
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.59
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência posteroanterior (PA), em inspiração adequada.",
+    "achados": "Opacidade de contornos relativamente definidos no ápice do campo pulmonar direito, sugestiva de massa; recomenda-se caracterização complementar por tomografia. Adicionalmente, o classificador sinaliza mediastino como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Massa no ápice do campo pulmonar direito, a correlacionar com o quadro clínico e com exames prévios, se disponíveis. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7007",
+   "src": "00008814_010.png",
+   "view": "PA",
+   "gt": {
+    "name": "Effusion",
+    "pt": "Derrame pleural",
+    "box": [
+     0.1906,
+     0.4025,
+     0.65,
+     0.1033
+    ]
+   },
+   "model_score": 0.861,
+   "secondary": [
+    {
+     "name": "Atelectasis",
+     "pt": "Atelectasia",
+     "score": 0.738
+    },
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.653
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência posteroanterior (PA), em inspiração adequada.",
+    "achados": "Velamento do seio costofrênico com opacidade homogênea de limite superior côncavo no terço médio do campo pulmonar esquerdo, compatível com derrame pleural. Adicionalmente, o classificador sinaliza atelectasia como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Derrame pleural no terço médio do campo pulmonar esquerdo, a correlacionar com o quadro clínico e com exames prévios, se disponíveis. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7008",
+   "src": "00011463_002.png",
+   "view": "AP",
+   "gt": {
+    "name": "Cardiomegaly",
+    "pt": "Cardiomegalia",
+    "box": [
+     0.3702,
+     0.5331,
+     0.4322,
+     0.3347
+    ]
+   },
+   "model_score": 0.821,
+   "secondary": [
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.594
+    },
+    {
+     "name": "Enlarged Cardiomediastinum",
+     "pt": "Mediastino",
+     "score": 0.552
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência anteroposterior (AP), exame portátil, com limitações técnicas.",
+    "achados": "Área cardíaca aumentada, com índice cardiotorácico acima de 0,5; silhueta cardiomediastinal alargada. Adicionalmente, o classificador sinaliza opacidade como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Cardiomegalia, a correlacionar com o quadro clínico e com exames prévios, se disponíveis. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7009",
+   "src": "00029431_000.png",
+   "view": "AP",
+   "gt": {
+    "name": "Infiltration",
+    "pt": "Infiltrado",
+    "box": [
+     0.1972,
+     0.3814,
+     0.2189,
+     0.4611
+    ]
+   },
+   "model_score": 0.817,
+   "secondary": [
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.95
+    },
+    {
+     "name": "Pneumonia",
+     "pt": "Pneumonia",
+     "score": 0.94
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência anteroposterior (AP), exame portátil, com limitações técnicas.",
+    "achados": "Achado no terço médio do campo pulmonar direito. Adicionalmente, o classificador sinaliza opacidade como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Infiltrado no terço médio do campo pulmonar direito, a correlacionar com o quadro clínico e com exames prévios, se disponíveis. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7010",
+   "src": "00015792_005.png",
+   "view": "PA",
+   "gt": {
+    "name": "Nodule",
+    "pt": "Nódulo",
+    "box": [
+     0.2614,
+     0.2868,
+     0.0772,
+     0.0762
+    ]
+   },
+   "model_score": 0.793,
+   "secondary": [
+    {
+     "name": "Mass",
+     "pt": "Massa",
+     "score": 0.885
+    },
+    {
+     "name": "Lung Lesion",
+     "pt": "Lesão",
+     "score": 0.806
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência posteroanterior (PA), em inspiração adequada.",
+    "achados": "Imagem nodular no ápice do campo pulmonar direito, de limites parcialmente definidos; considerar tomografia de tórax para melhor caracterização. Adicionalmente, o classificador sinaliza massa como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Nódulo no ápice do campo pulmonar direito, a correlacionar com o quadro clínico. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7011",
+   "src": "00000377_004.png",
+   "view": "PA",
+   "gt": {
+    "name": "Cardiomegaly",
+    "pt": "Cardiomegalia",
+    "box": [
+     0.3787,
+     0.4097,
+     0.4905,
+     0.3591
+    ]
+   },
+   "model_score": 0.779,
+   "secondary": [
+    {
+     "name": "Fibrosis",
+     "pt": "Fibrose",
+     "score": 0.551
+    },
+    {
+     "name": "Nodule",
+     "pt": "Nódulo",
+     "score": 0.548
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência posteroanterior (PA), em inspiração adequada.",
+    "achados": "Área cardíaca aumentada, com índice cardiotorácico acima de 0,5; silhueta cardiomediastinal alargada. Adicionalmente, o classificador sinaliza fibrose como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Cardiomegalia, a correlacionar com o quadro clínico. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7012",
+   "src": "00008291_011.png",
+   "view": "AP",
+   "gt": {
+    "name": "Pneumonia",
+    "pt": "Pneumonia",
+    "box": [
+     0.1806,
+     0.2114,
+     0.6978,
+     0.5778
+    ]
+   },
+   "model_score": 0.753,
+   "secondary": [
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.975
+    },
+    {
+     "name": "Mass",
+     "pt": "Massa",
+     "score": 0.668
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência anteroposterior (AP), exame portátil, com limitações técnicas.",
+    "achados": "Opacidade heterogênea no terço médio do campo pulmonar esquerdo, com broncograma aéreo de permeio, podendo corresponder a processo pneumônico. Adicionalmente, o classificador sinaliza opacidade como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Pneumonia no terço médio do campo pulmonar esquerdo, a correlacionar com o quadro clínico. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7013",
+   "src": "00029861_013.png",
+   "view": "AP",
+   "gt": {
+    "name": "Infiltration",
+    "pt": "Infiltrado",
+    "box": [
+     0.1894,
+     0.1814,
+     0.5944,
+     0.49
+    ]
+   },
+   "model_score": 0.748,
+   "secondary": [
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.97
+    },
+    {
+     "name": "Pneumonia",
+     "pt": "Pneumonia",
+     "score": 0.727
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência anteroposterior (AP), exame portátil, com limitações técnicas.",
+    "achados": "Achado no terço médio do campo pulmonar direito. Adicionalmente, o classificador sinaliza opacidade como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Infiltrado no terço médio do campo pulmonar direito, a correlacionar com o quadro clínico. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7014",
+   "src": "00026221_001.png",
+   "view": "AP",
+   "gt": {
+    "name": "Nodule",
+    "pt": "Nódulo",
+    "box": [
+     0.1947,
+     0.7111,
+     0.1005,
+     0.1132
+    ]
+   },
+   "model_score": 0.718,
+   "secondary": [
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.826
+    },
+    {
+     "name": "Mass",
+     "pt": "Massa",
+     "score": 0.771
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência anteroposterior (AP), exame portátil, com limitações técnicas.",
+    "achados": "Imagem nodular na base do campo pulmonar direito, de limites parcialmente definidos; considerar tomografia de tórax para melhor caracterização. Adicionalmente, o classificador sinaliza opacidade como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Nódulo na base do campo pulmonar direito, a correlacionar com o quadro clínico. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7015",
+   "src": "00028452_001.png",
+   "view": "AP",
+   "gt": {
+    "name": "Atelectasis",
+    "pt": "Atelectasia",
+    "box": [
+     0.6149,
+     0.4007,
+     0.25,
+     0.1451
+    ]
+   },
+   "model_score": 0.699,
+   "secondary": [
+    {
+     "name": "Effusion",
+     "pt": "Derrame pleural",
+     "score": 0.823
+    },
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.609
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência anteroposterior (AP), exame portátil, com limitações técnicas.",
+    "achados": "Opacidade com redução volumétrica no terço médio do campo pulmonar esquerdo, sugestiva de atelectasia. Adicionalmente, o classificador sinaliza derrame pleural como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Atelectasia no terço médio do campo pulmonar esquerdo, a correlacionar com o quadro clínico. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7016",
+   "src": "00013461_011.png",
+   "view": "AP",
+   "gt": {
+    "name": "Pneumonia",
+    "pt": "Pneumonia",
+    "box": [
+     0.1539,
+     0.1225,
+     0.6944,
+     0.8022
+    ]
+   },
+   "model_score": 0.672,
+   "secondary": [
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.906
+    },
+    {
+     "name": "Effusion",
+     "pt": "Derrame pleural",
+     "score": 0.855
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência anteroposterior (AP), exame portátil, com limitações técnicas.",
+    "achados": "Opacidade heterogênea no terço médio do campo pulmonar esquerdo, com broncograma aéreo de permeio, podendo corresponder a processo pneumônico. Adicionalmente, o classificador sinaliza opacidade como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Pneumonia no terço médio do campo pulmonar esquerdo, a correlacionar com o quadro clínico. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7017",
+   "src": "00003948_001.png",
+   "view": "PA",
+   "gt": {
+    "name": "Nodule",
+    "pt": "Nódulo",
+    "box": [
+     0.2751,
+     0.2984,
+     0.1005,
+     0.1249
+    ]
+   },
+   "model_score": 0.651,
+   "secondary": [
+    {
+     "name": "Mass",
+     "pt": "Massa",
+     "score": 0.821
+    },
+    {
+     "name": "Lung Opacity",
+     "pt": "Opacidade",
+     "score": 0.74
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência posteroanterior (PA), em inspiração adequada.",
+    "achados": "Imagem nodular no ápice do campo pulmonar direito, de limites parcialmente definidos; considerar tomografia de tórax para melhor caracterização. Adicionalmente, o classificador sinaliza massa como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Nódulo no ápice do campo pulmonar direito, a correlacionar com o quadro clínico. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7018",
+   "src": "00000808_002.png",
+   "view": "PA",
+   "gt": {
+    "name": "Atelectasis",
+    "pt": "Atelectasia",
+    "box": [
+     0.545,
+     0.3753,
+     0.2225,
+     0.1631
+    ]
+   },
+   "model_score": 0.648,
+   "secondary": [
+    {
+     "name": "Effusion",
+     "pt": "Derrame pleural",
+     "score": 0.758
+    },
+    {
+     "name": "Cardiomegaly",
+     "pt": "Cardiomegalia",
+     "score": 0.555
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência posteroanterior (PA), em inspiração adequada.",
+    "achados": "Opacidade com redução volumétrica no terço médio do campo pulmonar esquerdo, sugestiva de atelectasia. Adicionalmente, o classificador sinaliza derrame pleural como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Atelectasia no terço médio do campo pulmonar esquerdo, a correlacionar com o quadro clínico. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  },
+  {
+   "id": "BV-7019",
+   "src": "00017877_001.png",
+   "view": "AP",
+   "gt": {
+    "name": "Atelectasis",
+    "pt": "Atelectasia",
+    "box": [
+     0.6446,
+     0.5564,
+     0.196,
+     0.0763
+    ]
+   },
+   "model_score": 0.619,
+   "secondary": [
+    {
+     "name": "Infiltration",
+     "pt": "Infiltrado",
+     "score": 0.536
+    },
+    {
+     "name": "Effusion",
+     "pt": "Derrame pleural",
+     "score": 0.519
+    }
+   ],
+   "report": {
+    "tecnica": "Radiografia de tórax em incidência anteroposterior (AP), exame portátil, com limitações técnicas.",
+    "achados": "Opacidade com redução volumétrica no terço médio do campo pulmonar esquerdo, sugestiva de atelectasia. Adicionalmente, o classificador sinaliza infiltrado como achado indeterminado, a esclarecer. Demais estruturas: traqueia centrada; demais campos pulmonares sem consolidações focais; seios costofrênicos livres; silhueta cardiomediastinal sem outras alterações; arcabouço ósseo sem lesões evidentes.",
+    "impressao": "1. Atelectasia no terço médio do campo pulmonar esquerdo, a correlacionar com o quadro clínico. Rascunho descritivo assistido por IA; não constitui diagnóstico e requer validação médica."
+   }
+  }
+ ]
+}

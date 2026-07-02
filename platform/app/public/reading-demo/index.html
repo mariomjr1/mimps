@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BlackVoxel · Sessão de leitura assistida por IA — 20 radiografias</title>
+<meta name="description" content="Demonstração: o modelo proxy-txv-v1 (torchxrayvision DenseNet-121) lê 20 radiografias de tórax reais com Grad-CAM e um rascunho de laudo em português. Achados descritivos, não diagnósticos; revisão médica." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="player.css" />
+</head>
+<body>
+<div class="demo-tag mono">Demo · saída real do modelo · achados descritivos, não diagnósticos · dados NIH ChestX-ray14 (pesquisa)</div>
+
+<header class="bar">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+      <rect x="8" y="8" width="26" height="26" stroke="#cfd4dc" stroke-width="1.6"/>
+      <rect x="16" y="16" width="26" height="26" stroke="#34c2ac" stroke-width="1.6"/>
+      <rect x="20" y="20" width="6" height="6" fill="#34c2ac"/>
+    </svg>
+    <div><div class="bname">BlackVoxel · MIMPS</div><div class="bsub mono">Sessão de leitura assistida por IA</div></div>
+  </div>
+  <div class="bmid mono"><span id="counter">01 / 20</span><span class="dot">·</span><span id="studyid">BV-7000</span></div>
+  <div class="bmodel mono">modelo <b>proxy-txv-v1</b> · densenet121 · macro-AUROC 0.82 <span class="mut">(teste NIH)</span></div>
+</header>
+
+<main class="viewer">
+  <section class="viewport" id="viewport">
+    <div class="stage" id="stage">
+      <img id="xray" alt="Radiografia de tórax" />
+      <img id="cam" class="cam" alt="" aria-hidden="true" />
+      <div id="box" class="box" hidden><span class="box-lbl mono">achado · NIH</span></div>
+      <div class="hud tl mono"><div id="hudmod">DX · CHEST PA</div><div class="mut" id="hudsrc">NIH ChestX-ray14</div></div>
+      <div class="hud tr mono"><div>WW 2048 · WL 600</div><div class="mut">Grad-CAM</div></div>
+      <div class="hud bl mono" id="hudnote">caixa: radiologista (NIH) · calor: atenção do modelo</div>
+      <div class="scan" id="scan" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <div class="phead">
+      <h2>Achado &amp; laudo</h2>
+      <span class="tag mono">referência NIH + modelo</span>
+    </div>
+    <p class="pmeta mono">achado e caixa: radiologista (NIH) · pontuação: modelo proxy-txv-v1 (não calibrada)</p>
+    <div id="findings" class="findings"></div>
+
+    <div class="report">
+      <div class="rhead mono">RASCUNHO DE LAUDO · revisão médica</div>
+      <div class="rsec"><span class="rlab mono">TÉCNICA</span><p id="rtec" class="rtext"></p></div>
+      <div class="rsec"><span class="rlab mono">ACHADOS</span><p id="rach" class="rtext"></p></div>
+      <div class="rsec"><span class="rlab mono">IMPRESSÃO</span><p id="rimp" class="rtext"></p></div>
+      <div class="rnote mono">Rascunho gerado por IA para revisão — não é diagnóstico.</div>
+    </div>
+
+    <div class="signrow">
+      <div class="reviewer">
+        <span class="ava mono">Dr</span>
+        <div><div class="rv1">Aguardando assinatura</div><div class="rv2 mono">Dr. ____ · CRM ____ / SP</div></div>
+      </div>
+      <button id="signbtn" class="signbtn">Assinar laudo</button>
+      <div id="signed" class="signed mono" hidden>✓ Laudo assinado</div>
+    </div>
+  </aside>
+</main>
+
+<footer class="controls">
+  <div class="ctl">
+    <button id="prev" class="cbtn" aria-label="Anterior">‹</button>
+    <button id="play" class="cbtn play" aria-label="Play/Pause">❚❚</button>
+    <button id="next" class="cbtn" aria-label="Próxima">›</button>
+  </div>
+  <div id="thumbs" class="thumbs" aria-label="Casos"></div>
+  <div class="credit mono">Software descreve; o médico assina.</div>
+</footer>
+
+<script src="player.js"></script>
+</body>
+</html>

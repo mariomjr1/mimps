@@ -132,7 +132,36 @@ window.config = {
           src: '/blackvoxel-logo.svg',
           alt: 'MIMPS by BlackVoxel',
           className: 'hidden h-[32px] w-[232px] md:block',
-        })
+        }),
+        // Client/investor demo: the live model reading 20 real chest X-rays with
+        // Grad-CAM + a pt-BR draft. Opens the standalone reading-session player
+        // served as a static asset from /reading-demo (public/reading-demo).
+        React.createElement(
+          'a',
+          {
+            href: '/reading-demo/index.html',
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            title: 'Demonstração — leitura de tórax assistida por IA (20 exames)',
+            style: {
+              marginLeft: '14px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '4px 10px',
+              borderRadius: '5px',
+              fontSize: '11px',
+              fontWeight: 700,
+              lineHeight: 1,
+              letterSpacing: '.02em',
+              textDecoration: 'none',
+              color: '#07201c',
+              background: '#34c2ac',
+              whiteSpace: 'nowrap',
+            },
+          },
+          '▶ Demo IA'
+        )
       );
     },
   },
