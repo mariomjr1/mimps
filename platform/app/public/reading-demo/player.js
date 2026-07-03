@@ -75,6 +75,7 @@
   // show the PDF in an in-page viewer BEFORE downloading; download is a button inside it
   function openPreview(doc, filename) {
     playing = false; playBtn.textContent = '▶'; clearTimers();   // freeze auto-play behind the modal
+    stopTyping(true);   // settle the report to full text so the preview/PDF is never half-typed
     try {
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
       pdfUrl = URL.createObjectURL(doc.output('blob'));
@@ -91,6 +92,19 @@
     if (pdfUrl) { URL.revokeObjectURL(pdfUrl); pdfUrl = null; }
   }
 
+  // Non-specific catch-all labels are excluded from the "também sinaliza" list —
+  // guard both the pt label and the raw NIH/torchxrayvision name.
+  var SEC_EXCLUDE = {
+    'Opacidade': 1, 'Mediastino': 1, 'Infiltrado': 1,
+    'Lung Opacity': 1, 'Enlarged Cardiomediastinum': 1, 'Infiltration': 1
+  };
+  var shownSec = [];  // the secondary finding(s) actually rendered — kept in sync for animateFills
+  function pickSecondary(c) {
+    return (c.secondary || [])
+      .filter(function (f) { return !SEC_EXCLUDE[f.pt] && !SEC_EXCLUDE[f.name] && f.score >= 0.5; })
+      .sort(function (a, b) { return b.score - a.score; })
+      .slice(0, 1);  // at most the single highest-scoring specific secondary finding
+  }
   function renderPanel(c) {
     var html = '<div class="conf">'
       + '<div class="conf-top"><span class="conf-name">' + esc(c.gt.pt) + '</span>'
@@ -98,9 +112,10 @@
       + '<div class="conf-row"><span>concordância do modelo · proxy-txv-v1</span>'
       + '<span class="fv">' + c.model_score.toFixed(2) + '</span></div>'
       + '<div class="track"><div class="fill gt"></div></div></div>';
-    if (c.secondary && c.secondary.length) {
+    shownSec = pickSecondary(c);
+    if (shownSec.length) {
       html += '<div class="seclab mono">O modelo também sinaliza (indeterminado)</div>';
-      c.secondary.forEach(function (f) {
+      shownSec.forEach(function (f) {
         html += '<div class="f low"><span class="fn">' + esc(f.pt) + '</span>'
           + '<span class="fv">' + f.score.toFixed(2) + '</span>'
           + '<div class="track"><div class="fill"></div></div></div>';
@@ -112,32 +127,59 @@
     var gt = findings.querySelector('.fill.gt');
     if (gt) gt.style.width = Math.round(c.model_score * 100) + '%';
     var fs = findings.querySelectorAll('.f .fill');
-    (c.secondary || []).forEach(function (f, i) { if (fs[i]) fs[i].style.width = Math.round(f.score * 100) + '%'; });
+    shownSec.forEach(function (f, i) { if (fs[i]) fs[i].style.width = Math.round(f.score * 100) + '%'; });
   }
 
+  // The box is drawn as %-of-stage, but #xray/#cam use object-fit:cover. The source
+  // images are square (1024²-normalized coords, delivered as 528²), so on a square
+  // stage cover is a no-op and %-of-stage == image coords. To stay bulletproof at any
+  // viewport (a stage that ever renders non-square would make cover crop and the box
+  // drift), map the box through the image's ACTUAL rendered content rect: for cover of
+  // a square source, the painted image is a centered square of side = max(W,H), and the
+  // #cam overlay shares the identical fit+element rect so it stays pixel-aligned too.
+  var curBox = null;
   function placeBox(b) {
+    curBox = b || null;
     if (!b) { box.hidden = true; box.classList.remove('on'); return; }
+    var r = stage.getBoundingClientRect(), W = r.width || 1, H = r.height || 1;
+    var side = Math.max(W, H), offX = (W - side) / 2, offY = (H - side) / 2;
     box.hidden = false;
-    box.style.left = (b[0] * 100).toFixed(1) + '%';
-    box.style.top = (b[1] * 100).toFixed(1) + '%';
-    box.style.width = (b[2] * 100).toFixed(1) + '%';
-    box.style.height = (b[3] * 100).toFixed(1) + '%';
+    box.style.left = ((offX + b[0] * side) / W * 100).toFixed(2) + '%';
+    box.style.top = ((offY + b[1] * side) / H * 100).toFixed(2) + '%';
+    box.style.width = (b[2] * side / W * 100).toFixed(2) + '%';
+    box.style.height = (b[3] * side / H * 100).toFixed(2) + '%';
     box.classList.add('on');
   }
 
-  function typeInto(el, txt, done) {
-    if (reduce) { el.textContent = txt; if (done) done(); return; }
-    var n = 0, step = Math.max(9, Math.min(22, 1400 / txt.length));
+  // The report typewriter is SELF-CONTAINED: it uses its own timer (never the shared
+  // `timers` array that clearTimers() nukes on case-change / PDF-preview), and a
+  // `settleReport()` that always renders the FULL text with no caret. So an interruption
+  // (case advance, PDF modal, reduced-motion) can never freeze it half-typed.
+  var reportTimer = null, settleReport = null;
+  function stopTyping(settle) {
+    if (reportTimer) { clearTimeout(reportTimer); reportTimer = null; }
+    if (settle && settleReport) settleReport();  // textContent → drops any lingering caret
+    settleReport = null;
+  }
+  function typeReport(rep) {
+    stopTyping(false);
+    rtec.textContent = rep.tecnica;
+    // settle = fully render every section, regardless of how far typing got
+    settleReport = function () { rach.textContent = rep.achados; rimp.textContent = rep.impressao; };
+    if (reduce) { settleReport(); settleReport = null; return; }
+    rach.textContent = ''; rimp.textContent = '';
+    typeChain([[rach, rep.achados], [rimp, rep.impressao]], 0);
+  }
+  function typeChain(items, idx) {
+    if (idx >= items.length) { reportTimer = null; settleReport = null; return; }
+    var el = items[idx][0], txt = items[idx][1], n = 0,
+        step = Math.max(9, Math.min(22, 1400 / txt.length));
     (function tick() {
       n++;
       el.innerHTML = esc(txt.slice(0, n)) + '<span class="caret">.</span>';
-      if (n < txt.length) timers.push(setTimeout(tick, step));
-      else { el.innerHTML = esc(txt); if (done) done(); }
+      if (n < txt.length) { reportTimer = setTimeout(tick, step); }
+      else { el.innerHTML = esc(txt); typeChain(items, idx + 1); }
     })();
-  }
-  function typeReport(rep) {
-    rtec.textContent = rep.tecnica;
-    typeInto(rach, rep.achados, function () { typeInto(rimp, rep.impressao); });
   }
 
   function doSign() {
@@ -156,13 +198,14 @@
 
   function show(i) {
     clearTimers();
+    stopTyping(false);   // cancel any in-flight typewriter (sections are cleared below)
     cur = ((i % N) + N) % N;
     var c = cases[cur];
     counter.textContent = pad(cur + 1) + ' / ' + N;
     studyid.textContent = c.id;
     hudmod.textContent = 'DX · CHEST ' + (c.view || 'PA');
     updateThumbs();
-    cam.classList.remove('on'); box.hidden = true; box.classList.remove('on');
+    cam.classList.remove('on'); curBox = null; box.hidden = true; box.classList.remove('on');
     signed.hidden = true; signbtn.disabled = false; rv1.textContent = 'Aguardando assinatura';
     rv2.textContent = 'Dr. ____ · CRM ____ / SP'; pdfbtn.hidden = true;
     rtec.textContent = ''; rach.innerHTML = ''; rimp.innerHTML = '';
@@ -192,6 +235,7 @@
     playing = !playing; playBtn.textContent = playing ? '❚❚' : '▶';
     if (playing) show(cur); else clearTimers();
   });
+  window.addEventListener('resize', function () { if (curBox) placeBox(curBox); });
   prevBtn.addEventListener('click', function () { show(cur - 1); });
   nextBtn.addEventListener('click', function () { show(cur + 1); });
   signbtn.addEventListener('click', doSign);
