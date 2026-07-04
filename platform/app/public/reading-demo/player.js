@@ -15,6 +15,7 @@
       pdfmodal = $('pdfmodal'), pdfframe = $('pdfframe'), pdfdownload = $('pdfdownload'),
       pdfclose = $('pdfclose'), pdfopen = $('pdfopen');
   var cases = [], N = 0, cur = 0, playing = true, timers = [], META = {}, pdfUrl = null;
+  var DV = '?d=20260705';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
   var DOCTOR = { nome: 'Dra. Helena Marques', crm: '123456', uf: 'SP' };  // demo persona (report watermarked)
   var lastSignedHuman = '';
   var LN = ['Silva', 'Santos', 'Oliveira', 'Souza', 'Lima', 'Pereira', 'Costa', 'Almeida', 'Nascimento',
@@ -209,8 +210,8 @@
     signed.hidden = true; signbtn.disabled = false; rv1.textContent = 'Aguardando assinatura';
     rv2.textContent = 'Dr. ____ · CRM ____ / SP'; pdfbtn.hidden = true;
     rtec.textContent = ''; rach.innerHTML = ''; rimp.innerHTML = '';
-    xray.src = 'data/img/' + pad(cur) + '.jpg';
-    cam.src = 'data/cam/' + pad(cur) + '.png';
+    xray.src = 'data/img/' + pad(cur) + '.jpg' + DV;
+    cam.src = 'data/cam/' + pad(cur) + '.png' + DV;
     renderPanel(c);
     stage.classList.remove('reading'); void stage.offsetWidth; stage.classList.add('reading');
     timers.push(setTimeout(function () { animateFills(c); }, 260));
@@ -224,7 +225,7 @@
     cases.forEach(function (c, i) {
       var t = document.createElement('button');
       t.className = 't'; t.title = c.gt.pt + ' · modelo ' + c.model_score.toFixed(2);
-      var im = document.createElement('img'); im.src = 'data/img/' + pad(i) + '.jpg'; im.alt = '';
+      var im = document.createElement('img'); im.src = 'data/img/' + pad(i) + '.jpg' + DV; im.alt = '';
       t.appendChild(im);
       t.addEventListener('click', function () { show(i); });
       thumbs.appendChild(t);
@@ -249,7 +250,7 @@
     else if (e.key === ' ') { e.preventDefault(); playBtn.click(); }
   });
 
-  fetch('data/session.json').then(function (r) { return r.json(); }).then(function (meta) {
+  fetch('data/session.json' + DV).then(function (r) { return r.json(); }).then(function (meta) {
     META = meta; cases = meta.cases || []; N = cases.length;
     if (!N) { rach.textContent = 'Sem dados de sessão.'; return; }
     buildThumbs();

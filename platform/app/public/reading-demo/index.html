@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-<link rel="stylesheet" href="player.css?v=20260704" />
+<link rel="stylesheet" href="player.css?v=20260705" />
 </head>
 <body>
 <div class="demo-tag mono">Demo · saída real do modelo · achados descritivos, não diagnósticos · dados NIH ChestX-ray14 (pesquisa)</div>
@@ -28,10 +28,10 @@
     <div class="stage" id="stage">
       <img id="xray" alt="Radiografia de tórax" />
       <img id="cam" class="cam" alt="" aria-hidden="true" />
-      <div id="box" class="box" hidden><span class="box-lbl mono">achado · NIH</span></div>
+      <div id="box" class="box" hidden><span class="box-lbl mono">IA · atenção</span></div>
       <div class="hud tl mono"><div id="hudmod">DX · CHEST PA</div><div class="mut" id="hudsrc">NIH ChestX-ray14</div></div>
       <div class="hud tr mono"><div>WW 2048 · WL 600</div><div class="mut">Grad-CAM</div></div>
-      <div class="hud bl mono" id="hudnote">caixa: radiologista (NIH) · calor: atenção do modelo</div>
+      <div class="hud bl mono" id="hudnote">caixa + calor: atenção do modelo (Grad-CAM)</div>
       <div class="scan" id="scan" aria-hidden="true"></div>
     </div>
   </section>
@@ -41,7 +41,7 @@
       <h2>Achado &amp; laudo</h2>
       <span class="tag mono">referência NIH + modelo</span>
     </div>
-    <p class="pmeta mono">achado e caixa: radiologista (NIH) · pontuação: modelo proxy-txv-v1 (não calibrada)</p>
+    <p class="pmeta mono">achado: NIH · caixa + calor: atenção do modelo (Grad-CAM) · pontuação não calibrada</p>
     <div id="findings" class="findings"></div>
 
     <div class="report">
@@ -88,8 +88,8 @@
   </div>
 </div>
 
-<script src="vendor/jspdf.umd.min.js?v=20260704"></script>
-<script src="pdf.js?v=20260704"></script>
-<script src="player.js?v=20260704"></script>
+<script src="vendor/jspdf.umd.min.js?v=20260705"></script>
+<script src="pdf.js?v=20260705"></script>
+<script src="player.js?v=20260705"></script>
 </body>
 </html>

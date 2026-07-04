@@ -88,9 +88,9 @@ b{font-weight:600;color:var(--txt)}
 .report{margin-top:1rem;border-top:1px solid var(--border);padding-top:.8rem}
 .rtext{overflow-wrap:break-word}
 .rhead{font-size:.62rem;color:var(--teal);letter-spacing:.05em;margin-bottom:.55rem}
-.rsec{margin-bottom:.5rem}
-.rlab{display:block;font-size:.55rem;letter-spacing:.09em;color:var(--dim);margin-bottom:.14rem}
-.rtext{font-size:.82rem;line-height:1.5;color:#b9bfc9;margin:0}
+.rsec{margin-bottom:.65rem}
+.rlab{display:block;font-size:.55rem;letter-spacing:.09em;color:var(--dim);margin-bottom:.18rem}
+.rtext{font-size:.82rem;line-height:1.6;color:#b9bfc9;margin:0}
 .rtext .caret{display:inline-block;width:7px;background:var(--teal);animation:blink 1s steps(1) infinite;color:transparent}
 @keyframes blink{50%{opacity:0}}
 .rnote{font-size:.6rem;color:var(--dim);margin-top:.6rem}
@@ -128,9 +128,18 @@ b{font-weight:600;color:var(--txt)}
 .credit{font-size:.62rem;color:var(--dim);white-space:nowrap}
 /* ---- mobile / tablet ---- */
 @media(max-width:900px){
+  /* On phones the viewport image and the panel STACK. The desktop layout pins the
+     page to one viewport height (body height:100% + .viewer flex:1;min-height:0)
+     and lets the panel scroll internally — but as a scroll container the panel's
+     minimum contribution to grid row sizing is 0, so its row (and the report in it)
+     collapsed to near-nothing and the laudo text clipped/wrote over itself.
+     Fix: the viewer never shrinks below its content and the panel is a normal
+     content-sized block; the DOCUMENT scrolls, the report grows with its text. */
+  .viewer{flex:1 0 auto;min-height:auto}
   .viewport{min-height:auto;padding:.7rem}
   .stage{width:min(94vw,56vh)}
-  .panel{border-left:0;border-top:1px solid var(--border);padding:.95rem 1rem calc(1.2rem + env(safe-area-inset-bottom))}
+  .panel{border-left:0;border-top:1px solid var(--border);overflow:visible;min-height:auto;
+    padding:.95rem 1rem calc(1.2rem + env(safe-area-inset-bottom))}
   /* controls are NOT sticky on mobile: sticky pinned the bar over the panel's
      bottom text (report / signature), which read as overlapping. Let it sit at
      the end of the flow instead. */
@@ -143,7 +152,8 @@ b{font-weight:600;color:var(--txt)}
   .brand .bname{font-size:.84rem}
   .mark{width:26px;height:26px}
   .phead h2{font-size:.96rem}
-  .rtext{font-size:.8rem}
+  .rtext{font-size:.8rem;line-height:1.65}
+  .rsec{margin-bottom:.75rem}
   .conf-name{font-size:.96rem}
   .cbtn{width:46px;height:40px;font-size:1.05rem}   /* bigger touch targets */
   .thumbs .t{width:40px;height:40px}
