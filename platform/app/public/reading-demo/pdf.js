@@ -170,7 +170,7 @@
       // Right block
       doc.setFontSize(13);
       tc(doc, INK);
-      doc.text('LAUDO DE TÓRAX', RX, 56, { align: 'right' });
+      doc.text(ctx.examTitle || 'LAUDO DE TÓRAX', RX, 56, { align: 'right' });
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
       tc(doc, TEAL);

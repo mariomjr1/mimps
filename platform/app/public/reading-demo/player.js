@@ -25,14 +25,14 @@
   // ---- modality registry: everything chest-vs-limb lives here (same session schema) ----
   var MODS = {
     chest: {
-      model: 'proxy-txv-v1', hud: 'DX · CHEST', src: 'NIH ChestX-ray14',
+      model: 'proxy-txv-v1', hud: 'DX · CHEST', src: 'NIH ChestX-ray14', examTitle: 'LAUDO DE TÓRAX',
       chip: 'confirmado · NIH', ptag: 'referência NIH + modelo',
       pmeta: 'achado: NIH · caixa + calor: atenção do modelo (Grad-CAM) · pontuação não calibrada',
       demo: 'Demo · saída real do modelo · achados descritivos, não diagnósticos · dados NIH ChestX-ray14 (pesquisa)',
       alt: 'Radiografia de tórax'
     },
     limb: {
-      model: 'limbfrac-fracatlas-v1', hud: 'DX · LIMB', src: 'FracAtlas',
+      model: 'limbfrac-fracatlas-v1', hud: 'DX · LIMB', src: 'FracAtlas', examTitle: 'LAUDO DE MEMBRO',
       chip: 'modelo · FracAtlas', ptag: 'referência FracAtlas + modelo',
       pmeta: 'achado: FracAtlas · caixa + calor: atenção do modelo (Grad-CAM) · pontuação não calibrada',
       demo: 'Demo · saída real do modelo · achados descritivos, não diagnósticos · dados FracAtlas (pesquisa)',
@@ -93,6 +93,7 @@
       patient: demographics(c), doctor: DOCTOR,
       model: { name: META.model || (MOD && MOD.model) || 'modelo', benchmark: META.benchmark || '' },
       imageDataUrl: composeImage(c),
+      examTitle: (MOD && MOD.examTitle) || 'LAUDO DE TÓRAX',
       signatureHash: (h32(c.id + DOCTOR.crm).toString(16) + h32(c.src).toString(16)).slice(0, 12),
       signedAtHuman: lastSignedHuman || fmtNow(),
     });
