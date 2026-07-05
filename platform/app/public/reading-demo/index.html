@@ -3,33 +3,58 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>BlackVoxel · Sessão de leitura assistida por IA — 20 radiografias</title>
-<meta name="description" content="Demonstração: o modelo proxy-txv-v1 (torchxrayvision DenseNet-121) lê 20 radiografias de tórax reais com Grad-CAM e um rascunho de laudo em português. Achados descritivos, não diagnósticos; revisão médica." />
+<title>BlackVoxel · Sessão de leitura assistida por IA — raio-X</title>
+<meta name="description" content="Demonstração: modelos reais (proxy-txv-v1 para tórax, limbfrac-fracatlas-v1 para membro) leem radiografias com Grad-CAM e um rascunho de laudo em português. Achados descritivos, não diagnósticos; revisão médica." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-<link rel="stylesheet" href="player.css?v=20260705" />
+<link rel="stylesheet" href="player.css?v=20260706" />
 </head>
 <body>
-<div class="demo-tag mono">Demo · saída real do modelo · achados descritivos, não diagnósticos · dados NIH ChestX-ray14 (pesquisa)</div>
+<div id="demotag" class="demo-tag mono">Demo · saída real do modelo · achados descritivos, não diagnósticos · dados de pesquisa</div>
 
 <header class="bar">
   <div class="brand">
     <img class="mark" src="blackvoxel-mark.svg" alt="BlackVoxel" width="30" height="30" />
     <div><div class="bname">BlackVoxel · MIMPS</div><div class="bsub mono">Sessão de leitura assistida por IA</div></div>
   </div>
-  <div class="bmid mono"><span id="counter">01 / 20</span><span class="dot">·</span><span id="studyid">BV-7000</span></div>
-  <div class="bmodel mono">modelo <b>proxy-txv-v1</b> · densenet121 · macro-AUROC 0.82 <span class="mut">(teste NIH)</span></div>
+  <button id="swap" class="swap mono" type="button" hidden>‹ trocar exame</button>
+  <div class="bmid mono"><span id="counter">— / —</span><span class="dot">·</span><span id="studyid">—</span></div>
+  <div id="bmodel" class="bmodel mono"></div>
 </header>
 
-<main class="viewer">
+<section id="chooser" class="chooser" aria-label="Escolha do exame">
+  <div class="ch-inner">
+    <p class="ch-kicker mono">Sessão de leitura assistida por IA</p>
+    <h1 class="ch-title">Escolha o exame</h1>
+    <p class="ch-sub">Saída real do modelo, com atenção (Grad-CAM), pontuação não calibrada e rascunho de laudo para revisão médica. Descritivo, não diagnóstico.</p>
+    <div class="ch-cards">
+      <button class="ch-card" type="button" data-m="chest">
+        <span class="ch-mod mono">RAIO-X · DX</span>
+        <span class="ch-name">Tórax — Raio-X</span>
+        <span class="ch-desc">modelo proxy-txv-v1 · achados torácicos</span>
+        <span class="ch-tag mono">dados NIH ChestX-ray14 (pesquisa)</span>
+        <span class="ch-go mono">iniciar leitura ›</span>
+      </button>
+      <button class="ch-card" type="button" data-m="limb">
+        <span class="ch-mod mono">RAIO-X · DX</span>
+        <span class="ch-name">Membro — Raio-X</span>
+        <span class="ch-desc">modelo limbfrac-fracatlas-v1 · fratura</span>
+        <span class="ch-tag mono">dados FracAtlas (pesquisa)</span>
+        <span class="ch-go mono">iniciar leitura ›</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<main class="viewer" hidden>
   <section class="viewport" id="viewport">
     <div class="stage" id="stage">
-      <img id="xray" alt="Radiografia de tórax" />
+      <img id="xray" alt="Radiografia" />
       <img id="cam" class="cam" alt="" aria-hidden="true" />
       <div id="box" class="box" hidden><span class="box-lbl mono">IA · atenção</span></div>
-      <div class="hud tl mono"><div id="hudmod">DX · CHEST PA</div><div class="mut" id="hudsrc">NIH ChestX-ray14</div></div>
+      <div class="hud tl mono"><div id="hudmod">DX</div><div class="mut" id="hudsrc"></div></div>
       <div class="hud tr mono"><div>WW 2048 · WL 600</div><div class="mut">Grad-CAM</div></div>
       <div class="hud bl mono" id="hudnote">caixa + calor: atenção do modelo (Grad-CAM)</div>
       <div class="scan" id="scan" aria-hidden="true"></div>
@@ -39,9 +64,9 @@
   <aside class="panel">
     <div class="phead">
       <h2>Achado &amp; laudo</h2>
-      <span class="tag mono">referência NIH + modelo</span>
+      <span id="ptag" class="tag mono"></span>
     </div>
-    <p class="pmeta mono">achado: NIH · caixa + calor: atenção do modelo (Grad-CAM) · pontuação não calibrada</p>
+    <p id="pmeta" class="pmeta mono"></p>
     <div id="findings" class="findings"></div>
 
     <div class="report">
@@ -64,7 +89,7 @@
   </aside>
 </main>
 
-<footer class="controls">
+<footer class="controls" hidden>
   <div class="ctl">
     <button id="prev" class="cbtn" aria-label="Anterior">‹</button>
     <button id="play" class="cbtn play" aria-label="Play/Pause">❚❚</button>
@@ -88,8 +113,8 @@
   </div>
 </div>
 
-<script src="vendor/jspdf.umd.min.js?v=20260705"></script>
-<script src="pdf.js?v=20260705"></script>
-<script src="player.js?v=20260705"></script>
+<script src="vendor/jspdf.umd.min.js?v=20260706"></script>
+<script src="pdf.js?v=20260706"></script>
+<script src="player.js?v=20260706"></script>
 </body>
 </html>

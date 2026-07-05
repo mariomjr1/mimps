@@ -1,0 +1,317 @@
+{
+ "model": "limbfrac-fracatlas-v1",
+ "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · FracAtlas",
+ "benchmark": "AUROC 0.89 · teste FracAtlas",
+ "gt_source": "FracAtlas (CC BY 4.0) · caixa = Grad-CAM do modelo",
+ "note": "Achado do modelo (pesquisa, não calibrado). CAIXA = Grad-CAM do modelo (concorda com o calor). Não diagnóstico.",
+ "cases": [
+  {
+   "id": "BV-8000",
+   "src": "IMG0002585.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.0,
+     0.0893,
+     0.9286,
+     0.5312
+    ]
+   },
+   "model_score": 0.998,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência única.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 1,00); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8001",
+   "src": "IMG0002515.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.1429,
+     0.0,
+     0.4911,
+     0.9955
+    ]
+   },
+   "model_score": 0.999,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência lateral.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 1,00); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8002",
+   "src": "IMG0002337.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.1741,
+     0.3839,
+     0.6875,
+     0.6116
+    ]
+   },
+   "model_score": 0.993,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência frontal.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 0,99); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8003",
+   "src": "IMG0002397.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.3527,
+     0.2902,
+     0.4598,
+     0.7054
+    ]
+   },
+   "model_score": 0.996,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência oblíqua.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 1,00); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8004",
+   "src": "IMG0001868.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.1964,
+     0.1205,
+     0.5268,
+     0.875
+    ]
+   },
+   "model_score": 0.999,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência lateral.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 1,00); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8005",
+   "src": "IMG0000059.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.0,
+     0.1741,
+     0.7634,
+     0.7143
+    ]
+   },
+   "model_score": 0.994,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência lateral.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 0,99); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8006",
+   "src": "IMG0002370.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.0,
+     0.0938,
+     0.6786,
+     0.9018
+    ]
+   },
+   "model_score": 0.994,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência frontal.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 0,99); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8007",
+   "src": "IMG0002568.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.0,
+     0.0,
+     0.9955,
+     0.9955
+    ]
+   },
+   "model_score": 0.993,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência lateral.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 0,99); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8008",
+   "src": "IMG0002439.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.2143,
+     0.0893,
+     0.5045,
+     0.7723
+    ]
+   },
+   "model_score": 0.993,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência frontal.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 0,99); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8009",
+   "src": "IMG0001639.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.2768,
+     0.2946,
+     0.4688,
+     0.6161
+    ]
+   },
+   "model_score": 0.992,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência oblíqua.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 0,99); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8010",
+   "src": "IMG0004320.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.2188,
+     0.0,
+     0.4688,
+     0.9955
+    ]
+   },
+   "model_score": 0.98,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência frontal.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 0,98); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8011",
+   "src": "IMG0001971.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.2545,
+     0.0893,
+     0.4732,
+     0.6071
+    ]
+   },
+   "model_score": 0.988,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência lateral.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 0,99); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8012",
+   "src": "IMG0002454.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.2188,
+     0.1696,
+     0.6071,
+     0.8259
+    ]
+   },
+   "model_score": 0.979,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência lateral.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 0,98); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  },
+  {
+   "id": "BV-8013",
+   "src": "IMG0004374.jpg",
+   "view": "—",
+   "gt": {
+    "name": "Fracture",
+    "pt": "Fratura",
+    "box": [
+     0.308,
+     0.125,
+     0.4821,
+     0.6071
+    ]
+   },
+   "model_score": 0.988,
+   "secondary": [],
+   "report": {
+    "tecnica": "Radiografia de extremidade (membro), incidência lateral.",
+    "achados": "O modelo de pesquisa destaca, na região realçada desta radiografia de extremidade, sinal sugestivo de fratura (probabilidade não calibrada de 0,99); correlacionar com a clínica.",
+    "impressao": "Achado a confirmar pelo radiologista responsável. Resultado de pesquisa, sem valor diagnóstico."
+   }
+  }
+ ]
+}

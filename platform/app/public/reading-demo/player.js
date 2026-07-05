@@ -1,6 +1,8 @@
-/* CXR reading-session player. Each case: a NIH radiologist-confirmed finding + real
- * ground-truth box, the live model's real (uncalibrated) score + Grad-CAM attention,
- * and a 3-section pt-BR draft. Descriptive, non-diagnostic; physician signs. */
+/* X-ray reading-session player, parametrized by MODALITY (chest | limb). Each case:
+ * a reference finding + box, the live model's real (uncalibrated) score + Grad-CAM
+ * attention, and a 3-section pt-BR draft. Descriptive, non-diagnostic; physician signs.
+ * Entry = #chooser (two cards); each modality loads data/<modality>/session.json
+ * (+ img/NN.jpg, cam/NN.png) with the SAME schema. Deep-link: ?m=chest|limb. */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -13,9 +15,32 @@
       rv1 = document.querySelector('.rv1'), rv2 = document.querySelector('.rv2'),
       playBtn = $('play'), prevBtn = $('prev'), nextBtn = $('next'),
       pdfmodal = $('pdfmodal'), pdfframe = $('pdfframe'), pdfdownload = $('pdfdownload'),
-      pdfclose = $('pdfclose'), pdfopen = $('pdfopen');
+      pdfclose = $('pdfclose'), pdfopen = $('pdfopen'),
+      chooser = $('chooser'), swapBtn = $('swap'), viewerEl = document.querySelector('main.viewer'),
+      controlsEl = document.querySelector('footer.controls'), demotag = $('demotag'),
+      bmodel = $('bmodel'), hudsrc = $('hudsrc'), ptag = $('ptag'), pmeta = $('pmeta');
   var cases = [], N = 0, cur = 0, playing = true, timers = [], META = {}, pdfUrl = null;
-  var DV = '?d=20260705';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
+  var DV = '?d=20260706';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
+
+  // ---- modality registry: everything chest-vs-limb lives here (same session schema) ----
+  var MODS = {
+    chest: {
+      model: 'proxy-txv-v1', hud: 'DX · CHEST', src: 'NIH ChestX-ray14',
+      chip: 'confirmado · NIH', ptag: 'referência NIH + modelo',
+      pmeta: 'achado: NIH · caixa + calor: atenção do modelo (Grad-CAM) · pontuação não calibrada',
+      demo: 'Demo · saída real do modelo · achados descritivos, não diagnósticos · dados NIH ChestX-ray14 (pesquisa)',
+      alt: 'Radiografia de tórax'
+    },
+    limb: {
+      model: 'limbfrac-fracatlas-v1', hud: 'DX · LIMB', src: 'FracAtlas',
+      chip: 'modelo · FracAtlas', ptag: 'referência FracAtlas + modelo',
+      pmeta: 'achado: FracAtlas · caixa + calor: atenção do modelo (Grad-CAM) · pontuação não calibrada',
+      demo: 'Demo · saída real do modelo · achados descritivos, não diagnósticos · dados FracAtlas (pesquisa)',
+      alt: 'Radiografia de membro'
+    }
+  };
+  var modality = null, MOD = null, DATA_ROOT = '';
+  var bootSeq = 0;  // invalidates in-flight session fetches on switch/re-entry (no stacked thumbs/timers)
   var DOCTOR = { nome: 'Dra. Helena Marques', crm: '123456', uf: 'SP' };  // demo persona (report watermarked)
   var lastSignedHuman = '';
   var LN = ['Silva', 'Santos', 'Oliveira', 'Souza', 'Lima', 'Pereira', 'Costa', 'Almeida', 'Nascimento',
@@ -66,7 +91,7 @@
     if (!c || !(window.BVPdf && window.jspdf)) { alert('Gerador de PDF indisponível.'); return; }
     var doc = window.BVPdf.generate(c, {
       patient: demographics(c), doctor: DOCTOR,
-      model: { name: META.model || 'proxy-txv-v1', benchmark: META.benchmark || '' },
+      model: { name: META.model || (MOD && MOD.model) || 'modelo', benchmark: META.benchmark || '' },
       imageDataUrl: composeImage(c),
       signatureHash: (h32(c.id + DOCTOR.crm).toString(16) + h32(c.src).toString(16)).slice(0, 12),
       signedAtHuman: lastSignedHuman || fmtNow(),
@@ -109,8 +134,8 @@
   function renderPanel(c) {
     var html = '<div class="conf">'
       + '<div class="conf-top"><span class="conf-name">' + esc(c.gt.pt) + '</span>'
-      + '<span class="chip mono">confirmado · NIH</span></div>'
-      + '<div class="conf-row"><span>concordância do modelo · proxy-txv-v1</span>'
+      + '<span class="chip mono">' + esc(MOD ? MOD.chip : '') + '</span></div>'
+      + '<div class="conf-row"><span>concordância do modelo · ' + esc(META.model || (MOD && MOD.model) || '') + '</span>'
       + '<span class="fv">' + c.model_score.toFixed(2) + '</span></div>'
       + '<div class="track"><div class="fill gt"></div></div></div>';
     shownSec = pickSecondary(c);
@@ -198,20 +223,21 @@
   }
 
   function show(i) {
+    if (!N) return;      // nothing loaded yet (chooser open / session still fetching)
     clearTimers();
     stopTyping(false);   // cancel any in-flight typewriter (sections are cleared below)
     cur = ((i % N) + N) % N;
     var c = cases[cur];
     counter.textContent = pad(cur + 1) + ' / ' + N;
     studyid.textContent = c.id;
-    hudmod.textContent = 'DX · CHEST ' + (c.view || 'PA');
+    hudmod.textContent = (MOD ? MOD.hud : 'DX') + ' ' + (c.view || 'PA');
     updateThumbs();
     cam.classList.remove('on'); curBox = null; box.hidden = true; box.classList.remove('on');
     signed.hidden = true; signbtn.disabled = false; rv1.textContent = 'Aguardando assinatura';
     rv2.textContent = 'Dr. ____ · CRM ____ / SP'; pdfbtn.hidden = true;
     rtec.textContent = ''; rach.innerHTML = ''; rimp.innerHTML = '';
-    xray.src = 'data/img/' + pad(cur) + '.jpg' + DV;
-    cam.src = 'data/cam/' + pad(cur) + '.png' + DV;
+    xray.src = DATA_ROOT + 'img/' + pad(cur) + '.jpg' + DV;
+    cam.src = DATA_ROOT + 'cam/' + pad(cur) + '.png' + DV;
     renderPanel(c);
     stage.classList.remove('reading'); void stage.offsetWidth; stage.classList.add('reading');
     timers.push(setTimeout(function () { animateFills(c); }, 260));
@@ -225,7 +251,7 @@
     cases.forEach(function (c, i) {
       var t = document.createElement('button');
       t.className = 't'; t.title = c.gt.pt + ' · modelo ' + c.model_score.toFixed(2);
-      var im = document.createElement('img'); im.src = 'data/img/' + pad(i) + '.jpg' + DV; im.alt = '';
+      var im = document.createElement('img'); im.src = DATA_ROOT + 'img/' + pad(i) + '.jpg' + DV; im.alt = '';
       t.appendChild(im);
       t.addEventListener('click', function () { show(i); });
       thumbs.appendChild(t);
@@ -250,10 +276,66 @@
     else if (e.key === ' ') { e.preventDefault(); playBtn.click(); }
   });
 
-  fetch('data/session.json' + DV).then(function (r) { return r.json(); }).then(function (meta) {
-    META = meta; cases = meta.cases || []; N = cases.length;
-    if (!N) { rach.textContent = 'Sem dados de sessão.'; return; }
-    buildThumbs();
-    show(0);
-  }).catch(function () { rach.textContent = 'Falha ao carregar data/session.json (sirva via http).'; });
+  // ---- chooser <-> player: modality boot + clean re-entry ----
+  function enter(m) {
+    if (!MODS[m]) m = 'chest';
+    var seq = ++bootSeq;               // any older in-flight boot becomes a no-op
+    modality = m; MOD = MODS[m]; DATA_ROOT = 'data/' + m + '/';
+    // hard reset: no stacked timers, no duplicate thumbs, no half-typed report
+    clearTimers(); stopTyping(false); closePreview();
+    cases = []; N = 0; cur = 0; META = {};
+    playing = true; playBtn.textContent = '❚❚';
+    thumbs.innerHTML = '';
+    cam.classList.remove('on'); cam.removeAttribute('src');
+    xray.removeAttribute('src');
+    curBox = null; box.hidden = true; box.classList.remove('on');
+    findings.innerHTML = ''; rtec.textContent = ''; rach.innerHTML = ''; rimp.innerHTML = '';
+    signed.hidden = true; signbtn.disabled = false; pdfbtn.hidden = true;
+    rv1.textContent = 'Aguardando assinatura'; rv2.textContent = 'Dr. ____ · CRM ____ / SP';
+    counter.textContent = '— / —'; studyid.textContent = '—';
+    // modality-fixed chrome (data-independent)
+    demotag.textContent = MOD.demo;
+    hudsrc.textContent = MOD.src;
+    ptag.textContent = MOD.ptag;
+    pmeta.textContent = MOD.pmeta;
+    xray.alt = MOD.alt;
+    bmodel.innerHTML = 'modelo <b>' + esc(MOD.model) + '</b>';
+    // swap chrome: chooser out, player in
+    chooser.hidden = true; viewerEl.hidden = false; controlsEl.hidden = false;
+    swapBtn.hidden = false;
+    document.body.classList.remove('choosing');
+    fetch(DATA_ROOT + 'session.json' + DV).then(function (r) { return r.json(); }).then(function (meta) {
+      if (seq !== bootSeq) return;     // user switched exams while this was loading
+      META = meta; cases = meta.cases || []; N = cases.length;
+      // header is data-driven from the session meta (falls back to the registry)
+      bmodel.innerHTML = 'modelo <b>' + esc(meta.model || MOD.model) + '</b>'
+        + (meta.benchmark ? ' · ' + esc(meta.benchmark) : '');
+      if (!N) { rach.textContent = 'Sem dados de sessão.'; return; }
+      buildThumbs();
+      show(0);
+    }).catch(function () {
+      if (seq !== bootSeq) return;
+      rach.textContent = 'Falha ao carregar ' + DATA_ROOT + 'session.json (sirva via http).';
+    });
+  }
+  function showChooser() {
+    bootSeq++;                          // invalidate any in-flight session fetch
+    playing = false; clearTimers(); stopTyping(false);
+    if (!pdfmodal.hidden) closePreview();
+    modality = null; MOD = null; DATA_ROOT = '';
+    cases = []; N = 0; cur = 0; META = {};
+    viewerEl.hidden = true; controlsEl.hidden = true; swapBtn.hidden = true;
+    document.body.classList.add('choosing');
+    chooser.hidden = false;
+  }
+  swapBtn.addEventListener('click', showChooser);
+  [].forEach.call(chooser.querySelectorAll('.ch-card'), function (card) {
+    card.addEventListener('click', function () { enter(card.getAttribute('data-m')); });
+  });
+
+  // boot: deep-link ?m=chest|limb goes straight in; otherwise the chooser is the entry
+  var qm = null;
+  try { qm = new URLSearchParams(location.search).get('m'); } catch (e) { /* very old browser: chooser */ }
+  if (qm && MODS[qm]) enter(qm);
+  else document.body.classList.add('choosing');
 })();
