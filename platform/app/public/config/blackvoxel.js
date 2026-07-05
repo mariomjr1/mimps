@@ -194,7 +194,13 @@ window.config = {
                 /* cookie clear best-effort */
               }
               var redirect = encodeURIComponent(window.location.href);
-              window.location.href = 'https://blackvoxel.ai/login?redirect=' + redirect;
+              // prompt=login forces a genuine FRESH login on the platform: without
+              // it, an existing (possibly stale) platform session is silently reused
+              // and handed back here, and the PACS/Orthanc gate then rejects the
+              // stale token. The platform Login page clears its session on
+              // prompt=login and shows the form (Login.tsx).
+              window.location.href =
+                'https://blackvoxel.ai/login?prompt=login&redirect=' + redirect;
             },
             title: 'Voltar à página de login',
             'aria-label': 'Voltar ao login',
