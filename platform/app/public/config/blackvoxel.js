@@ -170,6 +170,54 @@ window.config = {
           },
           React.createElement('span', null, '▶'),
           React.createElement('span', { className: 'hidden md:block' }, 'Demo IA')
+        ),
+        // "Voltar ao login" — clears any stale SSO token (sessionStorage + the
+        // /pacs auth cookie) and returns to the platform login. `?redirect=`
+        // brings the user back to this exact viewer URL after re-auth — the same
+        // INT-05 SSO handoff the inference client does on 401 (jwtBridge.ts /
+        // inferenceClient.ts). Rendered in the header logo slot, so it shows on
+        // the worklist AND the viewer: a user stuck on the "BlackVoxel PACS
+        // request failed" (unauthenticated) screen can always get back to login.
+        React.createElement(
+          'button',
+          {
+            type: 'button',
+            onClick: function () {
+              try {
+                sessionStorage.removeItem('blackvoxel_jwt');
+              } catch (e) {
+                /* sessionStorage may be unavailable */
+              }
+              try {
+                document.cookie = 'blackvoxel_jwt=; Path=/; Max-Age=0; SameSite=Strict';
+              } catch (e) {
+                /* cookie clear best-effort */
+              }
+              var redirect = encodeURIComponent(window.location.href);
+              window.location.href = 'https://blackvoxel.ai/login?redirect=' + redirect;
+            },
+            title: 'Voltar à página de login',
+            'aria-label': 'Voltar ao login',
+            style: {
+              marginLeft: '8px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '5px',
+              padding: '4px 10px',
+              borderRadius: '5px',
+              fontSize: '11px',
+              fontWeight: 700,
+              lineHeight: 1,
+              letterSpacing: '.02em',
+              cursor: 'pointer',
+              color: '#e8e8ef',
+              background: 'transparent',
+              border: '1px solid rgba(133,133,255,0.55)',
+              whiteSpace: 'nowrap',
+            },
+          },
+          React.createElement('span', null, '↩'),
+          React.createElement('span', { className: 'hidden md:block' }, 'Login')
         )
       );
     },
