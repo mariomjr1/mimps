@@ -1,10 +1,10 @@
-/* Reading-session player, parametrized by MODALITY (chest | limb | brain). Each case:
- * a finding/prediction + box, the live model's real (uncalibrated) score + Grad-CAM
+/* Reading-session player, parametrized by MODALITY (chest | limb | brain | breast). Each
+ * case: a finding/prediction + box, the live model's real (uncalibrated) score + Grad-CAM
  * attention, and a 3-section pt-BR draft. Descriptive, non-diagnostic; physician signs.
- * (brain = braintumor-classifier-v1, 4-class RM; ~99% is a CURATED-benchmark ceiling,
- * not clinical, R&D-only data.) Entry = #chooser (three cards); each modality loads
- * data/<modality>/session.json (+ img/NN.jpg, cam/NN.png) with the SAME schema.
- * Deep-link: ?m=chest|limb|brain. */
+ * (brain = braintumor-classifier-v1, 4-class RM; breast = breastus-busi-v1, 3-class US on
+ * BUSI CC BY 4.0, single-site → R&D benchmark, not clinical.) Entry = #chooser (four cards);
+ * each modality loads data/<modality>/session.json (+ img/NN.jpg, cam/NN.png), SAME schema.
+ * Deep-link: ?m=chest|limb|brain|breast. */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -22,7 +22,7 @@
       controlsEl = document.querySelector('footer.controls'), demotag = $('demotag'),
       bmodel = $('bmodel'), hudsrc = $('hudsrc'), ptag = $('ptag'), pmeta = $('pmeta');
   var cases = [], N = 0, cur = 0, playing = true, timers = [], META = {}, pdfUrl = null;
-  var DV = '?d=20260707a';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
+  var DV = '?d=20260707b';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
 
   // ---- modality registry: everything chest-vs-limb lives here (same session schema) ----
   var MODS = {
@@ -46,6 +46,13 @@
       pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · escore não calibrado · ~99% = teto de benchmark curado, não clínico',
       demo: 'Demo · saída real do modelo · classificação descritiva, não diagnóstica · dados agregados de licença incerta → apenas P&D, não é produto',
       alt: 'RM de crânio'
+    },
+    breast: {
+      model: 'breastus-busi-v1', hud: 'US · MAMA', src: 'BUSI · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE ULTRASSONOGRAFIA MAMÁRIA',
+      chip: 'modelo · 3 classes', ptag: 'predição do modelo (3 classes)',
+      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · escore não calibrado · BUSI de sítio único (P&D), não clínico',
+      demo: 'Demo · saída real do modelo · classificação descritiva, não diagnóstica · dados BUSI CC BY 4.0 (sítio único, pesquisa) → não é produto',
+      alt: 'Ultrassonografia mamária'
     }
   };
   var modality = null, MOD = null, DATA_ROOT = '';

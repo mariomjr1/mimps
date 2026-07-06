@@ -1,0 +1,243 @@
+{
+ "model": "breastus-busi-v1",
+ "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · 3 classes",
+ "benchmark": "held-out test: acurácia 0.864 · macro AUROC (OvR) 0.972 · maligno-vs-resto AUROC 0.980 · n=118",
+ "gt_source": "predição do modelo (classificação 3 classes; caixa/calor = atenção Grad-CAM)",
+ "note": "Dataset BUSI (CC BY 4.0) de SÍTIO ÚNICO (Baheya, Cairo; 780 imagens) → benchmark de P&D, NÃO prontidão clínica/rastreamento. A caixa/calor é a atenção Grad-CAM (grosseira, não localiza). Escore não calibrado. Descritivo, não diagnóstico.",
+ "cases": [
+  {
+   "id": "BV-US-9000",
+   "src": "breast_28",
+   "view": "—",
+   "gt": {
+    "name": "No suspicious nodule",
+    "pt": "Sem nódulo suspeito",
+    "box": null
+   },
+   "model_score": 0.999,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ultrassonografia mamária em modo B, corte único, com transdutor linear de alta frequência.",
+    "achados": "Parênquima mamário de ecotextura habitual no corte avaliado. Não se identificam nódulos sólidos ou císticos, distorção arquitetural ou sombra acústica focal. Planos superficiais preservados.",
+    "impressao": "Exame sem alterações no corte estudado. Correlacionar com os demais cortes da varredura e com o exame clínico."
+   }
+  },
+  {
+   "id": "BV-US-9001",
+   "src": "breast_128",
+   "view": "—",
+   "gt": {
+    "name": "No suspicious nodule",
+    "pt": "Sem nódulo suspeito",
+    "box": null
+   },
+   "model_score": 0.981,
+   "secondary": [],
+   "report": {
+    "tecnica": "Estudo ultrassonográfico da mama em modo B, imagem única obtida com transdutor linear.",
+    "achados": "Tecido fibroglandular de aspecto preservado na imagem analisada, sem evidência de formação nodular. Ausência de reforço ou sombra acústica posterior focal.",
+    "impressao": "Aspecto ultrassonográfico dentro dos limites da normalidade neste corte. Sugere-se correlação com o restante do estudo e com achados clínicos."
+   }
+  },
+  {
+   "id": "BV-US-9002",
+   "src": "breast_247",
+   "view": "—",
+   "gt": {
+    "name": "Probably benign nodule",
+    "pt": "Nódulo provavelmente benigno",
+    "box": null
+   },
+   "model_score": 0.392,
+   "secondary": [],
+   "report": {
+    "tecnica": "Avaliação ultrassonográfica mamária, modo B, corte único, transdutor linear de alta frequência.",
+    "achados": "Ecotextura do parênquima discretamente heterogênea no corte avaliado, sem nódulo claramente individualizado. Não há sombra acústica posterior ou distorção arquitetural evidente.",
+    "impressao": "Achados inespecíficos, de provável natureza benigna, porém de caracterização limitada em imagem única. Recomenda-se complementação com varredura completa e correlação com mamografia."
+   }
+  },
+  {
+   "id": "BV-US-9003",
+   "src": "breast_187",
+   "view": "—",
+   "gt": {
+    "name": "Probably benign nodule",
+    "pt": "Nódulo provavelmente benigno",
+    "box": [
+     0.2321,
+     0.1696,
+     0.3214,
+     0.3214
+    ]
+   },
+   "model_score": 0.988,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ultrassonografia da mama em modo B, com transdutor linear de alta frequência, corte único.",
+    "achados": "Nódulo sólido hipoecoico, de margens circunscritas e orientação paralela à pele, com discreto reforço acústico posterior, identificado no corte avaliado.",
+    "impressao": "Nódulo de aspecto provavelmente benigno. Sugere-se acompanhamento ultrassonográfico e correlação com mamografia, a critério clínico."
+   }
+  },
+  {
+   "id": "BV-US-9004",
+   "src": "breast_250",
+   "view": "—",
+   "gt": {
+    "name": "Probably benign nodule",
+    "pt": "Nódulo provavelmente benigno",
+    "box": [
+     0.0,
+     0.4286,
+     0.375,
+     0.317
+    ]
+   },
+   "model_score": 0.913,
+   "secondary": [],
+   "report": {
+    "tecnica": "Exame ultrassonográfico mamário em modo B, imagem única, transdutor linear.",
+    "achados": "Imagem nodular hipoecoica, homogênea, de contornos regulares e maior eixo paralelo à pele, sem sombra acústica posterior.",
+    "impressao": "Achado com características ultrassonográficas de benignidade. Recomenda-se correlação com o exame físico e com mamografia, mantendo-se seguimento habitual."
+   }
+  },
+  {
+   "id": "BV-US-9005",
+   "src": "breast_598",
+   "view": "—",
+   "gt": {
+    "name": "Suspicious nodule",
+    "pt": "Nódulo suspeito",
+    "box": [
+     0.442,
+     0.2232,
+     0.3571,
+     0.3036
+    ]
+   },
+   "model_score": 0.862,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ultrassonografia mamária, modo B, corte único, realizada com transdutor linear de alta frequência.",
+    "achados": "Nódulo sólido hipoecoico de margens irregulares, orientação não paralela à pele (mais alto que largo), associado a sombra acústica posterior.",
+    "impressao": "Nódulo de aspecto suspeito ao método. Recomenda-se prosseguir a investigação com estudo histológico, a critério do médico assistente."
+   }
+  },
+  {
+   "id": "BV-US-9006",
+   "src": "breast_644",
+   "view": "—",
+   "gt": {
+    "name": "Suspicious nodule",
+    "pt": "Nódulo suspeito",
+    "box": [
+     0.0,
+     0.2277,
+     0.3616,
+     0.3125
+    ]
+   },
+   "model_score": 0.984,
+   "secondary": [],
+   "report": {
+    "tecnica": "Estudo ultrassonográfico da mama, modo B, imagem única, transdutor linear de alta frequência.",
+    "achados": "Formação nodular sólida, marcadamente hipoecoica, de margens indistintas e espiculadas, com atenuação acústica posterior no corte estudado.",
+    "impressao": "Achado com características ultrassonográficas suspeitas. Sugere-se complementação com mamografia e biópsia percutânea, a critério clínico."
+   }
+  },
+  {
+   "id": "BV-US-9007",
+   "src": "breast_714",
+   "view": "—",
+   "gt": {
+    "name": "Suspicious nodule",
+    "pt": "Nódulo suspeito",
+    "box": [
+     0.2589,
+     0.3438,
+     0.3259,
+     0.3125
+    ]
+   },
+   "model_score": 0.983,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ultrassonografia mamária em modo B, corte único, transdutor linear.",
+    "achados": "Nódulo hipoecoico de contornos irregulares e microlobulados, mais alto que largo, com halo ecogênico espesso e sombra acústica posterior.",
+    "impressao": "Nódulo de aspecto suspeito. Recomenda-se correlação mamográfica e estudo anatomopatológico para elucidação diagnóstica."
+   }
+  },
+  {
+   "id": "BV-US-9008",
+   "src": "breast_694",
+   "view": "—",
+   "gt": {
+    "name": "Suspicious nodule",
+    "pt": "Nódulo suspeito",
+    "box": [
+     0.4241,
+     0.4598,
+     0.3616,
+     0.2768
+    ]
+   },
+   "model_score": 0.989,
+   "secondary": [],
+   "report": {
+    "tecnica": "Avaliação ultrassonográfica da mama em modo B, corte único, com transdutor linear de alta frequência.",
+    "achados": "Lesão nodular sólida, hipoecoica, de margens espiculadas e orientação vertical, determinando sombra acústica posterior e discreta distorção do parênquima adjacente.",
+    "impressao": "Achado ultrassonográfico de alta suspeição ao método. Recomenda-se investigação histológica e correlação com métodos complementares."
+   }
+  },
+  {
+   "id": "BV-US-9009",
+   "src": "breast_61",
+   "view": "—",
+   "gt": {
+    "name": "Probably benign nodule",
+    "pt": "Nódulo provavelmente benigno",
+    "box": null
+   },
+   "model_score": 0.926,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ultrassonografia mamária, modo B, imagem única, transdutor linear de alta frequência.",
+    "achados": "Parênquima de ecotextura preservada, sem formação nodular delimitada no corte avaliado. Discreta área de textura heterogênea, sem sombra acústica ou distorção associadas.",
+    "impressao": "Achados de provável natureza benigna, sem lesão focal caracterizada nesta imagem. Sugere-se correlação com a varredura completa e com o exame clínico."
+   }
+  },
+  {
+   "id": "BV-US-9010",
+   "src": "breast_96",
+   "view": "—",
+   "gt": {
+    "name": "Suspicious nodule",
+    "pt": "Nódulo suspeito",
+    "box": null
+   },
+   "model_score": 0.715,
+   "secondary": [],
+   "report": {
+    "tecnica": "Estudo ultrassonográfico mamário em modo B, corte único, transdutor linear.",
+    "achados": "Área de ecotextura heterogênea com focos de hipoecogenicidade no corte estudado, não sendo possível individualizar nódulo definido nesta imagem única. Margens não delimitadas com precisão.",
+    "impressao": "Achado indeterminado, com características que levantam suspeita ao método. Recomenda-se complementação com varredura direcionada e mamografia; considerar estudo histológico conforme a evolução da investigação."
+   }
+  },
+  {
+   "id": "BV-US-9011",
+   "src": "breast_4",
+   "view": "—",
+   "gt": {
+    "name": "Probably benign nodule",
+    "pt": "Nódulo provavelmente benigno",
+    "box": null
+   },
+   "model_score": 0.511,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ultrassonografia da mama, modo B, imagem única, com transdutor linear de alta frequência.",
+    "achados": "Avaliação limitada pelo corte único, com parênquima de padrão levemente heterogêneo e sem achado focal definido. Não se caracterizam nódulo, sombra ou reforço acústico nesta imagem.",
+    "impressao": "Estudo inconclusivo em imagem única, de provável padrão benigno, porém sem caracterização adequada. Recomenda-se repetir a avaliação com varredura completa e correlação mamográfica."
+   }
+  }
+ ]
+}
