@@ -22,7 +22,7 @@
       controlsEl = document.querySelector('footer.controls'), demotag = $('demotag'),
       bmodel = $('bmodel'), hudsrc = $('hudsrc'), ptag = $('ptag'), pmeta = $('pmeta');
   var cases = [], N = 0, cur = 0, playing = true, timers = [], META = {}, pdfUrl = null;
-  var DV = '?d=20260706b';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
+  var DV = '?d=20260707a';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
 
   // ---- modality registry: everything chest-vs-limb lives here (same session schema) ----
   var MODS = {

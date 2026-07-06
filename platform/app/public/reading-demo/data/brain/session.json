@@ -178,12 +178,7 @@
    "gt": {
     "name": "Glioma",
     "pt": "Glioma",
-    "box": [
-     0.317,
-     0.5625,
-     0.3705,
-     0.2545
-    ]
+    "box": null
    },
    "model_score": 0.836,
    "secondary": [],
