@@ -12,12 +12,7 @@
    "gt": {
     "name": "No tumor",
     "pt": "Sem tumor",
-    "box": [
-     0.1071,
-     0.1027,
-     0.8884,
-     0.7411
-    ]
+    "box": null
    },
    "model_score": 1.0,
    "secondary": [],
@@ -34,12 +29,7 @@
    "gt": {
     "name": "No tumor",
     "pt": "Sem tumor",
-    "box": [
-     0.2768,
-     0.0893,
-     0.6741,
-     0.7768
-    ]
+    "box": null
    },
    "model_score": 1.0,
    "secondary": [],
@@ -57,10 +47,10 @@
     "name": "Glioma",
     "pt": "Glioma",
     "box": [
-     0.2723,
-     0.2366,
-     0.4732,
-     0.4866
+     0.3259,
+     0.3125,
+     0.3482,
+     0.317
     ]
    },
    "model_score": 1.0,
@@ -79,10 +69,10 @@
     "name": "Glioma",
     "pt": "Glioma",
     "box": [
-     0.2768,
-     0.2098,
-     0.558,
-     0.4732
+     0.3795,
+     0.2902,
+     0.3661,
+     0.2946
     ]
    },
    "model_score": 1.0,
@@ -101,10 +91,10 @@
     "name": "Meningioma",
     "pt": "Meningioma",
     "box": [
-     0.2679,
-     0.3973,
-     0.4419,
-     0.4063
+     0.3304,
+     0.442,
+     0.3304,
+     0.308
     ]
    },
    "model_score": 1.0,
@@ -123,10 +113,10 @@
     "name": "Meningioma",
     "pt": "Meningioma",
     "box": [
-     0.2812,
-     0.1205,
-     0.442,
-     0.4063
+     0.3304,
+     0.1696,
+     0.3393,
+     0.2991
     ]
    },
    "model_score": 1.0,
@@ -145,10 +135,10 @@
     "name": "Pituitary tumor",
     "pt": "Tumor de hipófise",
     "box": [
-     0.2366,
-     0.2857,
-     0.558,
-     0.5
+     0.3348,
+     0.3839,
+     0.3393,
+     0.308
     ]
    },
    "model_score": 1.0,
@@ -167,10 +157,10 @@
     "name": "Pituitary tumor",
     "pt": "Tumor de hipófise",
     "box": [
-     0.2679,
-     0.2857,
-     0.5714,
-     0.5268
+     0.375,
+     0.3884,
+     0.3661,
+     0.2812
     ]
    },
    "model_score": 1.0,
@@ -189,10 +179,10 @@
     "name": "Glioma",
     "pt": "Glioma",
     "box": [
-     0.2679,
-     0.5268,
-     0.4866,
-     0.317
+     0.317,
+     0.5625,
+     0.3705,
+     0.2545
     ]
    },
    "model_score": 0.836,
@@ -210,12 +200,7 @@
    "gt": {
     "name": "Glioma",
     "pt": "Glioma",
-    "box": [
-     0.1607,
-     0.0,
-     0.8125,
-     0.8527
-    ]
+    "box": null
    },
    "model_score": 0.596,
    "secondary": [],
@@ -232,12 +217,7 @@
    "gt": {
     "name": "Pituitary tumor",
     "pt": "Tumor de hipófise",
-    "box": [
-     0.1027,
-     0.0,
-     0.8928,
-     0.2946
-    ]
+    "box": null
    },
    "model_score": 0.44,
    "secondary": [],
@@ -254,12 +234,7 @@
    "gt": {
     "name": "Pituitary tumor",
     "pt": "Tumor de hipófise",
-    "box": [
-     0.1027,
-     0.0,
-     0.8928,
-     0.2946
-    ]
+    "box": null
    },
    "model_score": 0.44,
    "secondary": [],
