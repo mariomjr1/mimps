@@ -4,12 +4,12 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>BlackVoxel · Sessão de leitura assistida por IA — raio-X</title>
-<meta name="description" content="Demonstração: modelos reais (proxy-txv-v1 para tórax, limbfrac-fracatlas-v1 para membro) leem radiografias com Grad-CAM e um rascunho de laudo em português. Achados descritivos, não diagnósticos; revisão médica." />
+<meta name="description" content="Demonstração: modelos reais (proxy-txv-v1 tórax, limbfrac-fracatlas-v1 membro, braintumor-classifier-v1 RM de crânio) leem exames com Grad-CAM e um rascunho de laudo em português. Achados descritivos, não diagnósticos; revisão médica." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-<link rel="stylesheet" href="player.css?v=20260706" />
+<link rel="stylesheet" href="player.css?v=20260706b" />
 </head>
 <body>
 <div id="demotag" class="demo-tag mono">Demo · saída real do modelo · achados descritivos, não diagnósticos · dados de pesquisa</div>
@@ -42,6 +42,13 @@
         <span class="ch-name">Membro — Raio-X</span>
         <span class="ch-desc">modelo limbfrac-fracatlas-v1 · fratura</span>
         <span class="ch-tag mono">dados FracAtlas (pesquisa)</span>
+        <span class="ch-go mono">iniciar leitura ›</span>
+      </button>
+      <button class="ch-card" type="button" data-m="brain">
+        <span class="ch-mod mono">RM · MR</span>
+        <span class="ch-name">Crânio — RM (tumor)</span>
+        <span class="ch-desc">modelo braintumor-classifier-v1 · 4 classes</span>
+        <span class="ch-tag mono">dados agregados (P&amp;D) · benchmark curado</span>
         <span class="ch-go mono">iniciar leitura ›</span>
       </button>
     </div>
@@ -115,6 +122,6 @@
 
 <script src="vendor/jspdf.umd.min.js?v=20260706"></script>
 <script src="pdf.js?v=20260706"></script>
-<script src="player.js?v=20260706"></script>
+<script src="player.js?v=20260706b"></script>
 </body>
 </html>

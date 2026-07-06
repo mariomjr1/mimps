@@ -1,8 +1,10 @@
-/* X-ray reading-session player, parametrized by MODALITY (chest | limb). Each case:
- * a reference finding + box, the live model's real (uncalibrated) score + Grad-CAM
+/* Reading-session player, parametrized by MODALITY (chest | limb | brain). Each case:
+ * a finding/prediction + box, the live model's real (uncalibrated) score + Grad-CAM
  * attention, and a 3-section pt-BR draft. Descriptive, non-diagnostic; physician signs.
- * Entry = #chooser (two cards); each modality loads data/<modality>/session.json
- * (+ img/NN.jpg, cam/NN.png) with the SAME schema. Deep-link: ?m=chest|limb. */
+ * (brain = braintumor-classifier-v1, 4-class RM; ~99% is a CURATED-benchmark ceiling,
+ * not clinical, R&D-only data.) Entry = #chooser (three cards); each modality loads
+ * data/<modality>/session.json (+ img/NN.jpg, cam/NN.png) with the SAME schema.
+ * Deep-link: ?m=chest|limb|brain. */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -20,7 +22,7 @@
       controlsEl = document.querySelector('footer.controls'), demotag = $('demotag'),
       bmodel = $('bmodel'), hudsrc = $('hudsrc'), ptag = $('ptag'), pmeta = $('pmeta');
   var cases = [], N = 0, cur = 0, playing = true, timers = [], META = {}, pdfUrl = null;
-  var DV = '?d=20260706';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
+  var DV = '?d=20260706b';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
 
   // ---- modality registry: everything chest-vs-limb lives here (same session schema) ----
   var MODS = {
@@ -37,6 +39,13 @@
       pmeta: 'achado: FracAtlas · caixa + calor: atenção do modelo (Grad-CAM) · pontuação não calibrada',
       demo: 'Demo · saída real do modelo · achados descritivos, não diagnósticos · dados FracAtlas (pesquisa)',
       alt: 'Radiografia de membro'
+    },
+    brain: {
+      model: 'braintumor-classifier-v1', hud: 'RM · BRAIN', src: 'agregado (P&D)', examTitle: 'LAUDO DE RM DE CRÂNIO',
+      chip: 'modelo · 4 classes', ptag: 'predição do modelo (4 classes)',
+      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · escore não calibrado · ~99% = teto de benchmark curado, não clínico',
+      demo: 'Demo · saída real do modelo · classificação descritiva, não diagnóstica · dados agregados de licença incerta → apenas P&D, não é produto',
+      alt: 'RM de crânio'
     }
   };
   var modality = null, MOD = null, DATA_ROOT = '';

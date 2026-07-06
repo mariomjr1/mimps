@@ -1,0 +1,273 @@
+{
+ "model": "braintumor-classifier-v1",
+ "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · 4 classes",
+ "benchmark": "held-out test: acurácia 0.990 · macro AUROC (OvR) 0.999 · n=1055",
+ "gt_source": "predição do modelo (classificação 4 classes; o dataset não tem caixas-verdade)",
+ "note": "~99% é o TETO de um benchmark CURADO, NÃO prontidão clínica. Dataset de licença agregada incerta → apenas P&D, não pode virar produto. A caixa/calor é a atenção Grad-CAM (grosseira, não localiza).",
+ "cases": [
+  {
+   "id": "BV-BR-9000",
+   "src": "brain_4374",
+   "view": "—",
+   "gt": {
+    "name": "No tumor",
+    "pt": "Sem tumor",
+    "box": [
+     0.1071,
+     0.1027,
+     0.9955,
+     0.8438
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "Nesta RM de crânio, o modelo de pesquisa não identificou padrão de imagem sugestivo de tumor (probabilidade de 'sem tumor' 1,00, não calibrada).",
+    "impressao": "A ausência de sinal do modelo não exclui doença. Achado de pesquisa não diagnóstico; a confirmação cabe ao radiologista."
+   }
+  },
+  {
+   "id": "BV-BR-9001",
+   "src": "brain_4089",
+   "view": "—",
+   "gt": {
+    "name": "No tumor",
+    "pt": "Sem tumor",
+    "box": [
+     0.2768,
+     0.0893,
+     0.9509,
+     0.8661
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "A análise automática deste corte encefálico não evidenciou sinal de neoplasia; o classificador atribuiu 'sem tumor' com probabilidade 1,00 (não calibrada).",
+    "impressao": "Não haver sinal do modelo não afasta a presença de doença. Resultado meramente exploratório, a ser validado por leitura médica dedicada."
+   }
+  },
+  {
+   "id": "BV-BR-9002",
+   "src": "brain_1387",
+   "view": "—",
+   "gt": {
+    "name": "Glioma",
+    "pt": "Glioma",
+    "box": [
+     0.2723,
+     0.2366,
+     0.7455,
+     0.7232
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "O classificador de pesquisa destaca, na região realçada pela atenção do modelo, padrão sugestivo de glioma (probabilidade 1,00, não calibrada).",
+    "impressao": "Padrão a confirmar pelo radiologista; o modelo não afirma tumor. Sinal não calibrado, sem valor diagnóstico — o laudo é do médico assistente."
+   }
+  },
+  {
+   "id": "BV-BR-9003",
+   "src": "brain_2153",
+   "view": "—",
+   "gt": {
+    "name": "Glioma",
+    "pt": "Glioma",
+    "box": [
+     0.2768,
+     0.2098,
+     0.8348,
+     0.683
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "Neste corte de RM de crânio, a rede sinaliza padrão compatível com glioma na topografia realçada (escore 1,00, não calibrado).",
+    "impressao": "Indicativo a verificar em leitura dedicada, sem afirmação de tumor. Uso exclusivo de pesquisa — não substitui a avaliação e a assinatura do radiologista."
+   }
+  },
+  {
+   "id": "BV-BR-9004",
+   "src": "brain_3387",
+   "view": "—",
+   "gt": {
+    "name": "Meningioma",
+    "pt": "Meningioma",
+    "box": [
+     0.2679,
+     0.3973,
+     0.7098,
+     0.8036
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "A ferramenta de pesquisa sinaliza, na região destacada, um padrão de imagem sugestivo de meningioma (probabilidade 1,00, não calibrada).",
+    "impressao": "Padrão que requer confirmação pelo radiologista; o modelo não estabelece a existência de lesão. Apoio investigacional; a interpretação definitiva permanece com o especialista."
+   }
+  },
+  {
+   "id": "BV-BR-9005",
+   "src": "brain_2906",
+   "view": "—",
+   "gt": {
+    "name": "Meningioma",
+    "pt": "Meningioma",
+    "box": [
+     0.2812,
+     0.1205,
+     0.7232,
+     0.5268
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "Nesta fatia encefálica, o algoritmo realça área com aspecto sugestivo de meningioma na topografia atendida (escore 1,00, não calibrado).",
+    "impressao": "Achado a ser corroborado por avaliação radiológica, sem asserção de tumor. Saída automatizada não constitui diagnóstico; a correlação clínica é indispensável."
+   }
+  },
+  {
+   "id": "BV-BR-9006",
+   "src": "brain_6118",
+   "view": "—",
+   "gt": {
+    "name": "Pituitary tumor",
+    "pt": "Tumor de hipófise",
+    "box": [
+     0.2366,
+     0.2857,
+     0.7946,
+     0.7857
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "O modelo de pesquisa destaca, na região selar realçada, um padrão sugestivo de tumor de hipófise (probabilidade 1,00, não calibrada).",
+    "impressao": "Padrão a confirmar por avaliação dedicada da região selar; o modelo não afirma lesão. Ferramenta de pesquisa sem validação clínica; requer revisão do médico responsável."
+   }
+  },
+  {
+   "id": "BV-BR-9007",
+   "src": "brain_1112",
+   "view": "—",
+   "gt": {
+    "name": "Pituitary tumor",
+    "pt": "Tumor de hipófise",
+    "box": [
+     0.2679,
+     0.2857,
+     0.8393,
+     0.8125
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "A saída da rede sinaliza, na topografia da região selar, aspecto compatível com tumor de hipófise (escore 1,00, não calibrado).",
+    "impressao": "Indicativo a ser verificado pelo radiologista na região selar, sem afirmar lesão. O sinalizador não estabelece doença; a conduta depende do julgamento médico."
+   }
+  },
+  {
+   "id": "BV-BR-9008",
+   "src": "brain_3769",
+   "view": "—",
+   "gt": {
+    "name": "Glioma",
+    "pt": "Glioma",
+    "box": [
+     0.2679,
+     0.5268,
+     0.7545,
+     0.8438
+    ]
+   },
+   "model_score": 0.836,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "Com baixa confiança, o classificador aponta possível glioma na área realçada, em saída indeterminada (probabilidade 0,84, não calibrada).",
+    "impressao": "Resultado inconclusivo que exige avaliação dedicada do radiologista antes de qualquer consideração. Escore não calibrado, apenas para triagem de pesquisa, sem finalidade diagnóstica."
+   }
+  },
+  {
+   "id": "BV-BR-9009",
+   "src": "brain_3961",
+   "view": "—",
+   "gt": {
+    "name": "Glioma",
+    "pt": "Glioma",
+    "box": [
+     0.1607,
+     0.0,
+     0.9732,
+     0.8527
+    ]
+   },
+   "model_score": 0.596,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "A saída do modelo é indeterminada, aventando possível glioma na região atendida (probabilidade 0,60, não calibrada), com confiança baixa.",
+    "impressao": "A incerteza é elevada e recomenda-se revisão dedicada do radiologista. Resultado experimental não diagnóstico, sujeito a confirmação por profissional habilitado."
+   }
+  },
+  {
+   "id": "BV-BR-9010",
+   "src": "brain_307",
+   "view": "—",
+   "gt": {
+    "name": "Pituitary tumor",
+    "pt": "Tumor de hipófise",
+    "box": [
+     0.1027,
+     0.0,
+     0.9955,
+     0.2946
+    ]
+   },
+   "model_score": 0.44,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "O escore do modelo é inconclusivo, com sinal fraco para tumor de hipófise na região realçada (probabilidade 0,44, não calibrada).",
+    "impressao": "Confiança baixíssima, sem definição da classe; impõe-se avaliação dedicada do radiologista. Informação de pesquisa, sem calibração; não orienta conduta isoladamente."
+   }
+  },
+  {
+   "id": "BV-BR-9011",
+   "src": "brain_2829",
+   "view": "—",
+   "gt": {
+    "name": "Pituitary tumor",
+    "pt": "Tumor de hipófise",
+    "box": [
+     0.1027,
+     0.0,
+     0.9955,
+     0.2946
+    ]
+   },
+   "model_score": 0.44,
+   "secondary": [],
+   "report": {
+    "tecnica": "Ressonância magnética de crânio (encéfalo), corte único.",
+    "achados": "A resposta do modelo é indeterminada, aventando, com incerteza, tumor de hipófise na topografia atendida (probabilidade 0,44, não calibrada).",
+    "impressao": "Confiança muito baixa que demanda leitura dedicada do radiologista para qualquer conclusão. Sinal exploratório sem valor diagnóstico; a decisão final é do radiologista."
+   }
+  }
+ ]
+}
