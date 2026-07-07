@@ -1,8 +1,8 @@
 /* Reading-session player, parametrized by MODALITY (chest | limb | brain | breast | headct |
- * mammo | obus | ctchest | vascularus | abdominalus). Each case: a finding/prediction + box, the
- * live model's real (uncalibrated) score + Grad-CAM attention, and a 3-section pt-BR draft.
- * Descriptive, non-diagnostic; physician signs. (brain = braintumor-classifier-v1, 4-class RM;
- * breast = breastus-busi-v1, 3-class US on BUSI CC BY 4.0; headct = headct-ich-v1, 6-label
+ * mammo | obus | ctchest | vascularus | abdominalus | spinemri). Each case: a finding/prediction
+ * + box, the live model's real (uncalibrated) score + Grad-CAM attention, and a 3-section pt-BR
+ * draft. Descriptive, non-diagnostic; physician signs. (brain = braintumor-classifier-v1, 4-class
+ * RM; breast = breastus-busi-v1, 3-class US on BUSI CC BY 4.0; headct = headct-ich-v1, 6-label
  * multilabel ICH on a NON-RANDOM RSNA-ICH tar-prefix pull, non-commercial despite the HF mirror's
  * tag; mammo = mammo-cbisddsm-v1, benign/malignant on CBIS-DDSM digitized-film ROI crops; obus =
  * obus-hc-v1, scalar fetal head-circumference regressor on HC18 CC BY 4.0 — box is the HC18
@@ -12,9 +12,12 @@
  * imt-v1, scalar carotid intima-media-thickness regressor on CUBS CC BY 4.0 — WEAK (R² 0.28),
  * box is the expert measurement region not a model localization; abdominalus = abdominalus-
  * organ-v1, 10-class abdominal ORGAN RECOGNITION (not disease screening) on MSU US CC BY 4.0,
- * cross-radiologist held-out test — all R&D benchmarks, not clinical.)
+ * cross-radiologist held-out test; spinemri = spinemri-degen-v1, 6-label lumbar-spine
+ * degenerative-finding multilabel on SPIDER CC BY 4.0, STUDY-LEVEL not per-disc/volumetric —
+ * disc_bulging/narrowing strong, disc_herniation/spondylolisthesis genuinely weak (rare-label) —
+ * all R&D benchmarks, not clinical.)
  * Entry = #chooser (cards); each modality loads data/<modality>/session.json (+
- * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus|ctchest|vascularus|abdominalus. */
+ * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus|ctchest|vascularus|abdominalus|spinemri. */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -105,6 +108,13 @@
       pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · RECONHECIMENTO DE ÓRGÃO, não triagem de doença · classe rara (veia porta) com recall fraco, não clínico',
       demo: 'Demo · saída real do modelo · reconhecimento descritivo de órgão, não diagnóstico · dados MSU CC BY 4.0 (pesquisa, teste cross-radiologista) → não é produto',
       alt: 'Ultrassonografia abdominal'
+    },
+    spinemri: {
+      model: 'spinemri-degen-v1', hud: 'RM · COLUNA', src: 'SPIDER · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE RM DE COLUNA LOMBAR (ACHADOS DEGENERATIVOS)',
+      chip: 'modelo · multi-rótulo', ptag: 'predição do modelo (multi-rótulo, nível de estudo)',
+      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · NÍVEL DE ESTUDO, não por disco/volumétrico (não localiza qual nível) · abaulamento/redução fortes, hérnia/espondilolistese fracos (classe rara), não clínico',
+      demo: 'Demo · saída real do modelo · achados descritivos, não diagnósticos · dados SPIDER CC BY 4.0 (pesquisa) → não é produto',
+      alt: 'Ressonância magnética de coluna lombar'
     }
   };
   var modality = null, MOD = null, DATA_ROOT = '';
