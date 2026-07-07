@@ -1,0 +1,182 @@
+{
+ "model": "ctchest-nodule-v1",
+ "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · caracterização de malignidade de nódulo (recorte 128px centrado no nódulo)",
+ "benchmark": "held-out test: AUROC 0.931 · sens 0.750 · spec 0.967 · n=97 (36 malignant)",
+ "gt_source": "predição do modelo (binária; caixa/calor = atenção Grad-CAM no recorte)",
+ "note": "Amostra ALEATÓRIA e limitada de pacientes do LIDC-IDRI (TCIA, CC BY 3.0 na fonte original — a ÚNICA via de TC de tórax com licença comercial-limpa). Rótulo = mediana da suspeita de malignidade (1-5) de até 4 radiologistas, binarizada (>=4 maligno / <=2 benigno). CARACTERIZAÇÃO: o nódulo é LOCALIZADO PELO RADIOLOGISTA (entrada = recorte centrado no nódulo) — o modelo caracteriza um nódulo DADO, NÃO detecta nódulos. CORTE AXIAL ÚNICO (2D), não o volume 3D completo — um 'benigno' aqui não avalia o restante da série. A caixa/calor é a atenção Grad-CAM (grosseira, não localiza nem mede). Suspeita radiológica, não prova patológica. Descritivo, P&D, não diagnóstico.",
+ "cases": [
+  {
+   "id": "BV-CTNOD-9000",
+   "src": "LIDC-IDRI-0191_5596621613349132.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Malignant-suspicious nodule",
+    "pt": "Nódulo com suspeita de malignidade",
+    "box": [
+     0.3973,
+     0.2857,
+     0.2321,
+     0.442
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de tórax, corte axial único em janela de parênquima pulmonar (nível -600 / largura 1500 UH).",
+    "achados": "Neste corte identifica-se nódulo pulmonar cujas características de imagem, segundo o modelo, apresentam padrão que motiva atenção (a caixa/calor indica a região de maior ativação do modelo — atenção Grad-CAM, não uma medida). A caracterização morfológica definitiva (margens, textura, calcificação) exige a série completa.",
+    "impressao": "Nódulo com suspeita de malignidade elevada pelo modelo (probabilidade 1,00). Referência apenas a este corte; a leitura do volume completo, a comparação com exames prévios e a conduta cabem ao radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-CTNOD-9001",
+   "src": "LIDC-IDRI-0819_1973474078188709.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Malignant-suspicious nodule",
+    "pt": "Nódulo com suspeita de malignidade",
+    "box": [
+     0.4018,
+     0.3259,
+     0.3036,
+     0.3393
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de tórax, corte axial único em janela de parênquima pulmonar (nível -600 / largura 1500 UH).",
+    "achados": "Neste corte identifica-se nódulo pulmonar cujas características de imagem, segundo o modelo, apresentam padrão que motiva atenção (a caixa/calor indica a região de maior ativação do modelo — atenção Grad-CAM, não uma medida). A caracterização morfológica definitiva (margens, textura, calcificação) exige a série completa.",
+    "impressao": "Nódulo com suspeita de malignidade elevada pelo modelo (probabilidade 1,00). Referência apenas a este corte; a leitura do volume completo, a comparação com exames prévios e a conduta cabem ao radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-CTNOD-9002",
+   "src": "LIDC-IDRI-0194_7523016734059080.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Malignant-suspicious nodule",
+    "pt": "Nódulo com suspeita de malignidade",
+    "box": [
+     0.3795,
+     0.2902,
+     0.2946,
+     0.375
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de tórax, corte axial único em janela de parênquima pulmonar (nível -600 / largura 1500 UH).",
+    "achados": "Neste corte identifica-se nódulo pulmonar cujas características de imagem, segundo o modelo, apresentam padrão que motiva atenção (a caixa/calor indica a região de maior ativação do modelo — atenção Grad-CAM, não uma medida). A caracterização morfológica definitiva (margens, textura, calcificação) exige a série completa.",
+    "impressao": "Nódulo com suspeita de malignidade elevada pelo modelo (probabilidade 1,00). Referência apenas a este corte; a leitura do volume completo, a comparação com exames prévios e a conduta cabem ao radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-CTNOD-9003",
+   "src": "LIDC-IDRI-0242_0670788030303614.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Malignant-suspicious nodule",
+    "pt": "Nódulo com suspeita de malignidade",
+    "box": [
+     0.375,
+     0.2902,
+     0.3036,
+     0.3705
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de tórax, corte axial único em janela de parênquima pulmonar (nível -600 / largura 1500 UH).",
+    "achados": "Neste corte identifica-se nódulo pulmonar cujas características de imagem, segundo o modelo, apresentam padrão que motiva atenção (a caixa/calor indica a região de maior ativação do modelo — atenção Grad-CAM, não uma medida). A caracterização morfológica definitiva (margens, textura, calcificação) exige a série completa.",
+    "impressao": "Nódulo com suspeita de malignidade elevada pelo modelo (probabilidade 1,00). Referência apenas a este corte; a leitura do volume completo, a comparação com exames prévios e a conduta cabem ao radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-CTNOD-9004",
+   "src": "LIDC-IDRI-0916_1829031486487774.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Benign-appearing nodule",
+    "pt": "Nódulo de aspecto benigno",
+    "box": null
+   },
+   "model_score": 0.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de tórax, corte axial único em janela de parênquima pulmonar (nível -600 / largura 1500 UH).",
+    "achados": "Neste corte identifica-se nódulo pulmonar sem características que, para o modelo, sugiram malignidade neste nível. A avaliação de toda a extensão do nódulo e do restante do parênquima requer a série axial completa.",
+    "impressao": "Nódulo de aspecto predominantemente benigno pelo modelo (probabilidade de malignidade 0,00). Impressão restrita a este corte — um resultado de baixa suspeita não exclui doença em outros níveis do volume; a leitura completa permanece com o médico responsável."
+   }
+  },
+  {
+   "id": "BV-CTNOD-9005",
+   "src": "LIDC-IDRI-0741_1756138476123561.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Benign-appearing nodule",
+    "pt": "Nódulo de aspecto benigno",
+    "box": null
+   },
+   "model_score": 0.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de tórax, corte axial único em janela de parênquima pulmonar (nível -600 / largura 1500 UH).",
+    "achados": "Neste corte identifica-se nódulo pulmonar sem características que, para o modelo, sugiram malignidade neste nível. A avaliação de toda a extensão do nódulo e do restante do parênquima requer a série axial completa.",
+    "impressao": "Nódulo de aspecto predominantemente benigno pelo modelo (probabilidade de malignidade 0,00). Impressão restrita a este corte — um resultado de baixa suspeita não exclui doença em outros níveis do volume; a leitura completa permanece com o médico responsável."
+   }
+  },
+  {
+   "id": "BV-CTNOD-9006",
+   "src": "LIDC-IDRI-0604_8431173023092818.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Benign-appearing nodule",
+    "pt": "Nódulo de aspecto benigno",
+    "box": null
+   },
+   "model_score": 0.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de tórax, corte axial único em janela de parênquima pulmonar (nível -600 / largura 1500 UH).",
+    "achados": "Neste corte identifica-se nódulo pulmonar sem características que, para o modelo, sugiram malignidade neste nível. A avaliação de toda a extensão do nódulo e do restante do parênquima requer a série axial completa.",
+    "impressao": "Nódulo de aspecto predominantemente benigno pelo modelo (probabilidade de malignidade 0,00). Impressão restrita a este corte — um resultado de baixa suspeita não exclui doença em outros níveis do volume; a leitura completa permanece com o médico responsável."
+   }
+  },
+  {
+   "id": "BV-CTNOD-9007",
+   "src": "LIDC-IDRI-0993_9633170152512616.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Malignant-suspicious nodule",
+    "pt": "Nódulo com suspeita de malignidade",
+    "box": null
+   },
+   "model_score": 0.998,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de tórax, corte axial único em janela de parênquima pulmonar (nível -600 / largura 1500 UH).",
+    "achados": "Neste corte identifica-se nódulo pulmonar cujas características de imagem, segundo o modelo, apresentam padrão que motiva atenção (a caixa/calor indica a região de maior ativação do modelo — atenção Grad-CAM, não uma medida). A caracterização morfológica definitiva (margens, textura, calcificação) exige a série completa.",
+    "impressao": "Nódulo com suspeita de malignidade elevada pelo modelo (probabilidade 1,00). Referência apenas a este corte; a leitura do volume completo, a comparação com exames prévios e a conduta cabem ao radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-CTNOD-9008",
+   "src": "LIDC-IDRI-0118_9035787194019031.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Malignant-suspicious nodule",
+    "pt": "Nódulo com suspeita de malignidade",
+    "box": null
+   },
+   "model_score": 0.532,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de tórax, corte axial único em janela de parênquima pulmonar (nível -600 / largura 1500 UH).",
+    "achados": "Neste corte identifica-se nódulo pulmonar cujas características de imagem, segundo o modelo, apresentam padrão que motiva atenção (a caixa/calor indica a região de maior ativação do modelo — atenção Grad-CAM, não uma medida). A caracterização morfológica definitiva (margens, textura, calcificação) exige a série completa.",
+    "impressao": "Nódulo com suspeita de malignidade elevada pelo modelo (probabilidade 0,53). Referência apenas a este corte; a leitura do volume completo, a comparação com exames prévios e a conduta cabem ao radiologista assistente."
+   }
+  }
+ ]
+}
