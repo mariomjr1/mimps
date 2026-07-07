@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>BlackVoxel · Sessão de leitura assistida por IA — raio-X</title>
-<meta name="description" content="Demonstração: modelos reais (proxy-txv-v1 tórax, limbfrac-fracatlas-v1 membro, braintumor-classifier-v1 RM de crânio, breastus-busi-v1 US de mama) leem exames com Grad-CAM e um rascunho de laudo em português. Achados descritivos, não diagnósticos; revisão médica." />
+<meta name="description" content="Demonstração: modelos reais (proxy-txv-v1 tórax, limbfrac-fracatlas-v1 membro, braintumor-classifier-v1 RM de crânio, breastus-busi-v1 US de mama, headct-ich-v1 TC de crânio, mammo-cbisddsm-v1 mamografia) leem exames com Grad-CAM e um rascunho de laudo em português. Achados descritivos, não diagnósticos; revisão médica." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -34,6 +34,10 @@
         <span class="ch-mod mono">RAIO-X · DX</span>
         <span class="ch-name">Tórax — Raio-X</span>
         <span class="ch-desc">modelo proxy-txv-v1 · achados torácicos</span>
+        <span class="ch-metrics mono">
+          <span class="ch-arch">DenseNet-121 (torchxrayvision)</span>
+          <span class="ch-perf">TEST AUROC 0.658</span>
+        </span>
         <span class="ch-tag mono">dados NIH ChestX-ray14 (pesquisa)</span>
         <span class="ch-go mono">iniciar leitura ›</span>
       </button>
@@ -41,6 +45,10 @@
         <span class="ch-mod mono">RAIO-X · DX</span>
         <span class="ch-name">Membro — Raio-X</span>
         <span class="ch-desc">modelo limbfrac-fracatlas-v1 · fratura</span>
+        <span class="ch-metrics mono">
+          <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
+          <span class="ch-perf">TEST AUROC 0.887 · sens 0.67 · spec 0.96</span>
+        </span>
         <span class="ch-tag mono">dados FracAtlas (pesquisa)</span>
         <span class="ch-go mono">iniciar leitura ›</span>
       </button>
@@ -48,6 +56,10 @@
         <span class="ch-mod mono">RM · MR</span>
         <span class="ch-name">Crânio — RM (tumor)</span>
         <span class="ch-desc">modelo braintumor-classifier-v1 · 4 classes</span>
+        <span class="ch-metrics mono">
+          <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
+          <span class="ch-perf">TEST acc 0.9896 · macro AUROC 0.9991</span>
+        </span>
         <span class="ch-tag mono">dados agregados (P&amp;D) · benchmark curado</span>
         <span class="ch-go mono">iniciar leitura ›</span>
       </button>
@@ -55,7 +67,33 @@
         <span class="ch-mod mono">US · MAMA</span>
         <span class="ch-name">Mama — Ultrassom</span>
         <span class="ch-desc">modelo breastus-busi-v1 · 3 classes</span>
+        <span class="ch-metrics mono">
+          <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
+          <span class="ch-perf">TEST acc 0.864 · AUROC 0.972 (maligno sens 0.969)</span>
+        </span>
         <span class="ch-tag mono">dados BUSI (pesquisa) · CC BY 4.0</span>
+        <span class="ch-go mono">iniciar leitura ›</span>
+      </button>
+      <button class="ch-card" type="button" data-m="headct">
+        <span class="ch-mod mono">TC · CRÂNIO</span>
+        <span class="ch-name">Crânio — TC (hemorragia)</span>
+        <span class="ch-desc">modelo headct-ich-v1 · multi-rótulo</span>
+        <span class="ch-metrics mono">
+          <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
+          <span class="ch-perf">TEST macro AUROC 0.932 (sens 0.827)</span>
+        </span>
+        <span class="ch-tag mono">recorte não aleatório RSNA-ICH (pesquisa)</span>
+        <span class="ch-go mono">iniciar leitura ›</span>
+      </button>
+      <button class="ch-card" type="button" data-m="mammo">
+        <span class="ch-mod mono">MG · MAMA</span>
+        <span class="ch-name">Mama — Mamografia</span>
+        <span class="ch-desc">modelo mammo-cbisddsm-v1 · 2 classes</span>
+        <span class="ch-metrics mono">
+          <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
+          <span class="ch-perf">TEST AUROC 0.748 (sens 0.626)</span>
+        </span>
+        <span class="ch-tag mono">dados CBIS-DDSM (pesquisa) · CC BY 4.0</span>
         <span class="ch-go mono">iniciar leitura ›</span>
       </button>
     </div>
@@ -129,6 +167,6 @@
 
 <script src="vendor/jspdf.umd.min.js?v=20260706"></script>
 <script src="pdf.js?v=20260706"></script>
-<script src="player.js?v=20260707b"></script>
+<script src="player.js?v=20260708b"></script>
 </body>
 </html>

@@ -1,0 +1,233 @@
+{
+ "model": "mammo-cbisddsm-v1",
+ "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · benigno/maligno",
+ "benchmark": "held-out test: AUROC 0.748 · sensibilidade 0.626 · n=627",
+ "gt_source": "predição do modelo (2 classes; caixa/calor = atenção Grad-CAM)",
+ "note": "Recortes de ROI do CBIS-DDSM (filme digitalizado, NÃO mamografia digital/FFDM), sítio único, subconjunto de 2437 achados → benchmark de P&D, NÃO prontidão clínica/rastreamento. Caracterização de lesão sobre um recorte já dado (não é detecção). A caixa/calor é a atenção Grad-CAM (grosseira, não localiza). Descritivo, não diagnóstico.",
+ "cases": [
+  {
+   "id": "BV-MG-9000",
+   "src": "Calc-Test_P_00038_LEFT_CC_1",
+   "view": "CC",
+   "gt": {
+    "name": "Probably benign lesion",
+    "pt": "Lesão provavelmente benigna",
+    "box": null
+   },
+   "model_score": 0.985,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência craniocaudal (CC), mama esquerda; recorte ampliado do achado para análise.",
+    "achados": "No recorte avaliado, calcificações densas, de aspecto grosseiro e contornos bem definidos, sem pleomorfismo evidente. Não se identificam espículas ou distorção arquitetural associadas.",
+    "impressao": "Achado com características provavelmente benignas neste recorte. Sugere-se correlação com o restante do exame e com estudos anteriores, quando disponíveis, a critério do radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-MG-9001",
+   "src": "Calc-Test_P_00038_LEFT_MLO_1",
+   "view": "MLO",
+   "gt": {
+    "name": "Probably benign lesion",
+    "pt": "Lesão provavelmente benigna",
+    "box": null
+   },
+   "model_score": 0.899,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência mediolateral oblíqua (MLO), mama esquerda; ampliação do mesmo achado avaliado na incidência CC.",
+    "achados": "Nesta incidência, o achado mantém morfologia semelhante à observada na CC: calcificações densas, de limites nítidos, sem componente pleomórfico ou fino linear.",
+    "impressao": "Aspecto provavelmente benigno também na incidência MLO, corroborando a avaliação da CC. Seguimento e classificação final a critério do radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-MG-9002",
+   "src": "Calc-Test_P_00038_RIGHT_CC_1",
+   "view": "CC",
+   "gt": {
+    "name": "Probably benign lesion",
+    "pt": "Lesão provavelmente benigna",
+    "box": null
+   },
+   "model_score": 0.972,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência craniocaudal (CC), mama direita; recorte ampliado do achado.",
+    "achados": "Nódulo de margens circunscritas e densidade homogênea no recorte analisado, sem calcificações suspeitas associadas ou alteração do parênquima adjacente.",
+    "impressao": "Achado de aspecto provavelmente benigno neste recorte. Convém correlacionar com incidências adicionais e exames prévios, ficando a conduta a critério do radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-MG-9003",
+   "src": "Calc-Test_P_00041_LEFT_CC_2",
+   "view": "CC",
+   "gt": {
+    "name": "Probably benign lesion",
+    "pt": "Lesão provavelmente benigna",
+    "box": null
+   },
+   "model_score": 0.996,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência craniocaudal (CC), mama esquerda; recorte ampliado.",
+    "achados": "Calcificação grosseira, densa, com padrão \"em pipoca\" e limites bem definidos, centrada no recorte, sem microcalcificações agrupadas de permeio.",
+    "impressao": "Padrão fortemente sugestivo de benignidade, compatível com calcificação distrófica ou em involução. Classificação e conduta finais a critério do radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-MG-9004",
+   "src": "Calc-Test_P_00202_RIGHT_CC_2",
+   "view": "CC",
+   "gt": {
+    "name": "Suspicious lesion",
+    "pt": "Lesão suspeita",
+    "box": [
+     0.4598,
+     0.3661,
+     0.3571,
+     0.2902
+    ]
+   },
+   "model_score": 0.989,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência craniocaudal (CC), mama direita; recorte ampliado com área de interesse assinalada.",
+    "achados": "Na região assinalada, massa de alta densidade com margens espiculadas, de limites mal definidos em relação ao tecido fibroglandular adjacente.",
+    "impressao": "Achado de aspecto suspeito neste recorte. Recomenda-se prosseguir a investigação com incidências complementares e estudo histopatológico (core biopsy), a critério do radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-MG-9005",
+   "src": "Calc-Test_P_00202_RIGHT_MLO_2",
+   "view": "MLO",
+   "gt": {
+    "name": "Suspicious lesion",
+    "pt": "Lesão suspeita",
+    "box": [
+     0.6875,
+     0.25,
+     0.308,
+     0.3348
+    ]
+   },
+   "model_score": 0.847,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência mediolateral oblíqua (MLO), mama direita; ampliação do achado já avaliado na CC, com região assinalada.",
+    "achados": "O achado persiste nesta incidência, com densidade elevada e margens parcialmente indistintas na área destacada; a espiculação é menos evidente do que na CC.",
+    "impressao": "Mantêm-se características suspeitas nas duas incidências avaliadas. Sugere-se complementação diagnóstica e avaliação histológica, conforme julgamento do radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-MG-9006",
+   "src": "Calc-Test_P_00372_RIGHT_CC_1",
+   "view": "CC",
+   "gt": {
+    "name": "Suspicious lesion",
+    "pt": "Lesão suspeita",
+    "box": [
+     0.1652,
+     0.0,
+     0.2857,
+     0.3661
+    ]
+   },
+   "model_score": 0.934,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência craniocaudal (CC), mama direita; recorte ampliado com área de interesse demarcada.",
+    "achados": "Na área demarcada, assimetria focal de margens indistintas, com densidade superior à do parênquima vizinho e discreta distorção do padrão fibroglandular.",
+    "impressao": "Achado suspeito no recorte analisado. Recomenda-se compressão localizada, incidências adicionais e, persistindo o achado, core biopsy, a critério do radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-MG-9007",
+   "src": "Calc-Test_P_00390_RIGHT_CC_1",
+   "view": "CC",
+   "gt": {
+    "name": "Suspicious lesion",
+    "pt": "Lesão suspeita",
+    "box": null
+   },
+   "model_score": 0.538,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência craniocaudal (CC), mama direita; recorte ampliado do achado.",
+    "achados": "Área de densidade heterogênea, sem margens definidas ou calcificações claramente individualizáveis, sem caracterização segura no recorte.",
+    "impressao": "Achado indeterminado, sem elementos suficientes para caracterizar suspeição neste recorte isolado. Recomenda-se correlação com incidências adicionais, exame clínico e, se necessário, ultrassonografia dirigida."
+   }
+  },
+  {
+   "id": "BV-MG-9008",
+   "src": "Calc-Test_P_00390_RIGHT_MLO_1",
+   "view": "MLO",
+   "gt": {
+    "name": "Suspicious lesion",
+    "pt": "Lesão suspeita",
+    "box": [
+     0.5491,
+     0.442,
+     0.4464,
+     0.2366
+    ]
+   },
+   "model_score": 0.716,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência mediolateral oblíqua (MLO), mama direita; recorte ampliado com região assinalada, complementar à incidência CC.",
+    "achados": "Na região assinalada, opacidade de margens parcialmente obscurecidas pelo tecido adjacente, mais bem individualizada nesta incidência do que na CC.",
+    "impressao": "Características que levantam suspeição, porém sem definição segura no recorte. Sugere-se compressão localizada e correlação ultrassonográfica antes da definição de conduta pelo radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-MG-9009",
+   "src": "Calc-Test_P_00038_RIGHT_MLO_1",
+   "view": "MLO",
+   "gt": {
+    "name": "Suspicious lesion",
+    "pt": "Lesão suspeita",
+    "box": null
+   },
+   "model_score": 0.561,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência mediolateral oblíqua (MLO), mama direita; recorte ampliado do achado.",
+    "achados": "Achado inespecífico no recorte, com discreto aumento de densidade, sem margens ou calcificações que permitam caracterização adequada.",
+    "impressao": "Não há elementos seguros para caracterização do achado neste recorte isolado, permanecendo o acometimento a esclarecer. Recomenda-se complementação com incidências adicionais e correlação com o exame completo."
+   }
+  },
+  {
+   "id": "BV-MG-9010",
+   "src": "Calc-Test_P_00100_RIGHT_CC_1",
+   "view": "CC",
+   "gt": {
+    "name": "Suspicious lesion",
+    "pt": "Lesão suspeita",
+    "box": null
+   },
+   "model_score": 0.548,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência craniocaudal (CC), mama direita; ampliação do achado em estudo.",
+    "achados": "Tênue área de densidade assimétrica, de limites imprecisos, sem nódulo dominante ou agrupamento de calcificações bem definido no recorte.",
+    "impressao": "Achado indeterminado neste recorte, com caracterização a esclarecer. Sugere-se compressão localizada, incidências complementares e correlação clínica antes de qualquer definição pelo radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-MG-9011",
+   "src": "Calc-Test_P_00127_RIGHT_CC_1",
+   "view": "CC",
+   "gt": {
+    "name": "Probably benign lesion",
+    "pt": "Lesão provavelmente benigna",
+    "box": null
+   },
+   "model_score": 0.649,
+   "secondary": [],
+   "report": {
+    "tecnica": "Mamografia, incidência craniocaudal (CC), mama direita; recorte ampliado do achado.",
+    "achados": "Opacidade de densidade intermediária, com margens apenas parcialmente circunscritas no recorte, sem calcificações francamente suspeitas identificadas.",
+    "impressao": "Embora o aspecto tenda ao provavelmente benigno, a caracterização neste recorte não é conclusiva. Recomenda-se correlação com incidências complementares e/ou ultrassonografia, com seguimento a critério do radiologista assistente."
+   }
+  }
+ ]
+}

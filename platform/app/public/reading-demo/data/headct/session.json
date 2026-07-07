@@ -1,0 +1,253 @@
+{
+ "model": "headct-ich-v1",
+ "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · 6-label multilabel (ich_any + 5 subtypes)",
+ "benchmark": "held-out test: macro AUROC 0.932 · ich_any sens 0.827 · n=4467",
+ "gt_source": "predição do modelo (multi-rótulo; caixa/calor = atenção Grad-CAM)",
+ "note": "Amostra NÃO ALEATÓRIA de um recorte parcial (~5GiB) de uma re-derivação HF do RSNA-ICH (licença original não-comercial, apesar da tag da re-publicação) → benchmark de P&D, NÃO prontidão clínica/rastreamento. Corte único (2D), não o volume 3D completo. A caixa/calor é a atenção Grad-CAM (grosseira, não localiza). Descritivo, não diagnóstico.",
+ "cases": [
+  {
+   "id": "BV-CT-9000",
+   "src": "slices/ID_5a677320_ID_45dda8602d_ID_69c8261d93_IM000009_ID_0aee09969.png",
+   "view": "Axial",
+   "gt": {
+    "name": "No hemorrhage",
+    "pt": "Sem hemorragia",
+    "box": null
+   },
+   "model_score": 0.055,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de crânio sem contraste, corte axial em janela para parênquima encefálico.",
+    "achados": "Neste corte, o parênquima encefálico mostra densidade preservada, sem hiperdensidade que sugira sangramento agudo. Não se identificam coleções extra-axiais nem apagamento de sulcos na região visibilizada.",
+    "impressao": "Corte sem sinais de hemorragia (baixa probabilidade pelo modelo, 0,06). Rascunho referente apenas a esta imagem; a leitura do exame completo e a correlação clínica cabem ao radiologista assistente."
+   }
+  },
+  {
+   "id": "BV-CT-9001",
+   "src": "slices/ID_5a677320_ID_45dda8602d_ID_69c8261d93_IM000027_ID_3e8f2d460.png",
+   "view": "Axial",
+   "gt": {
+    "name": "No hemorrhage",
+    "pt": "Sem hemorragia",
+    "box": null
+   },
+   "model_score": 0.001,
+   "secondary": [],
+   "report": {
+    "tecnica": "TC de crânio sem meio de contraste, aquisição axial, janela de parênquima.",
+    "achados": "Corte de aspecto habitual, com boa diferenciação córtico-subcortical e sem focos de hiperdensidade espontânea. Sistema ventricular e cisternas da base sem alterações evidentes neste nível.",
+    "impressao": "Não há sinais de hemorragia neste corte, com alta confiança do modelo para ausência de sangramento. Impressão restrita a esta imagem — a avaliação do estudo completo permanece com o médico responsável."
+   }
+  },
+  {
+   "id": "BV-CT-9002",
+   "src": "slices/ID_1245d393_ID_abe67d361d_ID_3359d2d367_IM000018_ID_9d2870285.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Subdural hemorrhage",
+    "pt": "Hemorragia subdural",
+    "box": [
+     0.3527,
+     0.433,
+     0.3125,
+     0.4062
+    ]
+   },
+   "model_score": 0.843,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia de crânio sem contraste, corte axial em janela para o parênquima.",
+    "achados": "Observa-se, na região destacada junto à convexidade, coleção extra-axial em forma de crescente com atenuação aumentada, de aspecto compatível com hematoma subdural. Convém avaliar eventual efeito de massa sobre o parênquima adjacente e a linha média nos demais cortes.",
+    "impressao": "Achado sugestivo de hemorragia subdural neste corte (probabilidade 0,84). Recomenda-se correlação clínica e revisão do exame completo pelo radiologista, com avaliação neurocirúrgica caso confirmado."
+   }
+  },
+  {
+   "id": "BV-CT-9003",
+   "src": "slices/ID_1245d393_ID_abe67d361d_ID_3359d2d367_IM000017_ID_61f1a4b69.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Subdural hemorrhage",
+    "pt": "Hemorragia subdural",
+    "box": [
+     0.4062,
+     0.2723,
+     0.2589,
+     0.5402
+    ]
+   },
+   "model_score": 0.631,
+   "secondary": [],
+   "report": {
+    "tecnica": "TC de crânio sem contraste, corte axial, janela de parênquima encefálico.",
+    "achados": "Na topografia realçada há discreta imagem em crescente junto à convexidade, que pode corresponder a coleção subdural, embora os limites sejam pouco nítidos neste corte. A caracterização depende da confirmação nas imagens contíguas.",
+    "impressao": "Aspecto que levanta a possibilidade de hematoma subdural, com confiança apenas moderada do modelo (0,63). Sugere-se leitura dedicada e correlação clínica antes de qualquer conduta."
+   }
+  },
+  {
+   "id": "BV-CT-9004",
+   "src": "slices/ID_3bc0e94d_ID_40017708e5_ID_aa7e844601_IM000022_ID_2a6b7df78.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Intraparenchymal hemorrhage",
+    "pt": "Hemorragia intraparenquimatosa",
+    "box": [
+     0.2321,
+     0.1741,
+     0.317,
+     0.3214
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de crânio sem contraste, corte axial em janela para parênquima.",
+    "achados": "Identifica-se, na região assinalada, foco de hiperdensidade espontânea no interior do parênquima encefálico, de aspecto compatível com hematoma intraparenquimatoso. Recomenda-se atenção ao halo de hipodensidade perilesional e ao efeito de massa nos cortes vizinhos.",
+    "impressao": "Achado compatível com hemorragia intraparenquimatosa neste corte (alta confiança do modelo). Rascunho para revisão médica; indica-se correlação clínica e avaliação do exame integral, com discussão neurocirúrgica conforme o quadro."
+   }
+  },
+  {
+   "id": "BV-CT-9005",
+   "src": "slices/ID_3bc0e94d_ID_40017708e5_ID_aa7e844601_IM000016_ID_9c8f1f009.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Intraparenchymal hemorrhage",
+    "pt": "Hemorragia intraparenquimatosa",
+    "box": [
+     0.25,
+     0.1473,
+     0.3214,
+     0.2902
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "report": {
+    "tecnica": "TC de crânio sem contraste, corte axial, janela de parênquima encefálico.",
+    "achados": "Neste nível persiste a hiperdensidade focal intraparenquimatosa na região destacada, provavelmente representando outro plano da mesma coleção hemática. Vale medir sua maior extensão e verificar eventual comunicação com o sistema ventricular nos cortes adjacentes.",
+    "impressao": "Aspecto compatível com hematoma intraparenquimatoso, com alta probabilidade do modelo. Impressão limitada a este corte — a extensão real e a conduta dependem da leitura completa pelo radiologista."
+   }
+  },
+  {
+   "id": "BV-CT-9006",
+   "src": "slices/ID_279141ee_ID_efc9111ad3_ID_ca38c23a22_IM000032_ID_6cf5ef8c0.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Subarachnoid hemorrhage",
+    "pt": "Hemorragia subaracnóidea",
+    "box": [
+     0.4464,
+     0.6339,
+     0.3661,
+     0.2946
+    ]
+   },
+   "model_score": 0.707,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia de crânio sem contraste, corte axial em janela para o parênquima.",
+    "achados": "Nota-se, na área realçada, hiperdensidade preenchendo sulcos corticais e cisternas, achado que pode corresponder a hemorragia subaracnóidea. Sugere-se comparar com os espaços subaracnóideos contralaterais para afastar artefato.",
+    "impressao": "Padrão sugestivo de hemorragia subaracnóidea neste corte, com confiança intermediária do modelo (0,71). Recomenda-se correlação clínica e revisão dedicada; se confirmado, investigar a causa a critério do assistente."
+   }
+  },
+  {
+   "id": "BV-CT-9007",
+   "src": "slices/ID_28622235_ID_4c708b6c9d_ID_d2cca67a44_IM000021_ID_aa6d5fffa.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Subarachnoid hemorrhage",
+    "pt": "Hemorragia subaracnóidea",
+    "box": [
+     0.3482,
+     0.4911,
+     0.3125,
+     0.3705
+    ]
+   },
+   "model_score": 0.729,
+   "secondary": [],
+   "report": {
+    "tecnica": "TC de crânio sem contraste, aquisição axial, janela de parênquima.",
+    "achados": "Há aumento de atenuação no espaço subaracnóideo da região assinalada, de aspecto que pode traduzir sangramento subaracnóideo. O caráter tênue do achado pede confirmação nos demais cortes.",
+    "impressao": "Aspecto compatível com hemorragia subaracnóidea, com confiança moderada do modelo (0,73). Sugere-se leitura completa do estudo e correlação com o quadro clínico antes de definir conduta."
+   }
+  },
+  {
+   "id": "BV-CT-9008",
+   "src": "slices/ID_037fd7ca_ID_c6759a672f_ID_dad11b9fa7_IM000007_ID_31ae60ab4.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Intraventricular hemorrhage",
+    "pt": "Hemorragia intraventricular",
+    "box": [
+     0.4107,
+     0.5045,
+     0.3036,
+     0.317
+    ]
+   },
+   "model_score": 0.995,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia computadorizada de crânio sem contraste, corte axial, janela para parênquima encefálico.",
+    "achados": "No interior do sistema ventricular, na região destacada, observa-se material hiperdenso com nível líquido-líquido, de aspecto compatível com hemorragia intraventricular. Recomenda-se avaliar sinais de hidrocefalia e o grau de dilatação ventricular nos cortes complementares.",
+    "impressao": "Achado sugestivo de hemorragia intraventricular neste corte (alta confiança do modelo). Rascunho para revisão; indica-se correlação clínica e avaliação neurocirúrgica conforme a evolução."
+   }
+  },
+  {
+   "id": "BV-CT-9009",
+   "src": "slices/ID_fdaf9c1a_ID_ebb67514d9_ID_5d2a1a7f30_IM000007_ID_3f87e1270.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Epidural hemorrhage",
+    "pt": "Hemorragia epidural",
+    "box": [
+     0.5804,
+     0.3661,
+     0.3705,
+     0.308
+    ]
+   },
+   "model_score": 0.893,
+   "secondary": [],
+   "report": {
+    "tecnica": "TC de crânio sem contraste, corte axial em janela para o parênquima.",
+    "achados": "Junto à tábua óssea, na topografia realçada, há coleção extra-axial hiperdensa de contorno biconvexo (lentiforme), de aspecto compatível com hematoma epidural. Vale pesquisar linha de fratura na janela óssea e efeito de massa sobre o parênquima subjacente.",
+    "impressao": "Aspecto compatível com hematoma epidural neste corte (probabilidade 0,89). Recomenda-se correlação clínica, complementação com janela óssea e avaliação neurocirúrgica de urgência caso confirmado."
+   }
+  },
+  {
+   "id": "BV-CT-9010",
+   "src": "slices/ID_5a677320_ID_45dda8602d_ID_69c8261d93_IM000017_ID_b53984997.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Subdural hemorrhage",
+    "pt": "Hemorragia subdural",
+    "box": null
+   },
+   "model_score": 0.883,
+   "secondary": [],
+   "report": {
+    "tecnica": "Tomografia de crânio sem contraste, corte axial em janela para parênquima encefálico.",
+    "achados": "Apesar de o modelo sinalizar possível hemorragia subdural, não se identifica neste corte coleção extra-axial hiperdensa claramente caracterizada, e nenhuma região foi localizada com segurança. Os espaços extra-axiais visibilizados apresentam-se, na presente imagem, sem franca hiperdensidade.",
+    "impressao": "Há discordância entre o sinal do modelo (0,88) e o que se observa nesta imagem, sem achado hemorrágico bem definido. Recomenda-se revisão médica atenta e correlação com os demais cortes antes de qualquer conclusão — o alerta do modelo não confirma sangramento aqui."
+   }
+  },
+  {
+   "id": "BV-CT-9011",
+   "src": "slices/ID_5a677320_ID_45dda8602d_ID_69c8261d93_IM000018_ID_42d651e48.png",
+   "view": "Axial",
+   "gt": {
+    "name": "Subdural hemorrhage",
+    "pt": "Hemorragia subdural",
+    "box": null
+   },
+   "model_score": 0.876,
+   "secondary": [],
+   "report": {
+    "tecnica": "TC de crânio sem contraste, corte axial, janela de parênquima.",
+    "achados": "O modelo aponta probabilidade elevada de hematoma subdural, porém a revisão desta imagem não confirma coleção extra-axial nitidamente delimitada. Neste nível não se observa a hiperdensidade em crescente que sustentaria o achado.",
+    "impressao": "Sinal do modelo não corroborado por esta imagem — não se caracteriza sangramento subdural de forma segura neste corte. Sugere-se leitura dedicada pelo radiologista e correlação com os cortes contíguos e com o quadro clínico; o rascunho não afirma hemorragia."
+   }
+  }
+ ]
+}

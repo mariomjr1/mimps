@@ -1,10 +1,12 @@
-/* Reading-session player, parametrized by MODALITY (chest | limb | brain | breast). Each
- * case: a finding/prediction + box, the live model's real (uncalibrated) score + Grad-CAM
- * attention, and a 3-section pt-BR draft. Descriptive, non-diagnostic; physician signs.
- * (brain = braintumor-classifier-v1, 4-class RM; breast = breastus-busi-v1, 3-class US on
- * BUSI CC BY 4.0, single-site → R&D benchmark, not clinical.) Entry = #chooser (four cards);
- * each modality loads data/<modality>/session.json (+ img/NN.jpg, cam/NN.png), SAME schema.
- * Deep-link: ?m=chest|limb|brain|breast. */
+/* Reading-session player, parametrized by MODALITY (chest | limb | brain | breast | headct |
+ * mammo). Each case: a finding/prediction + box, the live model's real (uncalibrated) score
+ * + Grad-CAM attention, and a 3-section pt-BR draft. Descriptive, non-diagnostic; physician
+ * signs. (brain = braintumor-classifier-v1, 4-class RM; breast = breastus-busi-v1, 3-class
+ * US on BUSI CC BY 4.0; headct = headct-ich-v1, 6-label multilabel ICH on a NON-RANDOM RSNA-
+ * ICH tar-prefix pull, non-commercial despite the HF mirror's tag; mammo = mammo-cbisddsm-v1,
+ * benign/malignant on CBIS-DDSM digitized-film ROI crops — all R&D benchmarks, not clinical.)
+ * Entry = #chooser (six cards); each modality loads data/<modality>/session.json (+
+ * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo. */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -22,7 +24,7 @@
       controlsEl = document.querySelector('footer.controls'), demotag = $('demotag'),
       bmodel = $('bmodel'), hudsrc = $('hudsrc'), ptag = $('ptag'), pmeta = $('pmeta');
   var cases = [], N = 0, cur = 0, playing = true, timers = [], META = {}, pdfUrl = null;
-  var DV = '?d=20260707b';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
+  var DV = '?d=20260708a';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
 
   // ---- modality registry: everything chest-vs-limb lives here (same session schema) ----
   var MODS = {
@@ -53,6 +55,20 @@
       pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · escore não calibrado · BUSI de sítio único (P&D), não clínico',
       demo: 'Demo · saída real do modelo · classificação descritiva, não diagnóstica · dados BUSI CC BY 4.0 (sítio único, pesquisa) → não é produto',
       alt: 'Ultrassonografia mamária'
+    },
+    headct: {
+      model: 'headct-ich-v1', hud: 'TC · CRÂNIO', src: 'RSNA-ICH (P&D)', examTitle: 'LAUDO DE TC DE CRÂNIO',
+      chip: 'modelo · multi-rótulo', ptag: 'predição do modelo (multi-rótulo)',
+      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · escore não calibrado · corte único (não o volume 3D) · amostra não aleatória, não clínico',
+      demo: 'Demo · saída real do modelo · classificação descritiva, não diagnóstica · recorte não aleatório de dado de licença não comercial (P&D) → não é produto',
+      alt: 'Tomografia de crânio'
+    },
+    mammo: {
+      model: 'mammo-cbisddsm-v1', hud: 'MG · MAMA', src: 'CBIS-DDSM (P&D)', examTitle: 'LAUDO DE MAMOGRAFIA',
+      chip: 'modelo · 2 classes', ptag: 'predição do modelo (2 classes)',
+      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · escore não calibrado · filme digitalizado (não FFDM), não clínico',
+      demo: 'Demo · saída real do modelo · classificação descritiva, não diagnóstica · dados CBIS-DDSM CC BY 4.0 (filme digitalizado, pesquisa) → não é produto',
+      alt: 'Mamografia'
     }
   };
   var modality = null, MOD = null, DATA_ROOT = '';
