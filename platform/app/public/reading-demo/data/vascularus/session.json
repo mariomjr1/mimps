@@ -1,0 +1,269 @@
+{
+ "model": "vascularus-carotid-imt-v1",
+ "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · scalar regression (carotid IMT mm)",
+ "benchmark": "held-out test: MAE 0.177 mm · R² 0.282 · r 0.549 · ±0.10mm 41% · n=75",
+ "gt_source": "medida do modelo (regressao escalar da EIM em mm; a caixa = REGIAO DE MEDIDA de referencia do especialista, nao localizacao do modelo)",
+ "note": "CUBS (Meiburger et al., Politecnico di Torino), registro tecnico, 500 imagens, CC BY 4.0 (uso comercial permitido para os DADOS) → ainda assim evidencia de P&D/pipeline, NAO prontidao clinica. A TAREFA REAL e SEGMENTACAO das bordas intima-media → EIM; este iniciante e um REGRESSOR ESCALAR — emite um numero, nao localiza as bordas. A caixa tracejada e a regiao de medida de referencia (verdade de base do especialista Manual-A1), exibida so em casos medidos corretamente, jamais como achado do modelo. Quadro unico (nao cine); apenas EIM da carotida (NAO TVP, NAO estenose/placa). Divisao por imagem (sem IDs de paciente). `model_score` = concordancia (1−|erro|/0.5 mm); saida real = `pred_imt_mm`. Descritivo, nao diagnostico.",
+ "cases": [
+  {
+   "id": "BV-VASC-6000",
+   "src": "DATASET_CUBS_tech/images/tech_187.tiff",
+   "view": "Longitudinal (carotida comum)",
+   "gt": {
+    "name": "CCA IMT ~0.48 mm",
+    "pt": "EIM da carotida comum ~0.48 mm",
+    "box": [
+     0.2663,
+     0.4951,
+     0.4134,
+     0.1442
+    ]
+   },
+   "model_score": 0.812,
+   "secondary": [],
+   "pred_imt_mm": 0.481,
+   "gt_imt_mm": 0.388,
+   "abs_err_mm": 0.094,
+   "within_tolerance": true,
+   "tolerance_mm": 0.1,
+   "report": {
+    "tecnica": "Ultrassonografia vascular, corte longitudinal da arteria carotida comum (modo-B).",
+    "achados": "Corte longitudinal da arteria carotida comum (modo-B). A medida automatica da espessura intima-media (EIM) pelo modelo foi de aproximadamente 0.48 mm (dentro da faixa geralmente considerada normal), concordante com a referencia manual do especialista (CUBS Manual-A1: 0.39 mm; diferenca 0.09 mm, dentro da tolerancia de ±0.10 mm). A caixa tracejada indica a REGIAO DE MEDIDA de referencia (parede distal), nao uma localizacao do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "EIM da carotida comum medida em ~0.48 mm, concordante com a referencia (±0.10 mm). Medida automatica de rascunho referente apenas a esta imagem; a avaliacao vascular e a correlacao clinica cabem ao medico responsavel. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-VASC-6001",
+   "src": "DATASET_CUBS_tech/images/tech_160.tiff",
+   "view": "Longitudinal (carotida comum)",
+   "gt": {
+    "name": "CCA IMT ~0.62 mm",
+    "pt": "EIM da carotida comum ~0.62 mm",
+    "box": [
+     0.3457,
+     0.3858,
+     0.4666,
+     0.1658
+    ]
+   },
+   "model_score": 0.936,
+   "secondary": [],
+   "pred_imt_mm": 0.617,
+   "gt_imt_mm": 0.585,
+   "abs_err_mm": 0.032,
+   "within_tolerance": true,
+   "tolerance_mm": 0.1,
+   "report": {
+    "tecnica": "Ultrassonografia vascular, corte longitudinal da arteria carotida comum (modo-B).",
+    "achados": "Corte longitudinal da arteria carotida comum (modo-B). A medida automatica da espessura intima-media (EIM) pelo modelo foi de aproximadamente 0.62 mm (dentro da faixa geralmente considerada normal), concordante com a referencia manual do especialista (CUBS Manual-A1: 0.58 mm; diferenca 0.03 mm, dentro da tolerancia de ±0.10 mm). A caixa tracejada indica a REGIAO DE MEDIDA de referencia (parede distal), nao uma localizacao do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "EIM da carotida comum medida em ~0.62 mm, concordante com a referencia (±0.10 mm). Medida automatica de rascunho referente apenas a esta imagem; a avaliacao vascular e a correlacao clinica cabem ao medico responsavel. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-VASC-6002",
+   "src": "DATASET_CUBS_tech/images/tech_297.tiff",
+   "view": "Longitudinal (carotida comum)",
+   "gt": {
+    "name": "CCA IMT ~0.70 mm",
+    "pt": "EIM da carotida comum ~0.70 mm",
+    "box": [
+     0.2439,
+     0.5757,
+     0.5607,
+     0.1727
+    ]
+   },
+   "model_score": 0.924,
+   "secondary": [],
+   "pred_imt_mm": 0.697,
+   "gt_imt_mm": 0.659,
+   "abs_err_mm": 0.038,
+   "within_tolerance": true,
+   "tolerance_mm": 0.1,
+   "report": {
+    "tecnica": "Ultrassonografia vascular, corte longitudinal da arteria carotida comum (modo-B).",
+    "achados": "Corte longitudinal da arteria carotida comum (modo-B). A medida automatica da espessura intima-media (EIM) pelo modelo foi de aproximadamente 0.70 mm (dentro da faixa geralmente considerada normal), concordante com a referencia manual do especialista (CUBS Manual-A1: 0.66 mm; diferenca 0.04 mm, dentro da tolerancia de ±0.10 mm). A caixa tracejada indica a REGIAO DE MEDIDA de referencia (parede distal), nao uma localizacao do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "EIM da carotida comum medida em ~0.70 mm, concordante com a referencia (±0.10 mm). Medida automatica de rascunho referente apenas a esta imagem; a avaliacao vascular e a correlacao clinica cabem ao medico responsavel. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-VASC-6003",
+   "src": "DATASET_CUBS_tech/images/tech_135.tiff",
+   "view": "Longitudinal (carotida comum)",
+   "gt": {
+    "name": "CCA IMT ~0.67 mm",
+    "pt": "EIM da carotida comum ~0.67 mm",
+    "box": [
+     0.3314,
+     0.3662,
+     0.4426,
+     0.1581
+    ]
+   },
+   "model_score": 0.98,
+   "secondary": [],
+   "pred_imt_mm": 0.666,
+   "gt_imt_mm": 0.676,
+   "abs_err_mm": 0.01,
+   "within_tolerance": true,
+   "tolerance_mm": 0.1,
+   "report": {
+    "tecnica": "Ultrassonografia vascular, corte longitudinal da arteria carotida comum (modo-B).",
+    "achados": "Corte longitudinal da arteria carotida comum (modo-B). A medida automatica da espessura intima-media (EIM) pelo modelo foi de aproximadamente 0.67 mm (dentro da faixa geralmente considerada normal), concordante com a referencia manual do especialista (CUBS Manual-A1: 0.68 mm; diferenca 0.01 mm, dentro da tolerancia de ±0.10 mm). A caixa tracejada indica a REGIAO DE MEDIDA de referencia (parede distal), nao uma localizacao do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "EIM da carotida comum medida em ~0.67 mm, concordante com a referencia (±0.10 mm). Medida automatica de rascunho referente apenas a esta imagem; a avaliacao vascular e a correlacao clinica cabem ao medico responsavel. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-VASC-6004",
+   "src": "DATASET_CUBS_tech/images/tech_264.tiff",
+   "view": "Longitudinal (carotida comum)",
+   "gt": {
+    "name": "CCA IMT ~0.67 mm",
+    "pt": "EIM da carotida comum ~0.67 mm",
+    "box": [
+     0.2443,
+     0.575,
+     0.4918,
+     0.1843
+    ]
+   },
+   "model_score": 0.926,
+   "secondary": [],
+   "pred_imt_mm": 0.673,
+   "gt_imt_mm": 0.71,
+   "abs_err_mm": 0.037,
+   "within_tolerance": true,
+   "tolerance_mm": 0.1,
+   "report": {
+    "tecnica": "Ultrassonografia vascular, corte longitudinal da arteria carotida comum (modo-B).",
+    "achados": "Corte longitudinal da arteria carotida comum (modo-B). A medida automatica da espessura intima-media (EIM) pelo modelo foi de aproximadamente 0.67 mm (no limite superior da faixa habitual), concordante com a referencia manual do especialista (CUBS Manual-A1: 0.71 mm; diferenca 0.04 mm, dentro da tolerancia de ±0.10 mm). A caixa tracejada indica a REGIAO DE MEDIDA de referencia (parede distal), nao uma localizacao do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "EIM da carotida comum medida em ~0.67 mm, concordante com a referencia (±0.10 mm). Medida automatica de rascunho referente apenas a esta imagem; a avaliacao vascular e a correlacao clinica cabem ao medico responsavel. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-VASC-6005",
+   "src": "DATASET_CUBS_tech/images/tech_376.tiff",
+   "view": "Longitudinal (carotida comum)",
+   "gt": {
+    "name": "CCA IMT ~0.84 mm",
+    "pt": "EIM da carotida comum ~0.84 mm",
+    "box": [
+     0.2091,
+     0.531,
+     0.5811,
+     0.2659
+    ]
+   },
+   "model_score": 0.905,
+   "secondary": [],
+   "pred_imt_mm": 0.842,
+   "gt_imt_mm": 0.794,
+   "abs_err_mm": 0.048,
+   "within_tolerance": true,
+   "tolerance_mm": 0.1,
+   "report": {
+    "tecnica": "Ultrassonografia vascular, corte longitudinal da arteria carotida comum (modo-B).",
+    "achados": "Corte longitudinal da arteria carotida comum (modo-B). A medida automatica da espessura intima-media (EIM) pelo modelo foi de aproximadamente 0.84 mm (no limite superior da faixa habitual), concordante com a referencia manual do especialista (CUBS Manual-A1: 0.79 mm; diferenca 0.05 mm, dentro da tolerancia de ±0.10 mm). A caixa tracejada indica a REGIAO DE MEDIDA de referencia (parede distal), nao uma localizacao do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "EIM da carotida comum medida em ~0.84 mm, concordante com a referencia (±0.10 mm). Medida automatica de rascunho referente apenas a esta imagem; a avaliacao vascular e a correlacao clinica cabem ao medico responsavel. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-VASC-6006",
+   "src": "DATASET_CUBS_tech/images/tech_276.tiff",
+   "view": "Longitudinal (carotida comum)",
+   "gt": {
+    "name": "CCA IMT ~0.83 mm",
+    "pt": "EIM da carotida comum ~0.83 mm",
+    "box": [
+     0.1936,
+     0.5315,
+     0.6021,
+     0.2581
+    ]
+   },
+   "model_score": 0.988,
+   "secondary": [],
+   "pred_imt_mm": 0.834,
+   "gt_imt_mm": 0.828,
+   "abs_err_mm": 0.006,
+   "within_tolerance": true,
+   "tolerance_mm": 0.1,
+   "report": {
+    "tecnica": "Ultrassonografia vascular, corte longitudinal da arteria carotida comum (modo-B).",
+    "achados": "Corte longitudinal da arteria carotida comum (modo-B). A medida automatica da espessura intima-media (EIM) pelo modelo foi de aproximadamente 0.83 mm (no limite superior da faixa habitual), concordante com a referencia manual do especialista (CUBS Manual-A1: 0.83 mm; diferenca 0.01 mm, dentro da tolerancia de ±0.10 mm). A caixa tracejada indica a REGIAO DE MEDIDA de referencia (parede distal), nao uma localizacao do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "EIM da carotida comum medida em ~0.83 mm, concordante com a referencia (±0.10 mm). Medida automatica de rascunho referente apenas a esta imagem; a avaliacao vascular e a correlacao clinica cabem ao medico responsavel. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-VASC-6007",
+   "src": "DATASET_CUBS_tech/images/tech_096.tiff",
+   "view": "Longitudinal (carotida comum)",
+   "gt": {
+    "name": "CCA IMT ~0.96 mm",
+    "pt": "EIM da carotida comum ~0.96 mm",
+    "box": [
+     0.3703,
+     0.4809,
+     0.4142,
+     0.1871
+    ]
+   },
+   "model_score": 0.822,
+   "secondary": [],
+   "pred_imt_mm": 0.965,
+   "gt_imt_mm": 0.876,
+   "abs_err_mm": 0.089,
+   "within_tolerance": true,
+   "tolerance_mm": 0.1,
+   "report": {
+    "tecnica": "Ultrassonografia vascular, corte longitudinal da arteria carotida comum (modo-B).",
+    "achados": "Corte longitudinal da arteria carotida comum (modo-B). A medida automatica da espessura intima-media (EIM) pelo modelo foi de aproximadamente 0.96 mm (no limite superior da faixa habitual), concordante com a referencia manual do especialista (CUBS Manual-A1: 0.88 mm; diferenca 0.09 mm, dentro da tolerancia de ±0.10 mm). A caixa tracejada indica a REGIAO DE MEDIDA de referencia (parede distal), nao uma localizacao do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "EIM da carotida comum medida em ~0.96 mm, concordante com a referencia (±0.10 mm). Medida automatica de rascunho referente apenas a esta imagem; a avaliacao vascular e a correlacao clinica cabem ao medico responsavel. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-VASC-6008",
+   "src": "DATASET_CUBS_tech/images/tech_073.tiff",
+   "view": "Longitudinal (carotida comum)",
+   "gt": {
+    "name": "CCA IMT ~0.90 mm",
+    "pt": "EIM da carotida comum ~0.90 mm",
+    "box": null
+   },
+   "model_score": 0.0,
+   "secondary": [],
+   "pred_imt_mm": 0.9,
+   "gt_imt_mm": 1.724,
+   "abs_err_mm": 0.824,
+   "within_tolerance": false,
+   "tolerance_mm": 0.1,
+   "report": {
+    "tecnica": "Ultrassonografia vascular, corte longitudinal da arteria carotida comum (modo-B).",
+    "achados": "Corte longitudinal da carotida comum (modo-B). A medida automatica da EIM pelo modelo foi de aproximadamente 0.90 mm, DISCORDANTE da referencia manual (CUBS Manual-A1: 1.72 mm; diferenca 0.82 mm, acima da tolerancia de ±0.10 mm) — exemplo honesto de erro do regressor escalar. Nenhuma regiao e exibida, pois a medida nao e confiavel nesta imagem.",
+    "impressao": "Discordancia entre a medida automatica (~0.90 mm) e a referencia (1.72 mm), diferenca de 0.82 mm. Caso de erro exibido de forma transparente; a medida deve ser refeita pelo operador. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-VASC-6009",
+   "src": "DATASET_CUBS_tech/images/tech_330.tiff",
+   "view": "Longitudinal (carotida comum)",
+   "gt": {
+    "name": "CCA IMT ~0.32 mm",
+    "pt": "EIM da carotida comum ~0.32 mm",
+    "box": null
+   },
+   "model_score": 0.0,
+   "secondary": [],
+   "pred_imt_mm": 0.324,
+   "gt_imt_mm": 1.068,
+   "abs_err_mm": 0.744,
+   "within_tolerance": false,
+   "tolerance_mm": 0.1,
+   "report": {
+    "tecnica": "Ultrassonografia vascular, corte longitudinal da arteria carotida comum (modo-B).",
+    "achados": "Corte longitudinal da carotida comum (modo-B). A medida automatica da EIM pelo modelo foi de aproximadamente 0.32 mm, DISCORDANTE da referencia manual (CUBS Manual-A1: 1.07 mm; diferenca 0.74 mm, acima da tolerancia de ±0.10 mm) — exemplo honesto de erro do regressor escalar. Nenhuma regiao e exibida, pois a medida nao e confiavel nesta imagem.",
+    "impressao": "Discordancia entre a medida automatica (~0.32 mm) e a referencia (1.07 mm), diferenca de 0.74 mm. Caso de erro exibido de forma transparente; a medida deve ser refeita pelo operador. Nao diagnostico."
+   }
+  }
+ ]
+}
