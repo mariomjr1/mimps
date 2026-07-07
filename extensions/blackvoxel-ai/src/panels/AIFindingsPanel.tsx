@@ -4,6 +4,9 @@ import { utilities as cornerstoneUtilities } from '@cornerstonejs/core';
 import { LanguageToggle } from '../components/LanguageToggle';
 import {
   getInference,
+  getLimbInference,
+  getBreastUSInference,
+  getMammoInference,
   classifyMeasurements,
   InferenceError,
   InferenceFinding,
@@ -32,8 +35,9 @@ import { useLengthMeasurements } from '../hooks/useLengthMeasurements';
 // MIMPS-33/36: clinical-mode flag + ephemeral clinical-context store
 import { CLINICAL_MODE_ENABLED } from '../config/clinicalMode';
 import { useClinicalContext } from '../stores/useClinicalContextStore';
-// MIMPS-41: modality gate — AI is CR/DR/DX (chest X-ray) only.
-import { useActiveModality, isCxrModality } from '../hooks/useActiveModality';
+// MIMPS-41: modality gate — which AI lane (chest/limb/breastus/mammo) a study
+// routes to, resolved from Modality + BodyPartExamined.
+import { useActiveModality, useActiveBodyPart, resolveAiLane } from '../hooks/useActiveModality';
 // MIMPS-40/42: worklist gate + persisted-AIResult fetch (persisted-first, live fallback).
 import { isWorklistEnabled } from '../config/worklist';
 import { getWorklistDetail, toInferenceResponse } from '../services/worklistClient';
@@ -934,16 +938,19 @@ function AIFindingsPanel({
   // attached to the InferenceRequest in clinical mode only.
   const { context: clinicalContext } = useClinicalContext();
 
-  // MIMPS-41: modality gate — the proxy-txv-v1 lane is chest-radiograph only
-  // (CR/DR/DX). MR/CT/other are transport-only (no model): the panel shows a
-  // neutral "not available for this modality" message and fires NO inference and
-  // NO persisted-result fetch. The CXR path below is unchanged.
+  // MIMPS-41/45: modality gate + lane router — chest (proxy-txv-v1), limb
+  // (limbfrac-fracatlas-v1), breast-US (breastus-busi-v1), and mammo
+  // (mammo-cbisddsm-v1) each have their own model/endpoint; MR/CT/other are
+  // transport-only (no lane yet): the panel shows a neutral "not available for
+  // this modality" message and fires NO inference and NO persisted-result fetch.
   const modality = useActiveModality(servicesManager);
-  // null modality = study not yet resolved; treat as eligible so the CXR demo
-  // (single-CR study) is byte-identical to today and we never flash the gate on
-  // a study whose displaySets just haven't loaded. The gate trips only once a
-  // concrete non-CXR modality is known.
-  const modalityEligible = modality === null || isCxrModality(modality);
+  const bodyPart = useActiveBodyPart(servicesManager);
+  // null modality = study not yet resolved; treat as the chest lane so the CXR
+  // demo (single-CR study) is byte-identical to today and we never flash the
+  // gate on a study whose displaySets just haven't loaded. The gate trips only
+  // once a concrete, unroutable modality is known.
+  const aiLane = modality === null ? 'chest' : resolveAiLane(modality, bodyPart);
+  const modalityEligible = aiLane !== null;
 
   // MIMPS-33: AI inference runs in research mode, OR clinical mode when the
   // CLINICAL_MODE_ENABLED flag is on. Default (flag off) is research-only —
@@ -1078,19 +1085,50 @@ function AIFindingsPanel({
 
       setSource('live');
       try {
-        const result = await getInference({
-          study_uid: studyUid,
-          series_uid: seriesUid,
-          modality: 'CXR',
-          image_data_url: capture.imageDataUrl,
-          image_id: capture.imageId,
-          // MIMPS-36: attach the de-identified clinical context ONLY in clinical
-          // mode (and only when one has been consented + fetched). Research-mode
-          // requests stay byte-identical to today (field absent).
-          ...(clinicalEnabled && clinicalContext
-            ? { clinical_context: clinicalContext }
-            : {}),
-        });
+        // MIMPS-41/45: dispatch to the lane resolved above. Every lane returns
+        // the SAME InferenceResponse shape, so nothing downstream of this call
+        // (setData/drawOverlay/rendering) needs to know which lane ran.
+        // clinical_context is a chest-only concept (MIMPS-36) — only attached
+        // on the default chest path, byte-identical to today.
+        const result =
+          aiLane === 'limb'
+            ? await getLimbInference({
+                study_uid: studyUid,
+                series_uid: seriesUid,
+                modality: modality ?? 'CR',
+                image_data_url: capture.imageDataUrl,
+                image_id: capture.imageId,
+              })
+            : aiLane === 'breastus'
+              ? await getBreastUSInference({
+                  study_uid: studyUid,
+                  series_uid: seriesUid,
+                  modality: modality ?? 'US',
+                  image_data_url: capture.imageDataUrl,
+                  image_id: capture.imageId,
+                })
+              : aiLane === 'mammo'
+                ? await getMammoInference({
+                    study_uid: studyUid,
+                    series_uid: seriesUid,
+                    modality: modality ?? 'MG',
+                    image_data_url: capture.imageDataUrl,
+                    image_id: capture.imageId,
+                  })
+                : await getInference({
+                    study_uid: studyUid,
+                    series_uid: seriesUid,
+                    modality: 'CXR',
+                    image_data_url: capture.imageDataUrl,
+                    image_id: capture.imageId,
+                    // MIMPS-36: attach the de-identified clinical context ONLY in
+                    // clinical mode (and only when one has been consented +
+                    // fetched). Research-mode requests stay byte-identical to
+                    // today (field absent).
+                    ...(clinicalEnabled && clinicalContext
+                      ? { clinical_context: clinicalContext }
+                      : {}),
+                  });
         if (!cancelled) {
           setData(result);
           setLoading(false);
@@ -1145,6 +1183,18 @@ function AIFindingsPanel({
     // re-run this effect) are already folded into `inferenceAllowed`, which is
     // what the body actually reads; the raw `modality` string is never
     // referenced here, so excluding it is exhaustive-deps clean.
+    //
+    // MIMPS-45: `aiLane` (chest/limb/breastus/mammo/null) IS included, unlike raw
+    // `modality`/`bodyPart` — it is the actual value `run()` dispatches on, and
+    // omitting it would let a stale closure keep calling the WRONG lane's
+    // endpoint after the true lane resolves (e.g. briefly analyzing a limb study
+    // with the chest model before BodyPartExamined loads). This does not
+    // reintroduce the regression above: that bug was specifically the
+    // ineligible-transition path (`!inferenceAllowed` early-return leaves
+    // `loading` stuck true, no fetch ever runs to clear it); a chest<->limb<->
+    // breastus<->mammo transition stays eligible throughout, so a re-run always
+    // takes the full fetch path and correctly resolves `loading`/`data`.
+    aiLane,
     clinicalEnabled,
     clinicalContext,
     servicesManager,

@@ -253,6 +253,23 @@ export interface InferenceResponse {
   report_fallback_reason?: string | null;
 }
 
+/**
+ * Multi-modality demo lanes (limb / breast-US / mammo). Field-identical request
+ * shape to the backend's LimbRequest/BreastUSRequest/MammoRequest — no
+ * clinical_context (that's a chest-only, MIMPS-36 concern). Each lane ALWAYS
+ * returns an honest 200 InferenceResponse (never a chest finding, never
+ * fabricated, SD-004) — disabled lanes come back with empty findings, not an
+ * error, so the panel renders "no AI signal" rather than an error state.
+ */
+export interface LaneInferenceRequest {
+  study_uid: string;
+  series_uid?: string;
+  modality: string;
+  image_data_url?: string;
+  image_id?: string;
+  region_hint?: string;
+}
+
 export class InferenceError extends Error {
   constructor(
     message: string,
@@ -319,6 +336,84 @@ export async function getInference(request: InferenceRequest): Promise<Inference
   }
 
   return response.json() as Promise<InferenceResponse>;
+}
+
+/**
+ * Shared POST helper for the multi-modality demo lanes (limb/breast-US/mammo) —
+ * same JWT/timeout/401-redirect handling as `getInference`, just parametrized by
+ * path. All three lanes return the SAME `InferenceResponse` shape as chest, so
+ * the panel's rendering code needs no lane-specific branches downstream of this
+ * call — only the dispatch (which function to call) differs by modality.
+ */
+async function _postLaneInference(
+  path: string,
+  request: LaneInferenceRequest
+): Promise<InferenceResponse> {
+  const jwt = sessionStorage.getItem(SESSION_KEY);
+  if (!jwt) {
+    throw new InferenceError('No auth token in session');
+  }
+
+  let baseUrl: string;
+  try {
+    baseUrl = (process.env.BLACKVOXEL_API_URL as string | undefined) ?? 'https://blackvoxel.ai';
+  } catch {
+    baseUrl = 'https://blackvoxel.ai';
+  }
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  let response: Response;
+  try {
+    response = await fetch(`${baseUrl}${path}`, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(request),
+    });
+  } catch (err: unknown) {
+    clearTimeout(timeoutId);
+    if (err instanceof Error && err.name === 'AbortError') {
+      throw new InferenceError('Request timed out');
+    }
+    const message = err instanceof Error ? err.message : String(err);
+    throw new InferenceError(message);
+  }
+
+  clearTimeout(timeoutId);
+
+  if (!response.ok) {
+    if (response.status === 401) {
+      sessionStorage.removeItem(SESSION_KEY);
+      const redirect = encodeURIComponent(window.location.href);
+      window.location.href = `https://blackvoxel.ai/login?redirect=${redirect}`;
+      throw new InferenceError('Unauthorized', 401);
+    }
+    throw new InferenceError(`API error ${response.status}`, response.status);
+  }
+
+  return response.json() as Promise<InferenceResponse>;
+}
+
+/** Limb / extremity X-ray lane (POST /api/v1/inference/limb) — limbfrac-fracatlas-v1. */
+export async function getLimbInference(request: LaneInferenceRequest): Promise<InferenceResponse> {
+  return _postLaneInference('/api/v1/inference/limb', request);
+}
+
+/** Breast-ultrasound lane (POST /api/v1/inference/breastus) — breastus-busi-v1. */
+export async function getBreastUSInference(
+  request: LaneInferenceRequest
+): Promise<InferenceResponse> {
+  return _postLaneInference('/api/v1/inference/breastus', request);
+}
+
+/** Mammography lane (POST /api/v1/inference/mammo) — mammo-cbisddsm-v1. */
+export async function getMammoInference(request: LaneInferenceRequest): Promise<InferenceResponse> {
+  return _postLaneInference('/api/v1/inference/mammo', request);
 }
 
 /**
