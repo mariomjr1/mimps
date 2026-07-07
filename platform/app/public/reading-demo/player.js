@@ -1,6 +1,6 @@
 /* Reading-session player, parametrized by MODALITY (chest | limb | brain | breast | headct |
- * mammo | obus | ctchest). Each case: a finding/prediction + box, the live model's real
- * (uncalibrated) score + Grad-CAM attention, and a 3-section pt-BR draft. Descriptive,
+ * mammo | obus | ctchest | vascularus). Each case: a finding/prediction + box, the live model's
+ * real (uncalibrated) score + Grad-CAM attention, and a 3-section pt-BR draft. Descriptive,
  * non-diagnostic; physician signs. (brain = braintumor-classifier-v1, 4-class RM; breast =
  * breastus-busi-v1, 3-class US on BUSI CC BY 4.0; headct = headct-ich-v1, 6-label multilabel
  * ICH on a NON-RANDOM RSNA-ICH tar-prefix pull, non-commercial despite the HF mirror's tag;
@@ -8,9 +8,11 @@
  * obus-hc-v1, scalar fetal head-circumference regressor on HC18 CC BY 4.0 — box is the HC18
  * REFERENCE ellipse, not a model localization; ctchest = ctchest-nodule-v1, lung-nodule
  * malignancy CHARACTERIZATION (not detection — nodule pre-localized by radiologist annotation)
- * on a genuine random 400-patient LIDC-IDRI sample, CC BY 3.0 — all R&D benchmarks, not clinical.)
+ * on a genuine random 400-patient LIDC-IDRI sample, CC BY 3.0; vascularus = vascularus-carotid-
+ * imt-v1, scalar carotid intima-media-thickness regressor on CUBS CC BY 4.0 — WEAK (R² 0.28),
+ * box is the expert measurement region not a model localization — all R&D benchmarks, not clinical.)
  * Entry = #chooser (cards); each modality loads data/<modality>/session.json (+
- * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus|ctchest. */
+ * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus|ctchest|vascularus. */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -87,6 +89,13 @@
       pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM sobre o nódulo já localizado pela anotação · caracterização, não detecção · corte único, não clínico',
       demo: 'Demo · saída real do modelo · caracterização descritiva, não diagnóstica · amostra aleatória LIDC-IDRI CC BY 3.0 (pesquisa) → não é produto',
       alt: 'Tomografia de tórax'
+    },
+    vascularus: {
+      model: 'vascularus-carotid-imt-v1', hud: 'US · CARÓTIDA', src: 'CUBS · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE ULTRASSONOGRAFIA DE CARÓTIDA (EIM)',
+      chip: 'modelo · regressão (fraco)', ptag: 'medida do modelo (regressão escalar, sinal fraco)',
+      pmeta: 'medida do modelo · caixa: região de medição de REFERÊNCIA (especialista), não localização do modelo · regressor escalar fraco (R² 0,28), sem segmentação de bordas · não é DVT nem estenose, não clínico',
+      demo: 'Demo · saída real do modelo · medida descritiva fraca, não diagnóstica · dados CUBS CC BY 4.0 (pesquisa) → não é produto',
+      alt: 'Ultrassonografia de carótida'
     }
   };
   var modality = null, MOD = null, DATA_ROOT = '';

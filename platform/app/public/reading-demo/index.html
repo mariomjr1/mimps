@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>BlackVoxel · Sessão de leitura assistida por IA — raio-X</title>
-<meta name="description" content="Demonstração: modelos reais (proxy-txv-v1 tórax, limbfrac-fracatlas-v1 membro, braintumor-classifier-v1 RM de crânio, breastus-busi-v1 US de mama, headct-ich-v1 TC de crânio, mammo-cbisddsm-v1 mamografia, obus-hc-v1 US obstétrico, ctchest-nodule-v1 TC de tórax) leem exames com Grad-CAM e um rascunho de laudo em português. Achados descritivos, não diagnósticos; revisão médica." />
+<meta name="description" content="Demonstração: modelos reais (proxy-txv-v1 tórax, limbfrac-fracatlas-v1 membro, braintumor-classifier-v1 RM de crânio, breastus-busi-v1 US de mama, headct-ich-v1 TC de crânio, mammo-cbisddsm-v1 mamografia, obus-hc-v1 US obstétrico, ctchest-nodule-v1 TC de tórax, vascularus-carotid-imt-v1 US de carótida) leem exames com Grad-CAM e um rascunho de laudo em português. Achados descritivos, não diagnósticos; revisão médica." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -116,6 +116,17 @@
           <span class="ch-perf">TEST AUROC 0.931 (sens 0.750 · esp 0.967)</span>
         </span>
         <span class="ch-tag mono">amostra LIDC-IDRI (pesquisa) · CC BY 3.0</span>
+        <span class="ch-go mono">iniciar leitura ›</span>
+      </button>
+      <button class="ch-card" type="button" data-m="vascularus">
+        <span class="ch-mod mono">US · CARÓTIDA</span>
+        <span class="ch-name">Carótida — Ultrassom (Espessura Íntima-Média)</span>
+        <span class="ch-desc">modelo vascularus-carotid-imt-v1 · regressão</span>
+        <span class="ch-metrics mono">
+          <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
+          <span class="ch-perf">TEST MAE 0.18mm · R² 0.282 (±0.1mm 41%)</span>
+        </span>
+        <span class="ch-tag mono">dados CUBS (pesquisa) · CC BY 4.0</span>
         <span class="ch-go mono">iniciar leitura ›</span>
       </button>
     </div>
