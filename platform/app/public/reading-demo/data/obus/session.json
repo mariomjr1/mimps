@@ -1,0 +1,269 @@
+{
+ "model": "obus-hc-v1",
+ "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · scalar regression (head circumference mm)",
+ "benchmark": "held-out test: MAE 9.8 mm · R² 0.959 · r 0.981 · ±10mm 62% · n=149",
+ "gt_source": "medida do modelo (regressão escalar da circunferência cefálica em mm; a caixa = elipse craniana de REFERÊNCIA do HC18, não localização do modelo)",
+ "note": "HC18 (van den Heuvel et al., Radboud UMC), 999 imagens rotuladas, CC BY 4.0 (uso comercial permitido para os DADOS) → ainda assim evidência de P&D/pipeline, NÃO prontidão clínica. A TAREFA REAL do HC18 é SEGMENTAÇÃO da elipse craniana → CC; este iniciante é um REGRESSOR ESCALAR — emite um número, não localiza o crânio (sem ancoragem anatômica). A caixa tracejada é a elipse de referência do HC18 (verdade de base), exibida só em casos medidos corretamente, jamais como achado do modelo. Plano padrão único (2D), não varredura. HC18 não fornece IDs de paciente → divisão por imagem. `model_score` é indicador de concordância (1−|erro|/50 mm); a saída real é `pred_hc_mm`. Descritivo, não diagnóstico.",
+ "cases": [
+  {
+   "id": "BV-OBUS-7000",
+   "src": "images/36_HC.png",
+   "view": "Axial (plano da cabeça fetal)",
+   "gt": {
+    "name": "Head circumference ~64 mm",
+    "pt": "Circunferência cefálica ~64 mm",
+    "box": [
+     0.3337,
+     0.5074,
+     0.3075,
+     0.4167
+    ]
+   },
+   "model_score": 0.965,
+   "secondary": [],
+   "pred_hc_mm": 64.0,
+   "gt_hc_mm": 65.8,
+   "abs_err_mm": 1.8,
+   "within_tolerance": true,
+   "tolerance_mm": 10.0,
+   "report": {
+    "tecnica": "Ultrassonografia obstétrica, plano padrão axial da cabeça fetal (2D).",
+    "achados": "Plano padrão da cabeça fetal em corte axial. A medida automática da circunferência cefálica pelo modelo foi de aproximadamente 64 mm (compatível com fase inicial do 2º trimestre), concordante com a referência do HC18 (66 mm; diferença 2 mm, dentro da tolerância de ±10 mm). O contorno tracejado corresponde à elipse craniana de REFERÊNCIA do HC18 (verdade de base), não a uma localização do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "Circunferência cefálica medida em ~64 mm, concordante com a referência (±10 mm). Medida automática de rascunho referente apenas a esta imagem; a biometria fetal e a datação/correlação clínica cabem ao médico responsável. Não diagnóstico."
+   }
+  },
+  {
+   "id": "BV-OBUS-7001",
+   "src": "images/113_HC.png",
+   "view": "Axial (plano da cabeça fetal)",
+   "gt": {
+    "name": "Head circumference ~79 mm",
+    "pt": "Circunferência cefálica ~79 mm",
+    "box": [
+     0.2913,
+     0.1759,
+     0.4662,
+     0.5204
+    ]
+   },
+   "model_score": 0.971,
+   "secondary": [],
+   "pred_hc_mm": 79.0,
+   "gt_hc_mm": 77.6,
+   "abs_err_mm": 1.4,
+   "within_tolerance": true,
+   "tolerance_mm": 10.0,
+   "report": {
+    "tecnica": "Ultrassonografia obstétrica, plano padrão axial da cabeça fetal (2D).",
+    "achados": "Plano padrão da cabeça fetal em corte axial. A medida automática da circunferência cefálica pelo modelo foi de aproximadamente 79 mm (compatível com fase inicial do 2º trimestre), concordante com a referência do HC18 (78 mm; diferença 1 mm, dentro da tolerância de ±10 mm). O contorno tracejado corresponde à elipse craniana de REFERÊNCIA do HC18 (verdade de base), não a uma localização do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "Circunferência cefálica medida em ~79 mm, concordante com a referência (±10 mm). Medida automática de rascunho referente apenas a esta imagem; a biometria fetal e a datação/correlação clínica cabem ao médico responsável. Não diagnóstico."
+   }
+  },
+  {
+   "id": "BV-OBUS-7002",
+   "src": "images/178_HC.png",
+   "view": "Axial (plano da cabeça fetal)",
+   "gt": {
+    "name": "Head circumference ~101 mm",
+    "pt": "Circunferência cefálica ~101 mm",
+    "box": [
+     0.4325,
+     0.5389,
+     0.2313,
+     0.3407
+    ]
+   },
+   "model_score": 0.943,
+   "secondary": [],
+   "pred_hc_mm": 101.1,
+   "gt_hc_mm": 98.2,
+   "abs_err_mm": 2.9,
+   "within_tolerance": true,
+   "tolerance_mm": 10.0,
+   "report": {
+    "tecnica": "Ultrassonografia obstétrica, plano padrão axial da cabeça fetal (2D).",
+    "achados": "Plano padrão da cabeça fetal em corte axial. A medida automática da circunferência cefálica pelo modelo foi de aproximadamente 101 mm (compatível com fase inicial do 2º trimestre), concordante com a referência do HC18 (98 mm; diferença 3 mm, dentro da tolerância de ±10 mm). O contorno tracejado corresponde à elipse craniana de REFERÊNCIA do HC18 (verdade de base), não a uma localização do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "Circunferência cefálica medida em ~101 mm, concordante com a referência (±10 mm). Medida automática de rascunho referente apenas a esta imagem; a biometria fetal e a datação/correlação clínica cabem ao médico responsável. Não diagnóstico."
+   }
+  },
+  {
+   "id": "BV-OBUS-7003",
+   "src": "images/353_HC.png",
+   "view": "Axial (plano da cabeça fetal)",
+   "gt": {
+    "name": "Head circumference ~163 mm",
+    "pt": "Circunferência cefálica ~163 mm",
+    "box": [
+     0.275,
+     0.4444,
+     0.3,
+     0.437
+    ]
+   },
+   "model_score": 0.995,
+   "secondary": [],
+   "pred_hc_mm": 162.9,
+   "gt_hc_mm": 163.1,
+   "abs_err_mm": 0.2,
+   "within_tolerance": true,
+   "tolerance_mm": 10.0,
+   "report": {
+    "tecnica": "Ultrassonografia obstétrica, plano padrão axial da cabeça fetal (2D).",
+    "achados": "Plano padrão da cabeça fetal em corte axial. A medida automática da circunferência cefálica pelo modelo foi de aproximadamente 163 mm (faixa do 2º trimestre), concordante com a referência do HC18 (163 mm; diferença 0 mm, dentro da tolerância de ±10 mm). O contorno tracejado corresponde à elipse craniana de REFERÊNCIA do HC18 (verdade de base), não a uma localização do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "Circunferência cefálica medida em ~163 mm, concordante com a referência (±10 mm). Medida automática de rascunho referente apenas a esta imagem; a biometria fetal e a datação/correlação clínica cabem ao médico responsável. Não diagnóstico."
+   }
+  },
+  {
+   "id": "BV-OBUS-7004",
+   "src": "images/558_HC.png",
+   "view": "Axial (plano da cabeça fetal)",
+   "gt": {
+    "name": "Head circumference ~162 mm",
+    "pt": "Circunferência cefálica ~162 mm",
+    "box": [
+     0.1938,
+     0.1222,
+     0.6512,
+     0.7556
+    ]
+   },
+   "model_score": 0.889,
+   "secondary": [],
+   "pred_hc_mm": 162.2,
+   "gt_hc_mm": 167.8,
+   "abs_err_mm": 5.6,
+   "within_tolerance": true,
+   "tolerance_mm": 10.0,
+   "report": {
+    "tecnica": "Ultrassonografia obstétrica, plano padrão axial da cabeça fetal (2D).",
+    "achados": "Plano padrão da cabeça fetal em corte axial. A medida automática da circunferência cefálica pelo modelo foi de aproximadamente 162 mm (faixa do 2º trimestre), concordante com a referência do HC18 (168 mm; diferença 6 mm, dentro da tolerância de ±10 mm). O contorno tracejado corresponde à elipse craniana de REFERÊNCIA do HC18 (verdade de base), não a uma localização do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "Circunferência cefálica medida em ~162 mm, concordante com a referência (±10 mm). Medida automática de rascunho referente apenas a esta imagem; a biometria fetal e a datação/correlação clínica cabem ao médico responsável. Não diagnóstico."
+   }
+  },
+  {
+   "id": "BV-OBUS-7005",
+   "src": "images/461_HC.png",
+   "view": "Axial (plano da cabeça fetal)",
+   "gt": {
+    "name": "Head circumference ~172 mm",
+    "pt": "Circunferência cefálica ~172 mm",
+    "box": [
+     0.1775,
+     0.1685,
+     0.5938,
+     0.7204
+    ]
+   },
+   "model_score": 0.957,
+   "secondary": [],
+   "pred_hc_mm": 172.1,
+   "gt_hc_mm": 174.3,
+   "abs_err_mm": 2.1,
+   "within_tolerance": true,
+   "tolerance_mm": 10.0,
+   "report": {
+    "tecnica": "Ultrassonografia obstétrica, plano padrão axial da cabeça fetal (2D).",
+    "achados": "Plano padrão da cabeça fetal em corte axial. A medida automática da circunferência cefálica pelo modelo foi de aproximadamente 172 mm (faixa do 2º trimestre), concordante com a referência do HC18 (174 mm; diferença 2 mm, dentro da tolerância de ±10 mm). O contorno tracejado corresponde à elipse craniana de REFERÊNCIA do HC18 (verdade de base), não a uma localização do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "Circunferência cefálica medida em ~172 mm, concordante com a referência (±10 mm). Medida automática de rascunho referente apenas a esta imagem; a biometria fetal e a datação/correlação clínica cabem ao médico responsável. Não diagnóstico."
+   }
+  },
+  {
+   "id": "BV-OBUS-7006",
+   "src": "images/591_2HC.png",
+   "view": "Axial (plano da cabeça fetal)",
+   "gt": {
+    "name": "Head circumference ~175 mm",
+    "pt": "Circunferência cefálica ~175 mm",
+    "box": [
+     0.0725,
+     0.0944,
+     0.6975,
+     0.8056
+    ]
+   },
+   "model_score": 0.951,
+   "secondary": [],
+   "pred_hc_mm": 175.4,
+   "gt_hc_mm": 177.8,
+   "abs_err_mm": 2.4,
+   "within_tolerance": true,
+   "tolerance_mm": 10.0,
+   "report": {
+    "tecnica": "Ultrassonografia obstétrica, plano padrão axial da cabeça fetal (2D).",
+    "achados": "Plano padrão da cabeça fetal em corte axial. A medida automática da circunferência cefálica pelo modelo foi de aproximadamente 175 mm (faixa do 2º trimestre), concordante com a referência do HC18 (178 mm; diferença 2 mm, dentro da tolerância de ±10 mm). O contorno tracejado corresponde à elipse craniana de REFERÊNCIA do HC18 (verdade de base), não a uma localização do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "Circunferência cefálica medida em ~175 mm, concordante com a referência (±10 mm). Medida automática de rascunho referente apenas a esta imagem; a biometria fetal e a datação/correlação clínica cabem ao médico responsável. Não diagnóstico."
+   }
+  },
+  {
+   "id": "BV-OBUS-7007",
+   "src": "images/737_2HC.png",
+   "view": "Axial (plano da cabeça fetal)",
+   "gt": {
+    "name": "Head circumference ~193 mm",
+    "pt": "Circunferência cefálica ~193 mm",
+    "box": [
+     0.265,
+     0.1722,
+     0.5875,
+     0.7093
+    ]
+   },
+   "model_score": 0.908,
+   "secondary": [],
+   "pred_hc_mm": 193.4,
+   "gt_hc_mm": 188.8,
+   "abs_err_mm": 4.6,
+   "within_tolerance": true,
+   "tolerance_mm": 10.0,
+   "report": {
+    "tecnica": "Ultrassonografia obstétrica, plano padrão axial da cabeça fetal (2D).",
+    "achados": "Plano padrão da cabeça fetal em corte axial. A medida automática da circunferência cefálica pelo modelo foi de aproximadamente 193 mm (faixa do 2º trimestre), concordante com a referência do HC18 (189 mm; diferença 5 mm, dentro da tolerância de ±10 mm). O contorno tracejado corresponde à elipse craniana de REFERÊNCIA do HC18 (verdade de base), não a uma localização do modelo — o regressor emite apenas a medida escalar.",
+    "impressao": "Circunferência cefálica medida em ~193 mm, concordante com a referência (±10 mm). Medida automática de rascunho referente apenas a esta imagem; a biometria fetal e a datação/correlação clínica cabem ao médico responsável. Não diagnóstico."
+   }
+  },
+  {
+   "id": "BV-OBUS-7008",
+   "src": "images/877_HC.png",
+   "view": "Axial (plano da cabeça fetal)",
+   "gt": {
+    "name": "Head circumference ~237 mm",
+    "pt": "Circunferência cefálica ~237 mm",
+    "box": null
+   },
+   "model_score": 0.0,
+   "secondary": [],
+   "pred_hc_mm": 237.2,
+   "gt_hc_mm": 288.0,
+   "abs_err_mm": 50.8,
+   "within_tolerance": false,
+   "tolerance_mm": 10.0,
+   "report": {
+    "tecnica": "Ultrassonografia obstétrica, plano padrão axial da cabeça fetal (2D).",
+    "achados": "Plano padrão da cabeça fetal em corte axial. A medida automática da circunferência cefálica pelo modelo foi de aproximadamente 237 mm, DISCORDANTE da referência do HC18 (288 mm; diferença 51 mm, acima da tolerância de ±10 mm) — exemplo honesto de erro do regressor escalar. Nenhum contorno é exibido, pois a medida não é confiável nesta imagem.",
+    "impressao": "Discordância entre a medida automática (~237 mm) e a referência (288 mm), diferença de 51 mm. Caso de erro exibido de forma transparente; a medida deve ser refeita pelo operador. Não diagnóstico."
+   }
+  },
+  {
+   "id": "BV-OBUS-7009",
+   "src": "images/933_HC.png",
+   "view": "Axial (plano da cabeça fetal)",
+   "gt": {
+    "name": "Head circumference ~249 mm",
+    "pt": "Circunferência cefálica ~249 mm",
+    "box": null
+   },
+   "model_score": 0.156,
+   "secondary": [],
+   "pred_hc_mm": 249.1,
+   "gt_hc_mm": 291.3,
+   "abs_err_mm": 42.2,
+   "within_tolerance": false,
+   "tolerance_mm": 10.0,
+   "report": {
+    "tecnica": "Ultrassonografia obstétrica, plano padrão axial da cabeça fetal (2D).",
+    "achados": "Plano padrão da cabeça fetal em corte axial. A medida automática da circunferência cefálica pelo modelo foi de aproximadamente 249 mm, DISCORDANTE da referência do HC18 (291 mm; diferença 42 mm, acima da tolerância de ±10 mm) — exemplo honesto de erro do regressor escalar. Nenhum contorno é exibido, pois a medida não é confiável nesta imagem.",
+    "impressao": "Discordância entre a medida automática (~249 mm) e a referência (291 mm), diferença de 42 mm. Caso de erro exibido de forma transparente; a medida deve ser refeita pelo operador. Não diagnóstico."
+   }
+  }
+ ]
+}
