@@ -1,14 +1,16 @@
 /* Reading-session player, parametrized by MODALITY (chest | limb | brain | breast | headct |
- * mammo | obus). Each case: a finding/prediction + box, the live model's real (uncalibrated)
- * score + Grad-CAM attention, and a 3-section pt-BR draft. Descriptive, non-diagnostic;
- * physician signs. (brain = braintumor-classifier-v1, 4-class RM; breast = breastus-busi-v1,
- * 3-class US on BUSI CC BY 4.0; headct = headct-ich-v1, 6-label multilabel ICH on a NON-RANDOM
- * RSNA-ICH tar-prefix pull, non-commercial despite the HF mirror's tag; mammo = mammo-cbisddsm-v1,
- * benign/malignant on CBIS-DDSM digitized-film ROI crops; obus = obus-hc-v1, scalar fetal
- * head-circumference regressor on HC18 CC BY 4.0 — box is the HC18 REFERENCE ellipse, not a
- * model localization — all R&D benchmarks, not clinical.)
+ * mammo | obus | ctchest). Each case: a finding/prediction + box, the live model's real
+ * (uncalibrated) score + Grad-CAM attention, and a 3-section pt-BR draft. Descriptive,
+ * non-diagnostic; physician signs. (brain = braintumor-classifier-v1, 4-class RM; breast =
+ * breastus-busi-v1, 3-class US on BUSI CC BY 4.0; headct = headct-ich-v1, 6-label multilabel
+ * ICH on a NON-RANDOM RSNA-ICH tar-prefix pull, non-commercial despite the HF mirror's tag;
+ * mammo = mammo-cbisddsm-v1, benign/malignant on CBIS-DDSM digitized-film ROI crops; obus =
+ * obus-hc-v1, scalar fetal head-circumference regressor on HC18 CC BY 4.0 — box is the HC18
+ * REFERENCE ellipse, not a model localization; ctchest = ctchest-nodule-v1, lung-nodule
+ * malignancy CHARACTERIZATION (not detection — nodule pre-localized by radiologist annotation)
+ * on a genuine random 400-patient LIDC-IDRI sample, CC BY 3.0 — all R&D benchmarks, not clinical.)
  * Entry = #chooser (cards); each modality loads data/<modality>/session.json (+
- * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus. */
+ * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus|ctchest. */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -78,6 +80,13 @@
       pmeta: 'medida do modelo · caixa: elipse de REFERÊNCIA do HC18 (verdade de base, não localização do modelo) · regressor escalar sem segmentação · plano único (2D), não clínico',
       demo: 'Demo · saída real do modelo · medida descritiva, não diagnóstica · dados HC18 CC BY 4.0 (pesquisa) → não é produto',
       alt: 'Ultrassonografia obstétrica'
+    },
+    ctchest: {
+      model: 'ctchest-nodule-v1', hud: 'TC · TÓRAX', src: 'LIDC-IDRI · CC BY 3.0 (P&D)', examTitle: 'LAUDO DE TC DE TÓRAX (NÓDULO)',
+      chip: 'modelo · malignidade', ptag: 'predição do modelo (caracterização de malignidade)',
+      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM sobre o nódulo já localizado pela anotação · caracterização, não detecção · corte único, não clínico',
+      demo: 'Demo · saída real do modelo · caracterização descritiva, não diagnóstica · amostra aleatória LIDC-IDRI CC BY 3.0 (pesquisa) → não é produto',
+      alt: 'Tomografia de tórax'
     }
   };
   var modality = null, MOD = null, DATA_ROOT = '';
