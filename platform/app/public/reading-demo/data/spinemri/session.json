@@ -1,0 +1,432 @@
+{
+ "model": "spinemri-degen-v1",
+ "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · 6-label multilabel (study-level)",
+ "benchmark": "held-out test: macro-AUROC 0.762 · n=32",
+ "gt_source": "predicao do modelo (multi-rotulo, nivel de estudo; caixa/calor = atencao Grad-CAM)",
+ "note": "SPIDER (van der Graaf et al.), 216 pacientes, CC BY 4.0 (uso comercial permitido para os DADOS) → ainda assim evidencia de P&D/pipeline, NAO prontidao clinica. Rotulos = roll-up de NIVEL DE ESTUDO (qualquer disco positivo -> estudo positivo) dos achados reais por disco do SPIDER; NAO diz QUAL nivel (L1-L2...L5-S1) esta afetado. Cada caso e ancorado em UM achado especifico (os seis sao independentes e frequentemente coexistem); achados adicionais positivos no mesmo estudo aparecem listados. Corte mediossagital UNICO, nao o volume completo (sagital+axial). A caixa/calor e a atencao Grad-CAM (grosseira, NAO delimita o disco — deliberadamente NAO usamos as mascaras de segmentacao do SPIDER aqui, pois um classificador de nivel de estudo nao pode localizar honestamente um disco especifico). Grau de Pfirrmann (1-5) e estenose espinhal NAO fazem parte deste modelo. Descritivo, nao diagnostico.",
+ "cases": [
+  {
+   "id": "BV-SPINE-4000",
+   "src": "152_152_t2.png",
+   "view": "Mediossagital (T1/T2)",
+   "gt": {
+    "name": "Disc bulging",
+    "pt": "Abaulamento discal",
+    "box": [
+     0.3482,
+     0.5982,
+     0.4018,
+     0.317
+    ]
+   },
+   "model_score": 0.926,
+   "secondary": [
+    "Reducao do espaco discal",
+    "Alteracoes de Modic",
+    "Alteracoes do plato vertebral",
+    "Espondilolistese"
+   ],
+   "anchor_label": "disc_bulging",
+   "is_correct": true,
+   "other_true_labels": [
+    "disc_narrowing",
+    "modic_changes",
+    "endplate_changes",
+    "spondylolisthesis"
+   ],
+   "other_pred_labels": [
+    "disc_narrowing",
+    "modic_changes",
+    "endplate_changes"
+   ],
+   "report": {
+    "tecnica": "Ressonancia magnetica da coluna lombar, corte mediossagital unico (T1/T2).",
+    "achados": "Corte mediossagital da coluna lombar. O modelo sinaliza Abaulamento discal com confianca 0.93, concordante com a referencia (SPIDER, nivel de estudo — nao diz qual disco especifico esta afetado). Outros achados tambem positivos neste estudo (referencia): Reducao do espaco discal, Alteracoes de Modic, Alteracoes do plato vertebral, Espondilolistese. A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao a delimitacao do disco.",
+    "impressao": "Abaulamento discal sinalizado pelo modelo (confianca 0.93), nivel de estudo, concordante com a referencia. Outros achados tambem positivos neste estudo (referencia): Reducao do espaco discal, Alteracoes de Modic, Alteracoes do plato vertebral, Espondilolistese. Rascunho referente apenas a este corte unico (nao o estudo volumetrico completo); a graduacao por nivel discal e a correlacao clinica cabem ao radiologista. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-SPINE-4001",
+   "src": "50_50_t2.png",
+   "view": "Mediossagital (T1/T2)",
+   "gt": {
+    "name": "Disc bulging",
+    "pt": "Abaulamento discal",
+    "box": [
+     0.3884,
+     0.1696,
+     0.2455,
+     0.4241
+    ]
+   },
+   "model_score": 0.889,
+   "secondary": [
+    "Hernia discal",
+    "Reducao do espaco discal",
+    "Alteracoes de Modic",
+    "Alteracoes do plato vertebral",
+    "Espondilolistese"
+   ],
+   "anchor_label": "disc_bulging",
+   "is_correct": true,
+   "other_true_labels": [
+    "disc_herniation",
+    "disc_narrowing",
+    "modic_changes",
+    "endplate_changes",
+    "spondylolisthesis"
+   ],
+   "other_pred_labels": [
+    "disc_narrowing",
+    "modic_changes",
+    "endplate_changes",
+    "spondylolisthesis"
+   ],
+   "report": {
+    "tecnica": "Ressonancia magnetica da coluna lombar, corte mediossagital unico (T1/T2).",
+    "achados": "Corte mediossagital da coluna lombar. O modelo sinaliza Abaulamento discal com confianca 0.89, concordante com a referencia (SPIDER, nivel de estudo — nao diz qual disco especifico esta afetado). Outros achados tambem positivos neste estudo (referencia): Hernia discal, Reducao do espaco discal, Alteracoes de Modic, Alteracoes do plato vertebral, Espondilolistese. A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao a delimitacao do disco.",
+    "impressao": "Abaulamento discal sinalizado pelo modelo (confianca 0.89), nivel de estudo, concordante com a referencia. Outros achados tambem positivos neste estudo (referencia): Hernia discal, Reducao do espaco discal, Alteracoes de Modic, Alteracoes do plato vertebral, Espondilolistese. Rascunho referente apenas a este corte unico (nao o estudo volumetrico completo); a graduacao por nivel discal e a correlacao clinica cabem ao radiologista. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-SPINE-4002",
+   "src": "234_234_t2.png",
+   "view": "Mediossagital (T1/T2)",
+   "gt": {
+    "name": "Disc narrowing",
+    "pt": "Reducao do espaco discal",
+    "box": [
+     0.3839,
+     0.3705,
+     0.2321,
+     0.4196
+    ]
+   },
+   "model_score": 0.83,
+   "secondary": [
+    "Abaulamento discal",
+    "Alteracoes de Modic",
+    "Alteracoes do plato vertebral",
+    "Espondilolistese"
+   ],
+   "anchor_label": "disc_narrowing",
+   "is_correct": true,
+   "other_true_labels": [
+    "disc_bulging",
+    "modic_changes",
+    "endplate_changes",
+    "spondylolisthesis"
+   ],
+   "other_pred_labels": [
+    "disc_bulging",
+    "modic_changes",
+    "endplate_changes"
+   ],
+   "report": {
+    "tecnica": "Ressonancia magnetica da coluna lombar, corte mediossagital unico (T1/T2).",
+    "achados": "Corte mediossagital da coluna lombar. O modelo sinaliza Reducao do espaco discal com confianca 0.83, concordante com a referencia (SPIDER, nivel de estudo — nao diz qual disco especifico esta afetado). Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Alteracoes de Modic, Alteracoes do plato vertebral, Espondilolistese. A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao a delimitacao do disco.",
+    "impressao": "Reducao do espaco discal sinalizado pelo modelo (confianca 0.83), nivel de estudo, concordante com a referencia. Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Alteracoes de Modic, Alteracoes do plato vertebral, Espondilolistese. Rascunho referente apenas a este corte unico (nao o estudo volumetrico completo); a graduacao por nivel discal e a correlacao clinica cabem ao radiologista. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-SPINE-4003",
+   "src": "207_207_t2.png",
+   "view": "Mediossagital (T1/T2)",
+   "gt": {
+    "name": "Disc narrowing",
+    "pt": "Reducao do espaco discal",
+    "box": [
+     0.4018,
+     0.4018,
+     0.2768,
+     0.3884
+    ]
+   },
+   "model_score": 0.801,
+   "secondary": [
+    "Abaulamento discal",
+    "Alteracoes de Modic"
+   ],
+   "anchor_label": "disc_narrowing",
+   "is_correct": true,
+   "other_true_labels": [
+    "disc_bulging",
+    "modic_changes"
+   ],
+   "other_pred_labels": [
+    "disc_bulging",
+    "modic_changes",
+    "endplate_changes"
+   ],
+   "report": {
+    "tecnica": "Ressonancia magnetica da coluna lombar, corte mediossagital unico (T1/T2).",
+    "achados": "Corte mediossagital da coluna lombar. O modelo sinaliza Reducao do espaco discal com confianca 0.80, concordante com a referencia (SPIDER, nivel de estudo — nao diz qual disco especifico esta afetado). Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Alteracoes de Modic. A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao a delimitacao do disco.",
+    "impressao": "Reducao do espaco discal sinalizado pelo modelo (confianca 0.80), nivel de estudo, concordante com a referencia. Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Alteracoes de Modic. Rascunho referente apenas a este corte unico (nao o estudo volumetrico completo); a graduacao por nivel discal e a correlacao clinica cabem ao radiologista. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-SPINE-4004",
+   "src": "25_25_t2.png",
+   "view": "Mediossagital (T1/T2)",
+   "gt": {
+    "name": "Modic changes",
+    "pt": "Alteracoes de Modic",
+    "box": [
+     0.4018,
+     0.317,
+     0.3125,
+     0.4777
+    ]
+   },
+   "model_score": 0.885,
+   "secondary": [
+    "Abaulamento discal",
+    "Reducao do espaco discal",
+    "Alteracoes do plato vertebral"
+   ],
+   "anchor_label": "modic_changes",
+   "is_correct": true,
+   "other_true_labels": [
+    "disc_bulging",
+    "disc_narrowing",
+    "endplate_changes"
+   ],
+   "other_pred_labels": [
+    "disc_bulging",
+    "disc_narrowing",
+    "endplate_changes",
+    "spondylolisthesis"
+   ],
+   "report": {
+    "tecnica": "Ressonancia magnetica da coluna lombar, corte mediossagital unico (T1/T2).",
+    "achados": "Corte mediossagital da coluna lombar. O modelo sinaliza Alteracoes de Modic com confianca 0.89, concordante com a referencia (SPIDER, nivel de estudo — nao diz qual disco especifico esta afetado). Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Reducao do espaco discal, Alteracoes do plato vertebral. A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao a delimitacao do disco.",
+    "impressao": "Alteracoes de Modic sinalizado pelo modelo (confianca 0.89), nivel de estudo, concordante com a referencia. Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Reducao do espaco discal, Alteracoes do plato vertebral. Rascunho referente apenas a este corte unico (nao o estudo volumetrico completo); a graduacao por nivel discal e a correlacao clinica cabem ao radiologista. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-SPINE-4005",
+   "src": "58_58_t2.png",
+   "view": "Mediossagital (T1/T2)",
+   "gt": {
+    "name": "Modic changes",
+    "pt": "Alteracoes de Modic",
+    "box": [
+     0.5179,
+     0.2054,
+     0.2946,
+     0.5625
+    ]
+   },
+   "model_score": 0.882,
+   "secondary": [
+    "Abaulamento discal",
+    "Reducao do espaco discal",
+    "Alteracoes do plato vertebral"
+   ],
+   "anchor_label": "modic_changes",
+   "is_correct": true,
+   "other_true_labels": [
+    "disc_bulging",
+    "disc_narrowing",
+    "endplate_changes"
+   ],
+   "other_pred_labels": [
+    "disc_bulging",
+    "disc_narrowing",
+    "endplate_changes"
+   ],
+   "report": {
+    "tecnica": "Ressonancia magnetica da coluna lombar, corte mediossagital unico (T1/T2).",
+    "achados": "Corte mediossagital da coluna lombar. O modelo sinaliza Alteracoes de Modic com confianca 0.88, concordante com a referencia (SPIDER, nivel de estudo — nao diz qual disco especifico esta afetado). Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Reducao do espaco discal, Alteracoes do plato vertebral. A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao a delimitacao do disco.",
+    "impressao": "Alteracoes de Modic sinalizado pelo modelo (confianca 0.88), nivel de estudo, concordante com a referencia. Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Reducao do espaco discal, Alteracoes do plato vertebral. Rascunho referente apenas a este corte unico (nao o estudo volumetrico completo); a graduacao por nivel discal e a correlacao clinica cabem ao radiologista. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-SPINE-4006",
+   "src": "143_143_t2.png",
+   "view": "Mediossagital (T1/T2)",
+   "gt": {
+    "name": "Endplate changes",
+    "pt": "Alteracoes do plato vertebral",
+    "box": [
+     0.4509,
+     0.3393,
+     0.2812,
+     0.3839
+    ]
+   },
+   "model_score": 0.753,
+   "secondary": [
+    "Abaulamento discal",
+    "Reducao do espaco discal",
+    "Alteracoes de Modic"
+   ],
+   "anchor_label": "endplate_changes",
+   "is_correct": true,
+   "other_true_labels": [
+    "disc_bulging",
+    "disc_narrowing",
+    "modic_changes"
+   ],
+   "other_pred_labels": [
+    "disc_bulging",
+    "disc_narrowing",
+    "modic_changes"
+   ],
+   "report": {
+    "tecnica": "Ressonancia magnetica da coluna lombar, corte mediossagital unico (T1/T2).",
+    "achados": "Corte mediossagital da coluna lombar. O modelo sinaliza Alteracoes do plato vertebral com confianca 0.75, concordante com a referencia (SPIDER, nivel de estudo — nao diz qual disco especifico esta afetado). Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Reducao do espaco discal, Alteracoes de Modic. A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao a delimitacao do disco.",
+    "impressao": "Alteracoes do plato vertebral sinalizado pelo modelo (confianca 0.75), nivel de estudo, concordante com a referencia. Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Reducao do espaco discal, Alteracoes de Modic. Rascunho referente apenas a este corte unico (nao o estudo volumetrico completo); a graduacao por nivel discal e a correlacao clinica cabem ao radiologista. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-SPINE-4007",
+   "src": "86_86_t2.png",
+   "view": "Mediossagital (T1/T2)",
+   "gt": {
+    "name": "Endplate changes",
+    "pt": "Alteracoes do plato vertebral",
+    "box": [
+     0.2634,
+     0.2009,
+     0.4107,
+     0.308
+    ]
+   },
+   "model_score": 0.733,
+   "secondary": [
+    "Abaulamento discal",
+    "Reducao do espaco discal",
+    "Alteracoes de Modic"
+   ],
+   "anchor_label": "endplate_changes",
+   "is_correct": true,
+   "other_true_labels": [
+    "disc_bulging",
+    "disc_narrowing",
+    "modic_changes"
+   ],
+   "other_pred_labels": [
+    "disc_herniation",
+    "disc_bulging",
+    "disc_narrowing",
+    "modic_changes"
+   ],
+   "report": {
+    "tecnica": "Ressonancia magnetica da coluna lombar, corte mediossagital unico (T1/T2).",
+    "achados": "Corte mediossagital da coluna lombar. O modelo sinaliza Alteracoes do plato vertebral com confianca 0.73, concordante com a referencia (SPIDER, nivel de estudo — nao diz qual disco especifico esta afetado). Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Reducao do espaco discal, Alteracoes de Modic. A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao a delimitacao do disco.",
+    "impressao": "Alteracoes do plato vertebral sinalizado pelo modelo (confianca 0.73), nivel de estudo, concordante com a referencia. Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Reducao do espaco discal, Alteracoes de Modic. Rascunho referente apenas a este corte unico (nao o estudo volumetrico completo); a graduacao por nivel discal e a correlacao clinica cabem ao radiologista. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-SPINE-4008",
+   "src": "162_162_t2.png",
+   "view": "Mediossagital (T1/T2)",
+   "gt": {
+    "name": "Spondylolisthesis",
+    "pt": "Espondilolistese",
+    "box": [
+     0.3839,
+     0.5134,
+     0.2991,
+     0.3571
+    ]
+   },
+   "model_score": 0.797,
+   "secondary": [
+    "Abaulamento discal",
+    "Reducao do espaco discal",
+    "Alteracoes de Modic",
+    "Alteracoes do plato vertebral"
+   ],
+   "anchor_label": "spondylolisthesis",
+   "is_correct": true,
+   "other_true_labels": [
+    "disc_bulging",
+    "disc_narrowing",
+    "modic_changes",
+    "endplate_changes"
+   ],
+   "other_pred_labels": [
+    "disc_bulging",
+    "disc_narrowing",
+    "modic_changes",
+    "endplate_changes"
+   ],
+   "report": {
+    "tecnica": "Ressonancia magnetica da coluna lombar, corte mediossagital unico (T1/T2).",
+    "achados": "Corte mediossagital da coluna lombar. O modelo sinaliza Espondilolistese com confianca 0.80, concordante com a referencia (SPIDER, nivel de estudo — nao diz qual disco especifico esta afetado). Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Reducao do espaco discal, Alteracoes de Modic, Alteracoes do plato vertebral. A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao a delimitacao do disco.",
+    "impressao": "Espondilolistese sinalizado pelo modelo (confianca 0.80), nivel de estudo, concordante com a referencia. Outros achados tambem positivos neste estudo (referencia): Abaulamento discal, Reducao do espaco discal, Alteracoes de Modic, Alteracoes do plato vertebral. Rascunho referente apenas a este corte unico (nao o estudo volumetrico completo); a graduacao por nivel discal e a correlacao clinica cabem ao radiologista. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-SPINE-4009",
+   "src": "109_109_t2.png",
+   "view": "Mediossagital (T1/T2)",
+   "gt": {
+    "name": "Disc herniation",
+    "pt": "Hernia discal",
+    "box": null
+   },
+   "model_score": 0.129,
+   "secondary": [
+    "Reducao do espaco discal",
+    "Alteracoes de Modic",
+    "Alteracoes do plato vertebral",
+    "Espondilolistese"
+   ],
+   "anchor_label": "disc_herniation",
+   "is_correct": false,
+   "other_true_labels": [
+    "disc_narrowing",
+    "modic_changes",
+    "endplate_changes",
+    "spondylolisthesis"
+   ],
+   "other_pred_labels": [
+    "modic_changes"
+   ],
+   "report": {
+    "tecnica": "Ressonancia magnetica da coluna lombar, corte mediossagital unico (T1/T2).",
+    "achados": "Corte mediossagital da coluna lombar. A referencia (SPIDER) indica Hernia discal positivo neste estudo, mas o modelo NAO sinalizou esse achado com confianca (escore 0.13) — um FALSO NEGATIVO honesto, exemplo transparente de limitacao do classificador. Nenhuma regiao e destacada.",
+    "impressao": "Falso negativo: Hernia discal presente na referencia, nao detectado pelo modelo (escore 0.13). Caso de erro exibido de forma transparente. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-SPINE-4010",
+   "src": "63_63_t2.png",
+   "view": "Mediossagital (T1/T2)",
+   "gt": {
+    "name": "Spondylolisthesis",
+    "pt": "Espondilolistese",
+    "box": null
+   },
+   "model_score": 0.225,
+   "secondary": [
+    "Abaulamento discal",
+    "Reducao do espaco discal",
+    "Alteracoes de Modic",
+    "Alteracoes do plato vertebral"
+   ],
+   "anchor_label": "spondylolisthesis",
+   "is_correct": false,
+   "other_true_labels": [
+    "disc_bulging",
+    "disc_narrowing",
+    "modic_changes",
+    "endplate_changes"
+   ],
+   "other_pred_labels": [
+    "disc_bulging",
+    "disc_narrowing",
+    "modic_changes",
+    "endplate_changes"
+   ],
+   "report": {
+    "tecnica": "Ressonancia magnetica da coluna lombar, corte mediossagital unico (T1/T2).",
+    "achados": "Corte mediossagital da coluna lombar. A referencia (SPIDER) indica Espondilolistese positivo neste estudo, mas o modelo NAO sinalizou esse achado com confianca (escore 0.23) — um FALSO NEGATIVO honesto, exemplo transparente de limitacao do classificador. Nenhuma regiao e destacada.",
+    "impressao": "Falso negativo: Espondilolistese presente na referencia, nao detectado pelo modelo (escore 0.23). Caso de erro exibido de forma transparente. Nao diagnostico."
+   }
+  }
+ ]
+}
