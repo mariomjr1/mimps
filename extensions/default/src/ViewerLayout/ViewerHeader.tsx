@@ -123,15 +123,18 @@ function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }
         }
       >
         {/* MOB-02 (V4): the 9-button primary toolbar (~430px) cannot fit a
-            phone-width header row; below md it moves to the scrollable strip. */}
-        <div className="relative hidden justify-center gap-[4px] md:flex">
+            narrow header row; below lg it moves to the scrollable strip.
+            Was md: — that collapse point didn't match the rest of the header
+            (logo/undo-redo/patient-info/Secondary), so the 768-1024px window
+            showed this centered toolbar overlapping those other blocks. */}
+        <div className="relative hidden justify-center gap-[4px] lg:flex">
           <Toolbar buttonSection="primary" />
         </div>
       </Header>
       {/* MOB-02 (V4): horizontally scrollable primary tool strip below the
-          header on phones. Same IconPresentationProvider setup as Header so
+          header below lg. Same IconPresentationProvider setup as Header so
           ToolButtons render identically. */}
-      <div className="bg-popover border-background flex items-center gap-1 overflow-x-auto border-b px-2 py-1 [-webkit-overflow-scrolling:touch] md:hidden">
+      <div className="bg-popover border-background flex items-center gap-1 overflow-x-auto border-b px-2 py-1 [-webkit-overflow-scrolling:touch] lg:hidden">
         <IconPresentationProvider
           size="large"
           IconContainer={ToolButton}

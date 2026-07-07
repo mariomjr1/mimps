@@ -73,27 +73,31 @@ function Header({
               {isReturnEnabled && <Icons.ArrowLeft className="text-primary ml-1 h-7 w-7" />}
               <div className="ml-1">
                 {/* MIMPS-01: BlackVoxel wordmark fallback instead of the upstream OHIF logo.
-                    MOB-02 (V4): mark-only logo below md — the 232px wordmark ate
-                    most of a phone-width header. */}
+                    MOB-02 (V4): mark-only logo below lg — the 232px wordmark ate
+                    most of a narrow header. (Was md: — that left a 768-1024px gap
+                    where this showed full-size while Secondary was still hidden
+                    below lg, so nothing agreed on a single collapse point.) */}
                 {WhiteLabeling?.createLogoComponentFn?.(React, props) || (
                   <>
                     <img
                       src="/blackvoxel-mark.svg"
                       alt="BlackVoxel Viewer"
-                      className="h-6 w-6 md:hidden"
+                      className="h-6 w-6 lg:hidden"
                     />
                     <img
                       src="/blackvoxel-logo.svg"
                       alt="BlackVoxel Viewer"
-                      className="hidden h-[22px] w-[232px] md:block"
+                      className="hidden h-[22px] w-[232px] lg:block"
                     />
                   </>
                 )}
               </div>
             </div>
           </div>
-          {/* MOB-02 (V4): the secondary toolbar is pinned at left-[250px] and
-              collides with everything below lg. */}
+          {/* MOB-02 (V4): the secondary toolbar is pinned at left-[250px] — every
+              other block in this header now also collapses below lg (see the
+              logo + right-cluster comments), so lg is the single agreed collapse
+              point and nothing overlaps it anymore. */}
           <div className="absolute top-1/2 left-[250px] hidden h-8 -translate-y-1/2 lg:block">
             {Secondary}
           </div>
@@ -101,12 +105,15 @@ function Header({
             <div className="flex items-center justify-center space-x-2">{children}</div>
           </div>
           <div className="absolute right-0 top-1/2 flex -translate-y-1/2 select-none items-center">
-            {/* MOB-02 (V4): undo/redo and patient info are desktop-only; the
-                gear menu stays at all widths (About/Preferences/Logout). */}
-            <div className="hidden md:flex">{UndoRedo}</div>
-            <div className="border-muted mx-1.5 hidden h-[25px] border-r md:block"></div>
-            <div className="hidden md:block">{PatientInfo}</div>
-            <div className="border-muted mx-1.5 hidden h-[25px] border-r md:block"></div>
+            {/* MOB-02 (V4): undo/redo and patient info are desktop-only (lg+); the
+                gear menu stays at all widths (About/Preferences/Logout). Was
+                md: — that showed these alongside the full-width logo in the
+                768-1024px gap while Secondary stayed hidden, so this cluster
+                and the logo would crowd/overlap each other at the same widths. */}
+            <div className="hidden lg:flex">{UndoRedo}</div>
+            <div className="border-muted mx-1.5 hidden h-[25px] border-r lg:block"></div>
+            <div className="hidden lg:block">{PatientInfo}</div>
+            <div className="border-muted mx-1.5 hidden h-[25px] border-r lg:block"></div>
             <div className="flex-shrink-0">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
