@@ -1,0 +1,249 @@
+{
+ "model": "abdominalus-organ-v1",
+ "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · 10-class softmax (abdominal organ)",
+ "benchmark": "held-out test (radiologista-2 independente): acuracia 82% · macro-AUROC 0.978 · macro-F1 0.732 · n=1334",
+ "gt_source": "predicao do modelo (10 classes de orgao; caixa/calor = atencao Grad-CAM)",
+ "note": "MSU Abdominal Ultrasound (Karim, Mississippi State University), CC BY 4.0 (uso comercial permitido para os DADOS) → ainda assim evidencia de P&D/pipeline, NAO prontidao clinica. RECONHECIMENTO DE ORGAO (qual orgao esta no quadro), NAO rastreamento de doenca (calculo/AAA/lesao focal). Teste = conjunto do RADIOLOGISTA 2 (pacientes E anotador independentes → sem vazamento). Quadro unico (2D), nao varredura. A caixa/calor e a atencao Grad-CAM (grosseira, nao delimita). Descritivo, nao diagnostico.",
+ "cases": [
+  {
+   "id": "BV-ABUS-5000",
+   "src": "organ_classification_2/AA/7.jpg",
+   "view": "Abdominal (modo-B)",
+   "gt": {
+    "name": "Abdominal aorta",
+    "pt": "Aorta abdominal",
+    "box": [
+     0.5045,
+     0.4464,
+     0.2902,
+     0.3571
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "pred_organ": "aorta_abdominal",
+   "true_organ": "aorta_abdominal",
+   "correct": true,
+   "report": {
+    "tecnica": "Ultrassonografia abdominal, modo-B, corte unico.",
+    "achados": "Corte de ultrassonografia abdominal. O modelo reconhece a estrutura em foco como Aorta abdominal (confianca 1.00). A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao uma delimitacao anatomica precisa.",
+    "impressao": "Estrutura compativel com Aorta abdominal pelo reconhecimento automatico de orgao (confianca 1.00). Rascunho referente apenas a esta imagem; a identificacao do orgao e a avaliacao de doenca cabem ao medico. RECONHECIMENTO DE ORGAO, nao rastreamento de doenca. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-ABUS-5001",
+   "src": "organ_classification_2/GB/111.jpg",
+   "view": "Abdominal (modo-B)",
+   "gt": {
+    "name": "Gallbladder",
+    "pt": "Vesicula biliar",
+    "box": [
+     0.3304,
+     0.3214,
+     0.3259,
+     0.3214
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "pred_organ": "gallbladder",
+   "true_organ": "gallbladder",
+   "correct": true,
+   "report": {
+    "tecnica": "Ultrassonografia abdominal, modo-B, corte unico.",
+    "achados": "Corte de ultrassonografia abdominal. O modelo reconhece a estrutura em foco como Vesicula biliar (confianca 1.00). A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao uma delimitacao anatomica precisa.",
+    "impressao": "Estrutura compativel com Vesicula biliar pelo reconhecimento automatico de orgao (confianca 1.00). Rascunho referente apenas a esta imagem; a identificacao do orgao e a avaliacao de doenca cabem ao medico. RECONHECIMENTO DE ORGAO, nao rastreamento de doenca. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-ABUS-5002",
+   "src": "organ_classification_2/Hepatic/149.jpg",
+   "view": "Abdominal (modo-B)",
+   "gt": {
+    "name": "Hepatic vein",
+    "pt": "Veia hepatica",
+    "box": [
+     0.375,
+     0.3527,
+     0.2991,
+     0.3259
+    ]
+   },
+   "model_score": 0.999,
+   "secondary": [],
+   "pred_organ": "hepatic_vein",
+   "true_organ": "hepatic_vein",
+   "correct": true,
+   "report": {
+    "tecnica": "Ultrassonografia abdominal, modo-B, corte unico.",
+    "achados": "Corte de ultrassonografia abdominal. O modelo reconhece a estrutura em foco como Veia hepatica (confianca 1.00). A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao uma delimitacao anatomica precisa.",
+    "impressao": "Estrutura compativel com Veia hepatica pelo reconhecimento automatico de orgao (confianca 1.00). Rascunho referente apenas a esta imagem; a identificacao do orgao e a avaliacao de doenca cabem ao medico. RECONHECIMENTO DE ORGAO, nao rastreamento de doenca. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-ABUS-5003",
+   "src": "organ_classification_2/Kidney/210.jpg",
+   "view": "Abdominal (modo-B)",
+   "gt": {
+    "name": "Kidney",
+    "pt": "Rim",
+    "box": [
+     0.4554,
+     0.3527,
+     0.4107,
+     0.2589
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "pred_organ": "kidney",
+   "true_organ": "kidney",
+   "correct": true,
+   "report": {
+    "tecnica": "Ultrassonografia abdominal, modo-B, corte unico.",
+    "achados": "Corte de ultrassonografia abdominal. O modelo reconhece a estrutura em foco como Rim (confianca 1.00). A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao uma delimitacao anatomica precisa.",
+    "impressao": "Estrutura compativel com Rim pelo reconhecimento automatico de orgao (confianca 1.00). Rascunho referente apenas a esta imagem; a identificacao do orgao e a avaliacao de doenca cabem ao medico. RECONHECIMENTO DE ORGAO, nao rastreamento de doenca. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-ABUS-5004",
+   "src": "organ_classification_2/Liver/518.jpg",
+   "view": "Abdominal (modo-B)",
+   "gt": {
+    "name": "Liver",
+    "pt": "Figado",
+    "box": [
+     0.375,
+     0.2812,
+     0.308,
+     0.3259
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "pred_organ": "liver",
+   "true_organ": "liver",
+   "correct": true,
+   "report": {
+    "tecnica": "Ultrassonografia abdominal, modo-B, corte unico.",
+    "achados": "Corte de ultrassonografia abdominal. O modelo reconhece a estrutura em foco como Figado (confianca 1.00). A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao uma delimitacao anatomica precisa.",
+    "impressao": "Estrutura compativel com Figado pelo reconhecimento automatico de orgao (confianca 1.00). Rascunho referente apenas a esta imagem; a identificacao do orgao e a avaliacao de doenca cabem ao medico. RECONHECIMENTO DE ORGAO, nao rastreamento de doenca. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-ABUS-5005",
+   "src": "organ_classification_2/Ovaries/654.jpg",
+   "view": "Abdominal (modo-B)",
+   "gt": {
+    "name": "Ovary",
+    "pt": "Ovario",
+    "box": [
+     0.3125,
+     0.3259,
+     0.3527,
+     0.2991
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "pred_organ": "ovary",
+   "true_organ": "ovary",
+   "correct": true,
+   "report": {
+    "tecnica": "Ultrassonografia abdominal, modo-B, corte unico.",
+    "achados": "Corte de ultrassonografia abdominal. O modelo reconhece a estrutura em foco como Ovario (confianca 1.00). A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao uma delimitacao anatomica precisa.",
+    "impressao": "Estrutura compativel com Ovario pelo reconhecimento automatico de orgao (confianca 1.00). Rascunho referente apenas a esta imagem; a identificacao do orgao e a avaliacao de doenca cabem ao medico. RECONHECIMENTO DE ORGAO, nao rastreamento de doenca. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-ABUS-5006",
+   "src": "organ_classification_2/Pancreas/815.jpg",
+   "view": "Abdominal (modo-B)",
+   "gt": {
+    "name": "Pancreas",
+    "pt": "Pancreas",
+    "box": [
+     0.3393,
+     0.2455,
+     0.3036,
+     0.3438
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "pred_organ": "pancreas",
+   "true_organ": "pancreas",
+   "correct": true,
+   "report": {
+    "tecnica": "Ultrassonografia abdominal, modo-B, corte unico.",
+    "achados": "Corte de ultrassonografia abdominal. O modelo reconhece a estrutura em foco como Pancreas (confianca 1.00). A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao uma delimitacao anatomica precisa.",
+    "impressao": "Estrutura compativel com Pancreas pelo reconhecimento automatico de orgao (confianca 1.00). Rascunho referente apenas a esta imagem; a identificacao do orgao e a avaliacao de doenca cabem ao medico. RECONHECIMENTO DE ORGAO, nao rastreamento de doenca. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-ABUS-5007",
+   "src": "organ_classification_2/Portal/926.jpg",
+   "view": "Abdominal (modo-B)",
+   "gt": {
+    "name": "Portal vein",
+    "pt": "Veia porta",
+    "box": [
+     0.4152,
+     0.3259,
+     0.3304,
+     0.3125
+    ]
+   },
+   "model_score": 0.613,
+   "secondary": [],
+   "pred_organ": "portal_vein",
+   "true_organ": "portal_vein",
+   "correct": true,
+   "report": {
+    "tecnica": "Ultrassonografia abdominal, modo-B, corte unico.",
+    "achados": "Corte de ultrassonografia abdominal. O modelo reconhece a estrutura em foco como Veia porta (confianca 0.61). A regiao destacada indica a atencao do modelo (Grad-CAM), grosseira, nao uma delimitacao anatomica precisa.",
+    "impressao": "Estrutura compativel com Veia porta pelo reconhecimento automatico de orgao (confianca 0.61). Rascunho referente apenas a esta imagem; a identificacao do orgao e a avaliacao de doenca cabem ao medico. RECONHECIMENTO DE ORGAO, nao rastreamento de doenca. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-ABUS-5008",
+   "src": "organ_classification_2/Ovaries/653.jpg",
+   "view": "Abdominal (modo-B)",
+   "gt": {
+    "name": "Urinary system",
+    "pt": "Sistema urinario (bexiga/prostata/utero)",
+    "box": null
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "pred_organ": "urinary_system",
+   "true_organ": "ovary",
+   "correct": false,
+   "report": {
+    "tecnica": "Ultrassonografia abdominal, modo-B, corte unico.",
+    "achados": "Corte de ultrassonografia abdominal. O modelo classificou a estrutura como Sistema urinario (bexiga/prostata/utero) (confianca 1.00), mas o rotulo de referencia e Ovario — exemplo honesto de ERRO de classificacao. Nenhuma regiao e destacada.",
+    "impressao": "Discordancia: modelo=Sistema urinario (bexiga/prostata/utero), referencia=Ovario. Caso de erro exibido de forma transparente. RECONHECIMENTO DE ORGAO, nao rastreamento de doenca. Nao diagnostico."
+   }
+  },
+  {
+   "id": "BV-ABUS-5009",
+   "src": "organ_classification_2/Ovaries/690.jpg",
+   "view": "Abdominal (modo-B)",
+   "gt": {
+    "name": "Urinary system",
+    "pt": "Sistema urinario (bexiga/prostata/utero)",
+    "box": null
+   },
+   "model_score": 1.0,
+   "secondary": [],
+   "pred_organ": "urinary_system",
+   "true_organ": "ovary",
+   "correct": false,
+   "report": {
+    "tecnica": "Ultrassonografia abdominal, modo-B, corte unico.",
+    "achados": "Corte de ultrassonografia abdominal. O modelo classificou a estrutura como Sistema urinario (bexiga/prostata/utero) (confianca 1.00), mas o rotulo de referencia e Ovario — exemplo honesto de ERRO de classificacao. Nenhuma regiao e destacada.",
+    "impressao": "Discordancia: modelo=Sistema urinario (bexiga/prostata/utero), referencia=Ovario. Caso de erro exibido de forma transparente. RECONHECIMENTO DE ORGAO, nao rastreamento de doenca. Nao diagnostico."
+   }
+  }
+ ]
+}
