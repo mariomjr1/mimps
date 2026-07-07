@@ -1,18 +1,20 @@
 /* Reading-session player, parametrized by MODALITY (chest | limb | brain | breast | headct |
- * mammo | obus | ctchest | vascularus). Each case: a finding/prediction + box, the live model's
- * real (uncalibrated) score + Grad-CAM attention, and a 3-section pt-BR draft. Descriptive,
- * non-diagnostic; physician signs. (brain = braintumor-classifier-v1, 4-class RM; breast =
- * breastus-busi-v1, 3-class US on BUSI CC BY 4.0; headct = headct-ich-v1, 6-label multilabel
- * ICH on a NON-RANDOM RSNA-ICH tar-prefix pull, non-commercial despite the HF mirror's tag;
- * mammo = mammo-cbisddsm-v1, benign/malignant on CBIS-DDSM digitized-film ROI crops; obus =
+ * mammo | obus | ctchest | vascularus | abdominalus). Each case: a finding/prediction + box, the
+ * live model's real (uncalibrated) score + Grad-CAM attention, and a 3-section pt-BR draft.
+ * Descriptive, non-diagnostic; physician signs. (brain = braintumor-classifier-v1, 4-class RM;
+ * breast = breastus-busi-v1, 3-class US on BUSI CC BY 4.0; headct = headct-ich-v1, 6-label
+ * multilabel ICH on a NON-RANDOM RSNA-ICH tar-prefix pull, non-commercial despite the HF mirror's
+ * tag; mammo = mammo-cbisddsm-v1, benign/malignant on CBIS-DDSM digitized-film ROI crops; obus =
  * obus-hc-v1, scalar fetal head-circumference regressor on HC18 CC BY 4.0 — box is the HC18
  * REFERENCE ellipse, not a model localization; ctchest = ctchest-nodule-v1, lung-nodule
  * malignancy CHARACTERIZATION (not detection — nodule pre-localized by radiologist annotation)
  * on a genuine random 400-patient LIDC-IDRI sample, CC BY 3.0; vascularus = vascularus-carotid-
  * imt-v1, scalar carotid intima-media-thickness regressor on CUBS CC BY 4.0 — WEAK (R² 0.28),
- * box is the expert measurement region not a model localization — all R&D benchmarks, not clinical.)
+ * box is the expert measurement region not a model localization; abdominalus = abdominalus-
+ * organ-v1, 10-class abdominal ORGAN RECOGNITION (not disease screening) on MSU US CC BY 4.0,
+ * cross-radiologist held-out test — all R&D benchmarks, not clinical.)
  * Entry = #chooser (cards); each modality loads data/<modality>/session.json (+
- * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus|ctchest|vascularus. */
+ * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus|ctchest|vascularus|abdominalus. */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -96,6 +98,13 @@
       pmeta: 'medida do modelo · caixa: região de medição de REFERÊNCIA (especialista), não localização do modelo · regressor escalar fraco (R² 0,28), sem segmentação de bordas · não é DVT nem estenose, não clínico',
       demo: 'Demo · saída real do modelo · medida descritiva fraca, não diagnóstica · dados CUBS CC BY 4.0 (pesquisa) → não é produto',
       alt: 'Ultrassonografia de carótida'
+    },
+    abdominalus: {
+      model: 'abdominalus-organ-v1', hud: 'US · ABDOME', src: 'MSU · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE ULTRASSONOGRAFIA ABDOMINAL (RECONHECIMENTO DE ÓRGÃO)',
+      chip: 'modelo · 10 classes', ptag: 'predição do modelo (reconhecimento de órgão)',
+      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · RECONHECIMENTO DE ÓRGÃO, não triagem de doença · classe rara (veia porta) com recall fraco, não clínico',
+      demo: 'Demo · saída real do modelo · reconhecimento descritivo de órgão, não diagnóstico · dados MSU CC BY 4.0 (pesquisa, teste cross-radiologista) → não é produto',
+      alt: 'Ultrassonografia abdominal'
     }
   };
   var modality = null, MOD = null, DATA_ROOT = '';
