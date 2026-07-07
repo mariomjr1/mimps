@@ -1,12 +1,14 @@
 /* Reading-session player, parametrized by MODALITY (chest | limb | brain | breast | headct |
- * mammo). Each case: a finding/prediction + box, the live model's real (uncalibrated) score
- * + Grad-CAM attention, and a 3-section pt-BR draft. Descriptive, non-diagnostic; physician
- * signs. (brain = braintumor-classifier-v1, 4-class RM; breast = breastus-busi-v1, 3-class
- * US on BUSI CC BY 4.0; headct = headct-ich-v1, 6-label multilabel ICH on a NON-RANDOM RSNA-
- * ICH tar-prefix pull, non-commercial despite the HF mirror's tag; mammo = mammo-cbisddsm-v1,
- * benign/malignant on CBIS-DDSM digitized-film ROI crops — all R&D benchmarks, not clinical.)
- * Entry = #chooser (six cards); each modality loads data/<modality>/session.json (+
- * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo. */
+ * mammo | obus). Each case: a finding/prediction + box, the live model's real (uncalibrated)
+ * score + Grad-CAM attention, and a 3-section pt-BR draft. Descriptive, non-diagnostic;
+ * physician signs. (brain = braintumor-classifier-v1, 4-class RM; breast = breastus-busi-v1,
+ * 3-class US on BUSI CC BY 4.0; headct = headct-ich-v1, 6-label multilabel ICH on a NON-RANDOM
+ * RSNA-ICH tar-prefix pull, non-commercial despite the HF mirror's tag; mammo = mammo-cbisddsm-v1,
+ * benign/malignant on CBIS-DDSM digitized-film ROI crops; obus = obus-hc-v1, scalar fetal
+ * head-circumference regressor on HC18 CC BY 4.0 — box is the HC18 REFERENCE ellipse, not a
+ * model localization — all R&D benchmarks, not clinical.)
+ * Entry = #chooser (cards); each modality loads data/<modality>/session.json (+
+ * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus. */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -69,6 +71,13 @@
       pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · escore não calibrado · filme digitalizado (não FFDM), não clínico',
       demo: 'Demo · saída real do modelo · classificação descritiva, não diagnóstica · dados CBIS-DDSM CC BY 4.0 (filme digitalizado, pesquisa) → não é produto',
       alt: 'Mamografia'
+    },
+    obus: {
+      model: 'obus-hc-v1', hud: 'US · OBSTÉTRICA', src: 'HC18 (P&D)', examTitle: 'LAUDO DE ULTRASSONOGRAFIA OBSTÉTRICA',
+      chip: 'modelo · regressão', ptag: 'medida do modelo (regressão escalar)',
+      pmeta: 'medida do modelo · caixa: elipse de REFERÊNCIA do HC18 (verdade de base, não localização do modelo) · regressor escalar sem segmentação · plano único (2D), não clínico',
+      demo: 'Demo · saída real do modelo · medida descritiva, não diagnóstica · dados HC18 CC BY 4.0 (pesquisa) → não é produto',
+      alt: 'Ultrassonografia obstétrica'
     }
   };
   var modality = null, MOD = null, DATA_ROOT = '';
