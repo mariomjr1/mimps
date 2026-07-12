@@ -14,10 +14,14 @@
  * organ-v1, 10-class abdominal ORGAN RECOGNITION (not disease screening) on MSU US CC BY 4.0,
  * cross-radiologist held-out test; spinemri = spinemri-degen-v1, 6-label lumbar-spine
  * degenerative-finding multilabel on SPIDER CC BY 4.0, STUDY-LEVEL not per-disc/volumetric —
- * disc_bulging/narrowing strong, disc_herniation/spondylolisthesis genuinely weak (rare-label) —
- * all R&D benchmarks, not clinical.)
+ * disc_bulging/narrowing strong, disc_herniation/spondylolisthesis genuinely weak (rare-label);
+ * gliomarg = gliomarg-idh-v1, RADIOGENOMICS — predicts IDH-mutation status (a MOLECULAR marker,
+ * invisible to the eye) from 2.5D tumor-centered multi-sequence MRI on UCSF-PDGM CC BY 4.0.
+ * ⚠ its headline AUROC is mostly the GRADE SHORTCUT (WHO grade alone scores 0.838); the honest
+ * result is the residual within-grade-4 signal (0.854). Decision-SUPPORT, never a molecular
+ * diagnosis — WHO CNS5 requires sequencing/IHC — all R&D benchmarks, not clinical.)
  * Entry = #chooser (cards); each modality loads data/<modality>/session.json (+
- * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus|ctchest|vascularus|abdominalus|spinemri. */
+ * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus|ctchest|vascularus|abdominalus|spinemri|gliomarg. */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -115,6 +119,13 @@
       pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · NÍVEL DE ESTUDO, não por disco/volumétrico (não localiza qual nível) · abaulamento/redução fortes, hérnia/espondilolistese fracos (classe rara), não clínico',
       demo: 'Demo · saída real do modelo · achados descritivos, não diagnósticos · dados SPIDER CC BY 4.0 (pesquisa) → não é produto',
       alt: 'Ressonância magnética de coluna lombar'
+    },
+    gliomarg: {
+      model: 'gliomarg-idh-v1', hud: 'RM · GLIOMA (IDH)', src: 'UCSF-PDGM · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE RM DE ENCÉFALO — RADIOGENÔMICA (STATUS IDH)',
+      chip: 'radiogenômica · IDH', ptag: 'predição molecular do modelo (IDH mutante vs selvagem)',
+      pmeta: 'predição do modelo · entrada 2,5D multissequência centrada no tumor (R=T1c, G=FLAIR, B=T2) · ⚠ CONFUNDIMENTO: o grau da OMS sozinho já atinge AUROC 0,838 — o sinal honesto é o residual DENTRO do grau 4 (0,854) · validação interna apenas, não calibrado · APOIO À DECISÃO, NUNCA diagnóstico molecular (a OMS CNS5 exige sequenciamento/IHQ)',
+      demo: 'Demo · saída real do modelo · predição molecular descritiva, NÃO diagnóstica · nunca substitui nem adia o teste molecular · dados UCSF-PDGM CC BY 4.0 (pesquisa) → não é produto',
+      alt: 'Ressonância magnética de encéfalo (glioma)'
     }
   };
   var modality = null, MOD = null, DATA_ROOT = '';
