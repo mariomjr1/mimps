@@ -1,0 +1,247 @@
+{
+ "model": "gliomarg-idh-v1",
+ "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · binário IDH-mutante · entrada 2.5D multi-sequência centrada no tumor (R=T1c, G=FLAIR, B=T2)",
+ "benchmark": "validação cruzada 5-fold, paciente-disjunta, out-of-fold nos 495 pacientes (103 IDH-mutantes): AUROC 0.898 [IC95% 0.856–0.935] · sens 0.74 / esp 0.93 — MAS o número isolado NÃO é o achado: ver a ressalva de confundimento",
+ "gt_source": "predição do modelo (probabilidade de mutação IDH; caixa/calor = atenção Grad-CAM)",
+ "note": "APOIO À DECISÃO, NÃO DIAGNÓSTICO MOLECULAR. A classificação OMS CNS5 (2021) exige teste molecular (sequenciamento/IHQ) para determinar o status de IDH; nenhuma predição por imagem — positiva ou negativa — substitui, adia ou dispensa esse teste. ⚠ CONFUNDIMENTO PELO GRAU (a ressalva mais importante): gliomas IDH-selvagens são quase sempre glioblastomas grau 4, então o GRAU SOZINHO — um único número inteiro, sem modelo algum — já atinge AUROC 0.838 nesta coorte. O modelo (0.898) supera esse atalho por margem pequena, com ICs que se sobrepõem: NÃO podemos afirmar, neste tamanho de amostra, que o modelo seja significativamente melhor do que simplesmente ler o grau do tumor. O sinal específico de IDH, porém, EXISTE: dentro do grau 4 — onde o atalho não informa nada — o modelo ainda alcança AUROC 0.854 (n=396, 28 mutantes), e 0.797 nos graus 2-3. Resumo honesto: a maior parte do número de manchete é GRAU; um sinal de IDH real, porém modesto, se soma a ele. O sinal T2-FLAIR mismatch foi testado como heurística automática e FALHOU (AUROC 0,36 nos graus 2-3 — pior que o acaso); não é usado pelo modelo. Validação apenas INTERNA (uma única instituição, UCSF, protocolo 3T padronizado) — NÃO comparável ao ~0,88 de AUC externa da literatura. Entrada 2.5D (5 cortes axiais), não o volume 3D completo; depende de uma segmentação prévia do tumor. Probabilidades não calibradas. Dados UCSF-PDGM (CC BY 4.0). Descritivo, não diagnóstico, claims:none.",
+ "cases": [
+  {
+   "id": "BV-MR-7000",
+   "src": "UCSF-PDGM-248_z076.png",
+   "view": "Axial · T1c/FLAIR/T2",
+   "gt": {
+    "name": "IDH-mutant (predicted)",
+    "pt": "IDH-mutante (predito)",
+    "box": [
+     0.3125,
+     0.2321,
+     0.3304,
+     0.308
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [
+    {
+     "name": "WHO grade 2",
+     "pt": "Grau 2 (OMS)"
+    },
+    {
+     "name": "Molecular truth: IDH-mutante",
+     "pt": "Verdade molecular (patologia): IDH-mutante"
+    }
+   ],
+   "report": {
+    "tecnica": "Ressonância magnética de encéfalo, protocolo 3T padronizado, pré-operatória. Entrada do modelo: recorte 2.5D centrado no tumor combinando T1 pós-contraste (R), FLAIR (G) e T2 (B).",
+    "achados": "Glioma difuso supratentorial (grau 2 da OMS). Neste corte, a lesão apresenta componente predominantemente não realçante, com hipersinal em T2/FLAIR e limites relativamente definidos — padrão morfológico mais frequentemente associado a gliomas IDH-mutantes. Avaliação restrita ao recorte centrado na lesão (T1 pós-contraste, FLAIR e T2).",
+    "impressao": "Padrão de imagem que o modelo associa a glioma IDH-MUTANTE (probabilidade 100%). ATENÇÃO: predição PROBABILÍSTICA de apoio à decisão, baseada apenas em imagem — NÃO É DIAGNÓSTICO MOLECULAR. A classificação da OMS CNS5 (2021) exige teste molecular (sequenciamento/IHQ) para determinar o status de IDH; esta predição, positiva ou negativa, NÃO substitui, adia nem dispensa esse teste."
+   }
+  },
+  {
+   "id": "BV-MR-7001",
+   "src": "UCSF-PDGM-441_z120.png",
+   "view": "Axial · T1c/FLAIR/T2",
+   "gt": {
+    "name": "IDH-mutant (predicted)",
+    "pt": "IDH-mutante (predito)",
+    "box": [
+     0.4241,
+     0.2857,
+     0.308,
+     0.3125
+    ]
+   },
+   "model_score": 1.0,
+   "secondary": [
+    {
+     "name": "WHO grade 3",
+     "pt": "Grau 3 (OMS)"
+    },
+    {
+     "name": "Molecular truth: IDH-mutante",
+     "pt": "Verdade molecular (patologia): IDH-mutante"
+    }
+   ],
+   "report": {
+    "tecnica": "Ressonância magnética de encéfalo, protocolo 3T padronizado, pré-operatória. Entrada do modelo: recorte 2.5D centrado no tumor combinando T1 pós-contraste (R), FLAIR (G) e T2 (B).",
+    "achados": "Glioma difuso supratentorial (grau 3 da OMS). Neste corte, a lesão apresenta componente predominantemente não realçante, com hipersinal em T2/FLAIR e limites relativamente definidos — padrão morfológico mais frequentemente associado a gliomas IDH-mutantes. Avaliação restrita ao recorte centrado na lesão (T1 pós-contraste, FLAIR e T2).",
+    "impressao": "Padrão de imagem que o modelo associa a glioma IDH-MUTANTE (probabilidade 100%). ATENÇÃO: predição PROBABILÍSTICA de apoio à decisão, baseada apenas em imagem — NÃO É DIAGNÓSTICO MOLECULAR. A classificação da OMS CNS5 (2021) exige teste molecular (sequenciamento/IHQ) para determinar o status de IDH; esta predição, positiva ou negativa, NÃO substitui, adia nem dispensa esse teste."
+   }
+  },
+  {
+   "id": "BV-MR-7002",
+   "src": "UCSF-PDGM-345_z080.png",
+   "view": "Axial · T1c/FLAIR/T2",
+   "gt": {
+    "name": "IDH-wildtype (predicted)",
+    "pt": "IDH-selvagem / wildtype (predito)",
+    "box": [
+     0.0848,
+     0.183,
+     0.4732,
+     0.4196
+    ]
+   },
+   "model_score": 0.252,
+   "secondary": [
+    {
+     "name": "WHO grade 4",
+     "pt": "Grau 4 (OMS)"
+    },
+    {
+     "name": "Molecular truth: IDH-selvagem (wildtype)",
+     "pt": "Verdade molecular (patologia): IDH-selvagem (wildtype)"
+    }
+   ],
+   "report": {
+    "tecnica": "Ressonância magnética de encéfalo, protocolo 3T padronizado, pré-operatória. Entrada do modelo: recorte 2.5D centrado no tumor combinando T1 pós-contraste (R), FLAIR (G) e T2 (B).",
+    "achados": "Glioma difuso (grau 4 da OMS). Neste corte, a lesão exibe realce pós-contraste com componente central de aspecto necrótico e edema perilesional — morfologia classicamente associada a glioblastoma, no qual o status IDH-selvagem é o mais prevalente. Avaliação restrita ao recorte centrado na lesão (T1 pós-contraste, FLAIR e T2).",
+    "impressao": "Padrão de imagem que o modelo associa a glioma IDH-SELVAGEM (wildtype; probabilidade de mutação 75%). RESSALVA METODOLÓGICA IMPORTANTE: neste conjunto de dados o grau da OMS sozinho prediz o status de IDH com ~90% de acurácia, e a análise estratificada por grau mostrou que o modelo retém pouco sinal de IDH dentro de um mesmo grau — ou seja, esta predição reflete majoritariamente a MORFOLOGIA/GRAU do tumor, não a biologia do IDH. Predição de apoio à decisão, NÃO diagnóstico molecular: a OMS CNS5 exige teste molecular (sequenciamento/IHQ), que esta predição não substitui nem dispensa."
+   }
+  },
+  {
+   "id": "BV-MR-7003",
+   "src": "UCSF-PDGM-012_z111.png",
+   "view": "Axial · T1c/FLAIR/T2",
+   "gt": {
+    "name": "IDH-wildtype (predicted)",
+    "pt": "IDH-selvagem / wildtype (predito)",
+    "box": [
+     0.0,
+     0.1562,
+     0.2857,
+     0.442
+    ]
+   },
+   "model_score": 0.136,
+   "secondary": [
+    {
+     "name": "WHO grade 4",
+     "pt": "Grau 4 (OMS)"
+    },
+    {
+     "name": "Molecular truth: IDH-selvagem (wildtype)",
+     "pt": "Verdade molecular (patologia): IDH-selvagem (wildtype)"
+    }
+   ],
+   "report": {
+    "tecnica": "Ressonância magnética de encéfalo, protocolo 3T padronizado, pré-operatória. Entrada do modelo: recorte 2.5D centrado no tumor combinando T1 pós-contraste (R), FLAIR (G) e T2 (B).",
+    "achados": "Glioma difuso (grau 4 da OMS). Neste corte, a lesão exibe realce pós-contraste com componente central de aspecto necrótico e edema perilesional — morfologia classicamente associada a glioblastoma, no qual o status IDH-selvagem é o mais prevalente. Avaliação restrita ao recorte centrado na lesão (T1 pós-contraste, FLAIR e T2).",
+    "impressao": "Padrão de imagem que o modelo associa a glioma IDH-SELVAGEM (wildtype; probabilidade de mutação 86%). RESSALVA METODOLÓGICA IMPORTANTE: neste conjunto de dados o grau da OMS sozinho prediz o status de IDH com ~90% de acurácia, e a análise estratificada por grau mostrou que o modelo retém pouco sinal de IDH dentro de um mesmo grau — ou seja, esta predição reflete majoritariamente a MORFOLOGIA/GRAU do tumor, não a biologia do IDH. Predição de apoio à decisão, NÃO diagnóstico molecular: a OMS CNS5 exige teste molecular (sequenciamento/IHQ), que esta predição não substitui nem dispensa."
+   }
+  },
+  {
+   "id": "BV-MR-7004",
+   "src": "UCSF-PDGM-132_z071.png",
+   "view": "Axial · T1c/FLAIR/T2",
+   "gt": {
+    "name": "IDH-mutant (predicted)",
+    "pt": "IDH-mutante (predito)",
+    "box": [
+     0.2991,
+     0.3705,
+     0.308,
+     0.3259
+    ]
+   },
+   "model_score": 0.999,
+   "secondary": [
+    {
+     "name": "WHO grade 4",
+     "pt": "Grau 4 (OMS)"
+    },
+    {
+     "name": "Molecular truth: IDH-mutante",
+     "pt": "Verdade molecular (patologia): IDH-mutante"
+    }
+   ],
+   "report": {
+    "tecnica": "Ressonância magnética de encéfalo, protocolo 3T padronizado, pré-operatória. Entrada do modelo: recorte 2.5D centrado no tumor combinando T1 pós-contraste (R), FLAIR (G) e T2 (B).",
+    "achados": "Glioma difuso supratentorial (grau 4 da OMS). Neste corte, a lesão apresenta componente predominantemente não realçante, com hipersinal em T2/FLAIR e limites relativamente definidos — padrão morfológico mais frequentemente associado a gliomas IDH-mutantes. Avaliação restrita ao recorte centrado na lesão (T1 pós-contraste, FLAIR e T2).",
+    "impressao": "Padrão de imagem que o modelo associa a glioma IDH-MUTANTE (probabilidade 100%). ATENÇÃO: predição PROBABILÍSTICA de apoio à decisão, baseada apenas em imagem — NÃO É DIAGNÓSTICO MOLECULAR. A classificação da OMS CNS5 (2021) exige teste molecular (sequenciamento/IHQ) para determinar o status de IDH; esta predição, positiva ou negativa, NÃO substitui, adia nem dispensa esse teste."
+   }
+  },
+  {
+   "id": "BV-MR-7005",
+   "src": "UCSF-PDGM-190_z067.png",
+   "view": "Axial · T1c/FLAIR/T2",
+   "gt": {
+    "name": "IDH-mutant (predicted)",
+    "pt": "IDH-mutante (predito)",
+    "box": [
+     0.3973,
+     0.2634,
+     0.3348,
+     0.2857
+    ]
+   },
+   "model_score": 0.74,
+   "secondary": [
+    {
+     "name": "WHO grade 4",
+     "pt": "Grau 4 (OMS)"
+    },
+    {
+     "name": "Molecular truth: IDH-mutante",
+     "pt": "Verdade molecular (patologia): IDH-mutante"
+    }
+   ],
+   "report": {
+    "tecnica": "Ressonância magnética de encéfalo, protocolo 3T padronizado, pré-operatória. Entrada do modelo: recorte 2.5D centrado no tumor combinando T1 pós-contraste (R), FLAIR (G) e T2 (B).",
+    "achados": "Glioma difuso supratentorial (grau 4 da OMS). Neste corte, a lesão apresenta componente predominantemente não realçante, com hipersinal em T2/FLAIR e limites relativamente definidos — padrão morfológico mais frequentemente associado a gliomas IDH-mutantes. Avaliação restrita ao recorte centrado na lesão (T1 pós-contraste, FLAIR e T2).",
+    "impressao": "Padrão de imagem que o modelo associa a glioma IDH-MUTANTE (probabilidade 74%). ATENÇÃO: predição PROBABILÍSTICA de apoio à decisão, baseada apenas em imagem — NÃO É DIAGNÓSTICO MOLECULAR. A classificação da OMS CNS5 (2021) exige teste molecular (sequenciamento/IHQ) para determinar o status de IDH; esta predição, positiva ou negativa, NÃO substitui, adia nem dispensa esse teste."
+   }
+  },
+  {
+   "id": "BV-MR-7006",
+   "src": "UCSF-PDGM-349_z105.png",
+   "view": "Axial · T1c/FLAIR/T2",
+   "gt": {
+    "name": "IDH-mutant (predicted)",
+    "pt": "IDH-mutante (predito)",
+    "box": null
+   },
+   "model_score": 0.904,
+   "secondary": [
+    {
+     "name": "WHO grade 3",
+     "pt": "Grau 3 (OMS)"
+    },
+    {
+     "name": "Molecular truth: IDH-selvagem (wildtype)",
+     "pt": "Verdade molecular (patologia): IDH-selvagem (wildtype)"
+    }
+   ],
+   "report": {
+    "tecnica": "Ressonância magnética de encéfalo, protocolo 3T padronizado, pré-operatória. Entrada do modelo: recorte 2.5D centrado no tumor combinando T1 pós-contraste (R), FLAIR (G) e T2 (B).",
+    "achados": "Glioma difuso supratentorial (grau 3 da OMS). Neste corte, a lesão apresenta componente predominantemente não realçante, com hipersinal em T2/FLAIR e limites relativamente definidos — padrão morfológico mais frequentemente associado a gliomas IDH-mutantes. Avaliação restrita ao recorte centrado na lesão (T1 pós-contraste, FLAIR e T2).",
+    "impressao": "Padrão de imagem que o modelo associa a glioma IDH-MUTANTE (probabilidade 90%). ATENÇÃO: predição PROBABILÍSTICA de apoio à decisão, baseada apenas em imagem — NÃO É DIAGNÓSTICO MOLECULAR. A classificação da OMS CNS5 (2021) exige teste molecular (sequenciamento/IHQ) para determinar o status de IDH; esta predição, positiva ou negativa, NÃO substitui, adia nem dispensa esse teste. ESTE CASO É UM ERRO CONHECIDO DO MODELO, incluído deliberadamente para demonstrar o comportamento real — a predição diverge do status molecular confirmado em patologia."
+   }
+  },
+  {
+   "id": "BV-MR-7007",
+   "src": "UCSF-PDGM-427_z068.png",
+   "view": "Axial · T1c/FLAIR/T2",
+   "gt": {
+    "name": "IDH-wildtype (predicted)",
+    "pt": "IDH-selvagem / wildtype (predito)",
+    "box": null
+   },
+   "model_score": 0.44,
+   "secondary": [
+    {
+     "name": "WHO grade 4",
+     "pt": "Grau 4 (OMS)"
+    },
+    {
+     "name": "Molecular truth: IDH-mutante",
+     "pt": "Verdade molecular (patologia): IDH-mutante"
+    }
+   ],
+   "report": {
+    "tecnica": "Ressonância magnética de encéfalo, protocolo 3T padronizado, pré-operatória. Entrada do modelo: recorte 2.5D centrado no tumor combinando T1 pós-contraste (R), FLAIR (G) e T2 (B).",
+    "achados": "Glioma difuso (grau 4 da OMS). Neste corte, a lesão exibe realce pós-contraste com componente central de aspecto necrótico e edema perilesional — morfologia classicamente associada a glioblastoma, no qual o status IDH-selvagem é o mais prevalente. Avaliação restrita ao recorte centrado na lesão (T1 pós-contraste, FLAIR e T2).",
+    "impressao": "Padrão de imagem que o modelo associa a glioma IDH-SELVAGEM (wildtype; probabilidade de mutação 56%). RESSALVA METODOLÓGICA IMPORTANTE: neste conjunto de dados o grau da OMS sozinho prediz o status de IDH com ~90% de acurácia, e a análise estratificada por grau mostrou que o modelo retém pouco sinal de IDH dentro de um mesmo grau — ou seja, esta predição reflete majoritariamente a MORFOLOGIA/GRAU do tumor, não a biologia do IDH. Predição de apoio à decisão, NÃO diagnóstico molecular: a OMS CNS5 exige teste molecular (sequenciamento/IHQ), que esta predição não substitui nem dispensa. ESTE CASO É UM ERRO CONHECIDO DO MODELO, incluído deliberadamente para demonstrar o comportamento real — a predição diverge do status molecular confirmado em patologia."
+   }
+  }
+ ]
+}
