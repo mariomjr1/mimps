@@ -16,6 +16,7 @@
 const SESSION_KEY = 'blackvoxel_jwt';
 const COOKIE_KEY = 'blackvoxel_jwt';
 const PLATFORM_LOGIN_URL = 'https://blackvoxel.ai/login';
+let lifecycleRegistered = false;
 
 /**
  * Mirror the JWT into a session cookie so the browser attaches it to
@@ -40,6 +41,22 @@ function clearAuthCookie(): void {
 }
 
 /**
+ * Keep the PACS cookie scoped to an open viewer page. sessionStorage already
+ * disappears when its tab closes; clearing the mirrored cookie on pagehide
+ * closes the server-side image route at the same time. A bfcache restore gets
+ * the cookie back from the still-valid tab session on pageshow.
+ */
+function registerSessionLifecycle(): void {
+  if (lifecycleRegistered) return;
+  lifecycleRegistered = true;
+  window.addEventListener('pagehide', clearAuthCookie);
+  window.addEventListener('pageshow', () => {
+    const stored = sessionStorage.getItem(SESSION_KEY);
+    if (stored) syncAuthCookie(stored);
+  });
+}
+
+/**
  * Call once at app startup (before appInit).
  *
  * - If `?token=` is in the URL: store in sessionStorage + cookie, strip from URL bar.
@@ -49,6 +66,7 @@ function clearAuthCookie(): void {
  *   the platform can send the user back after login.
  */
 export function extractAndStoreToken(): void {
+  registerSessionLifecycle();
   const params = new URLSearchParams(window.location.search);
   // Prefer the token from the URL *fragment* (#token=). Unlike the query string,
   // the fragment is never sent to the server, so the JWT can't leak into nginx /
@@ -85,7 +103,7 @@ export function extractAndStoreToken(): void {
   // No token anywhere — send the user back to the platform to log in.
   clearAuthCookie();
   const redirectParam = encodeURIComponent(window.location.origin);
-  window.location.href = `${PLATFORM_LOGIN_URL}?redirect=${redirectParam}`;
+  window.location.href = `${PLATFORM_LOGIN_URL}?prompt=login&redirect=${redirectParam}`;
 }
 
 /**

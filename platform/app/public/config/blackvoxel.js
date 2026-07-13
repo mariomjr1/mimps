@@ -118,28 +118,29 @@ window.config = {
     createLogoComponentFn: function (React) {
       // MIMPS-02: absolute paths — a relative './' src breaks on nested
       // routes like /viewer?... where the URL directory is not the root.
-      // MOB-02 (V4): mark-only logo below md — the 232px wordmark ate most of
-      // a phone-width header/worklist toolbar.
+      // Keep the compact mark through tablet and narrow desktop widths. The
+      // full wordmark otherwise collides with the study-list and login tools.
       return React.createElement(
         'span',
         { className: 'flex items-center' },
         React.createElement('img', {
           src: '/blackvoxel-mark.svg',
           alt: 'MIMPS by BlackVoxel',
-          className: 'h-6 w-6 md:hidden',
+          className: 'h-6 w-6 lg:hidden',
         }),
         React.createElement('img', {
           src: '/blackvoxel-logo.svg',
           alt: 'MIMPS by BlackVoxel',
-          className: 'hidden h-[32px] w-[232px] md:block',
+          className: 'hidden h-[32px] w-[232px] lg:block',
+          style: { width: '176px', height: 'auto' },
         }),
         // Client/investor demo: the live model reading 20 real chest X-rays with
         // Grad-CAM + a pt-BR draft. Opens the standalone reading-session player
         // served as a static asset from /reading-demo (public/reading-demo).
         // Mobile toolbar fix: the full nowrap "▶ Demo IA" chip (inline styles,
         // no responsive handling) overflowed the phone-width worklist toolbar
-        // and pushed Settings off-screen. Below md the chip is icon-only (▶),
-        // mirroring the mark-only logo pattern above; from md up it renders the
+        // and pushed Settings off-screen. Below lg the chip is icon-only (▶),
+        // mirroring the mark-only logo pattern above; from lg up it renders the
         // full label exactly as before. NOTE: this config file is NOT scanned
         // by Tailwind — only classes already emitted by scanned sources may be
         // used here ('hidden' / 'md:block' are, via Header.tsx et al.).
@@ -152,11 +153,11 @@ window.config = {
             title: 'Demonstração — leitura de tórax assistida por IA (20 exames)',
             'aria-label': 'Demo IA',
             style: {
-              marginLeft: '14px',
+              marginLeft: '8px',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '5px',
-              padding: '4px 10px',
+              padding: '4px 8px',
               borderRadius: '5px',
               fontSize: '11px',
               fontWeight: 700,
@@ -169,7 +170,7 @@ window.config = {
             },
           },
           React.createElement('span', null, '▶'),
-          React.createElement('span', { className: 'hidden md:block' }, 'Demo IA')
+          React.createElement('span', { className: 'hidden lg:block' }, 'Demo IA')
         ),
         // "Voltar ao login" — clears any stale SSO token (sessionStorage + the
         // /pacs auth cookie) and returns to the platform login. `?redirect=`
@@ -205,11 +206,11 @@ window.config = {
             title: 'Voltar à página de login',
             'aria-label': 'Voltar ao login',
             style: {
-              marginLeft: '8px',
+              marginLeft: '6px',
               display: 'inline-flex',
               alignItems: 'center',
               gap: '5px',
-              padding: '4px 10px',
+              padding: '4px 8px',
               borderRadius: '5px',
               fontSize: '11px',
               fontWeight: 700,
@@ -223,7 +224,7 @@ window.config = {
             },
           },
           React.createElement('span', null, '↩'),
-          React.createElement('span', { className: 'hidden md:block' }, 'Login')
+          React.createElement('span', { className: 'hidden lg:block' }, 'Login')
         )
       );
     },
