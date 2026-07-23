@@ -52,6 +52,26 @@ orthanc-storage/
 *tokens*.json
 auth.json
 
+# Private business, customer, and clinical working material
+clients/
+funding/
+legal/
+raw/
+private/
+sensitive/
+patient-data/
+**/clients/
+**/patient-data/
+
+# Local medical datasets and identifying exports
+*.nii
+*.nii.gz
+*.nrrd
+*.mha
+*.mhd
+*.sqlite
+*.sqlite3
+
 # Generated model weights and checkpoints
 **/checkpoints/
 **/weights/
