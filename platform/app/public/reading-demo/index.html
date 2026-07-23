@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>BlackVoxel · Sessão de leitura assistida por IA — raio-X</title>
-<meta name="description" content="Demonstração: modelos reais (proxy-txv-v1 tórax, limbfrac-fracatlas-v1 membro, braintumor-classifier-v1 RM de crânio, breastus-busi-v1 US de mama, headct-ich-v1 TC de crânio, mammo-cbisddsm-v1 mamografia, obus-hc-v1 US obstétrico, ctchest-nodule-v1 TC de tórax, vascularus-carotid-imt-v1 US de carótida, abdominalus-organ-v1 US abdominal, spinemri-degen-v1 RM de coluna, gliomarg-idh-v1 radiogenômica de glioma (status IDH)) leem exames com Grad-CAM e um rascunho de laudo em português. Achados descritivos, não diagnósticos; revisão médica." />
+<title>BlackVoxel · Modelos no fluxo de leitura</title>
+<meta name="description" content="Demonstração dos modelos BlackVoxel para imagem médica, com Grad-CAM e rascunho de laudo para revisão médica." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="player.css?v=20260706b" />
 </head>
 <body>
-<div id="demotag" class="demo-tag mono">Demo · saída real do modelo · achados descritivos, não diagnósticos · dados de pesquisa</div>
+<div id="demotag" class="demo-tag mono">Demo · BlackVoxel · dados de pesquisa · revisão médica</div>
 
 <header class="bar">
   <div class="brand">
@@ -20,7 +20,7 @@
     <div><div class="bname">BlackVoxel · MIMPS</div><div class="bsub mono">Sessão de leitura assistida por IA</div></div>
   </div>
   <button id="swap" class="swap mono" type="button" hidden>‹ trocar exame</button>
-  <div class="bmid mono"><span id="counter">— / —</span><span class="dot">·</span><span id="studyid">—</span></div>
+  <div class="bmid mono"><span id="counter">- / -</span><span class="dot">·</span><span id="studyid">-</span></div>
   <div id="bmodel" class="bmodel mono"></div>
 </header>
 
@@ -28,12 +28,12 @@
   <div class="ch-inner">
     <p class="ch-kicker mono">Sessão de leitura assistida por IA</p>
     <h1 class="ch-title">Escolha o exame</h1>
-    <p class="ch-sub">Saída real do modelo, com atenção (Grad-CAM), pontuação não calibrada e rascunho de laudo para revisão médica. Descritivo, não diagnóstico.</p>
+    <p class="ch-sub">Selecione um exame para ver a imagem, o mapa de atenção, a pontuação e o rascunho de laudo. Os resultados são de pesquisa e exigem revisão médica.</p>
     <div class="ch-cards">
       <button class="ch-card" type="button" data-m="chest">
         <span class="ch-mod mono">RAIO-X · DX</span>
-        <span class="ch-name">Tórax — Raio-X</span>
-        <span class="ch-desc">modelo proxy-txv-v1 · achados torácicos</span>
+        <span class="ch-name">Tórax, raio X</span>
+        <span class="ch-desc">bv-chesxr-v1 · 14 achados torácicos</span>
         <span class="ch-metrics mono">
           <span class="ch-arch">DenseNet-121 (torchxrayvision)</span>
           <span class="ch-perf">TEST macro AUROC 0.817 · 14 achados</span>
@@ -43,8 +43,8 @@
       </button>
       <button class="ch-card" type="button" data-m="limb">
         <span class="ch-mod mono">RAIO-X · DX</span>
-        <span class="ch-name">Membro — Raio-X</span>
-        <span class="ch-desc">modelo limbfrac-fracatlas-v1 · fratura</span>
+        <span class="ch-name">Membro, raio X</span>
+        <span class="ch-desc">bv-limbfx-v1 · fratura</span>
         <span class="ch-metrics mono">
           <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
           <span class="ch-perf">TEST AUROC 0.887 · sens 0.67 · spec 0.96</span>
@@ -54,8 +54,8 @@
       </button>
       <button class="ch-card" type="button" data-m="brain">
         <span class="ch-mod mono">RM · MR</span>
-        <span class="ch-name">Crânio — RM (tumor)</span>
-        <span class="ch-desc">modelo braintumor-classifier-v1 · 4 classes</span>
+        <span class="ch-name">Crânio, RM para tumor</span>
+        <span class="ch-desc">bv-brainmr-v1 · 4 classes</span>
         <span class="ch-metrics mono">
           <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
           <span class="ch-perf">TEST acc 0.9896 · macro AUROC 0.9991</span>
@@ -65,8 +65,8 @@
       </button>
       <button class="ch-card" type="button" data-m="breast">
         <span class="ch-mod mono">US · MAMA</span>
-        <span class="ch-name">Mama — Ultrassom</span>
-        <span class="ch-desc">modelo breastus-busi-v1 · 3 classes</span>
+        <span class="ch-name">Mama, ultrassom</span>
+        <span class="ch-desc">bv-breastus-v1 · 3 classes</span>
         <span class="ch-metrics mono">
           <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
           <span class="ch-perf">TEST acc 0.864 · AUROC 0.972 (maligno sens 0.969)</span>
@@ -76,8 +76,8 @@
       </button>
       <button class="ch-card" type="button" data-m="headct">
         <span class="ch-mod mono">TC · CRÂNIO</span>
-        <span class="ch-name">Crânio — TC (hemorragia)</span>
-        <span class="ch-desc">modelo headct-ich-v1 · multi-rótulo</span>
+        <span class="ch-name">Crânio, TC para hemorragia</span>
+        <span class="ch-desc">bv-headct-v1 · 6 rótulos</span>
         <span class="ch-metrics mono">
           <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
           <span class="ch-perf">TEST macro AUROC 0.932 (sens 0.827)</span>
@@ -87,8 +87,8 @@
       </button>
       <button class="ch-card" type="button" data-m="mammo">
         <span class="ch-mod mono">MG · MAMA</span>
-        <span class="ch-name">Mama — Mamografia</span>
-        <span class="ch-desc">modelo mammo-cbisddsm-v1 · 2 classes</span>
+        <span class="ch-name">Mama, mamografia</span>
+        <span class="ch-desc">bv-mammo-v1 · 2 classes</span>
         <span class="ch-metrics mono">
           <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
           <span class="ch-perf">TEST AUROC 0.748 (sens 0.626)</span>
@@ -96,21 +96,10 @@
         <span class="ch-tag mono">dados CBIS-DDSM (pesquisa) · CC BY 4.0</span>
         <span class="ch-go mono">iniciar leitura ›</span>
       </button>
-      <button class="ch-card" type="button" data-m="obus">
-        <span class="ch-mod mono">US · OBSTÉTRICA</span>
-        <span class="ch-name">Obstétrico — Ultrassom (Circunferência Cefálica)</span>
-        <span class="ch-desc">modelo obus-hc-v1 · regressão</span>
-        <span class="ch-metrics mono">
-          <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
-          <span class="ch-perf">TEST MAE 9.8mm · R² 0.959 (±10mm 62%)</span>
-        </span>
-        <span class="ch-tag mono">dados HC18 (pesquisa) · CC BY 4.0</span>
-        <span class="ch-go mono">iniciar leitura ›</span>
-      </button>
       <button class="ch-card" type="button" data-m="ctchest">
         <span class="ch-mod mono">TC · TÓRAX</span>
-        <span class="ch-name">Tórax — TC (Nódulo Pulmonar)</span>
-        <span class="ch-desc">modelo ctchest-nodule-v1 · malignidade</span>
+        <span class="ch-name">Tórax, TC para nódulo pulmonar</span>
+        <span class="ch-desc">bv-chestct-v1 · caracterização</span>
         <span class="ch-metrics mono">
           <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
           <span class="ch-perf">TEST AUROC 0.931 (sens 0.750 · esp 0.967)</span>
@@ -118,21 +107,10 @@
         <span class="ch-tag mono">amostra LIDC-IDRI (pesquisa) · CC BY 3.0</span>
         <span class="ch-go mono">iniciar leitura ›</span>
       </button>
-      <button class="ch-card" type="button" data-m="vascularus">
-        <span class="ch-mod mono">US · CARÓTIDA</span>
-        <span class="ch-name">Carótida — Ultrassom (Espessura Íntima-Média)</span>
-        <span class="ch-desc">modelo vascularus-carotid-imt-v1 · regressão</span>
-        <span class="ch-metrics mono">
-          <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
-          <span class="ch-perf">TEST MAE 0.18mm · R² 0.282 (±0.1mm 41%)</span>
-        </span>
-        <span class="ch-tag mono">dados CUBS (pesquisa) · CC BY 4.0</span>
-        <span class="ch-go mono">iniciar leitura ›</span>
-      </button>
       <button class="ch-card" type="button" data-m="abdominalus">
         <span class="ch-mod mono">US · ABDOME</span>
-        <span class="ch-name">Abdominal — Ultrassom (Reconhecimento de Órgão)</span>
-        <span class="ch-desc">modelo abdominalus-organ-v1 · 10 classes</span>
+        <span class="ch-name">Abdome, ultrassom para reconhecimento de órgão</span>
+        <span class="ch-desc">bv-abdus-v1 · 10 classes</span>
         <span class="ch-metrics mono">
           <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
           <span class="ch-perf">TEST acc 82.0% · macro AUROC 0.978</span>
@@ -142,24 +120,13 @@
       </button>
       <button class="ch-card" type="button" data-m="spinemri">
         <span class="ch-mod mono">RM · COLUNA</span>
-        <span class="ch-name">Coluna Lombar — RM (Achados Degenerativos)</span>
-        <span class="ch-desc">modelo spinemri-degen-v1 · multi-rótulo</span>
+        <span class="ch-name">Coluna lombar, RM para achados degenerativos</span>
+        <span class="ch-desc">bv-lumbarmr-v1 · 6 rótulos</span>
         <span class="ch-metrics mono">
           <span class="ch-arch">ResNet-18 (ImageNet transfer)</span>
           <span class="ch-perf">TEST macro AUROC 0.762 (n=32)</span>
         </span>
         <span class="ch-tag mono">dados SPIDER (pesquisa) · CC BY 4.0</span>
-        <span class="ch-go mono">iniciar leitura ›</span>
-      </button>
-      <button class="ch-card" type="button" data-m="gliomarg">
-        <span class="ch-mod mono">RM · GLIOMA (IDH)</span>
-        <span class="ch-name">Glioma — Radiogenômica (status IDH)</span>
-        <span class="ch-desc">modelo gliomarg-idh-v1 · marcador molecular</span>
-        <span class="ch-metrics mono">
-          <span class="ch-arch">ResNet-18 · 2,5D multissequência (T1c/FLAIR/T2)</span>
-          <span class="ch-perf">CV out-of-fold AUROC 0.898 — mas o grau sozinho dá 0.838; residual dentro do grau 4: 0.854</span>
-        </span>
-        <span class="ch-tag mono">dados UCSF-PDGM (pesquisa) · CC BY 4.0 · apoio à decisão, não diagnóstico molecular</span>
         <span class="ch-go mono">iniciar leitura ›</span>
       </button>
     </div>
@@ -171,7 +138,7 @@
     <div class="stage" id="stage">
       <img id="xray" alt="Radiografia" />
       <img id="cam" class="cam" alt="" aria-hidden="true" />
-      <div id="box" class="box" hidden><span class="box-lbl mono">IA · atenção</span></div>
+      <div id="box" class="box" hidden><span class="box-lbl mono">Grad-CAM</span></div>
       <div class="hud tl mono"><div id="hudmod">DX</div><div class="mut" id="hudsrc"></div></div>
       <div class="hud tr mono"><div>WW 2048 · WL 600</div><div class="mut">Grad-CAM</div></div>
       <div class="hud bl mono" id="hudnote">caixa + calor: atenção do modelo (Grad-CAM)</div>
@@ -192,7 +159,7 @@
       <div class="rsec"><span class="rlab mono">TÉCNICA</span><p id="rtec" class="rtext"></p></div>
       <div class="rsec"><span class="rlab mono">ACHADOS</span><p id="rach" class="rtext"></p></div>
       <div class="rsec"><span class="rlab mono">IMPRESSÃO</span><p id="rimp" class="rtext"></p></div>
-      <div class="rnote mono">Rascunho gerado por IA para revisão — não é diagnóstico.</div>
+      <div class="rnote mono">Rascunho para revisão médica. Uso em pesquisa.</div>
     </div>
 
     <div class="signrow">
@@ -214,7 +181,7 @@
     <button id="next" class="cbtn" aria-label="Próxima">›</button>
   </div>
   <div id="thumbs" class="thumbs" aria-label="Casos"></div>
-  <div class="credit mono">Software descreve; o médico assina.</div>
+  <div class="credit mono">Resultados para revisão médica.</div>
 </footer>
 
 <div id="pdfmodal" class="pdfmodal" hidden role="dialog" aria-modal="true" aria-label="Pré-visualização do laudo">
@@ -233,6 +200,6 @@
 
 <script src="vendor/jspdf.umd.min.js?v=20260706"></script>
 <script src="pdf.js?v=20260706"></script>
-<script src="player.js?v=20260708b"></script>
+<script src="player.js?v=20260713b"></script>
 </body>
 </html>

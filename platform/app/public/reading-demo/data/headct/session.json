@@ -1,5 +1,5 @@
 {
- "model": "headct-ich-v1",
+ "model": "bv-headct-v1",
  "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · 6-label multilabel (ich_any + 5 subtypes)",
  "benchmark": "held-out test: macro AUROC 0.932 · ich_any sens 0.827 · n=4467",
  "gt_source": "predição do modelo (multi-rótulo; caixa/calor = atenção Grad-CAM)",

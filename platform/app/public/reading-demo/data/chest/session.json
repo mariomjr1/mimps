@@ -1,5 +1,5 @@
 {
- "model": "proxy-txv-v1",
+ "model": "bv-chesxr-v1",
  "arch": "torchxrayvision densenet121-res224-all",
  "benchmark": "macro-AUROC 0.82 · teste NIH ChestX-ray14",
  "gt_source": "NIH ChestX-ray14 (achado/rótulo) · caixa = pico do Grad-CAM do modelo",

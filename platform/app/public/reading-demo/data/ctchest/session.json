@@ -1,5 +1,5 @@
 {
- "model": "ctchest-nodule-v1",
+ "model": "bv-chestct-v1",
  "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · caracterização de malignidade de nódulo (recorte 128px centrado no nódulo)",
  "benchmark": "held-out test: AUROC 0.931 · sens 0.750 · spec 0.967 · n=97 (36 malignant)",
  "gt_source": "predição do modelo (binária; caixa/calor = atenção Grad-CAM no recorte)",

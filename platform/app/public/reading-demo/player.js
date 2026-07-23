@@ -1,27 +1,21 @@
 /* Reading-session player, parametrized by MODALITY (chest | limb | brain | breast | headct |
- * mammo | obus | ctchest | vascularus | abdominalus | spinemri). Each case: a finding/prediction
+ * mammo | ctchest | abdominalus | spinemri). Each case: a finding/prediction
  * + box, the live model's real (uncalibrated) score + Grad-CAM attention, and a 3-section pt-BR
- * draft. Descriptive, non-diagnostic; physician signs. (brain = braintumor-classifier-v1, 4-class
- * RM; breast = breastus-busi-v1, 3-class US on BUSI CC BY 4.0; headct = headct-ich-v1, 6-label
+ * draft. Descriptive, non-diagnostic; physician signs. Public names use the proprietary bv-* naming
+ * system; public bases and datasets retain their original licenses. (brain = bv-brainmr-v1, 4-class
+ * RM; breast = bv-breastus-v1, 3-class US on BUSI CC BY 4.0; headct = bv-headct-v1, 6-label
  * multilabel ICH on a NON-RANDOM RSNA-ICH tar-prefix pull, non-commercial despite the HF mirror's
- * tag; mammo = mammo-cbisddsm-v1, benign/malignant on CBIS-DDSM digitized-film ROI crops; obus =
- * obus-hc-v1, scalar fetal head-circumference regressor on HC18 CC BY 4.0 — box is the HC18
- * REFERENCE ellipse, not a model localization; ctchest = ctchest-nodule-v1, lung-nodule
+ * tag; mammo = bv-mammo-v1, benign/malignant on CBIS-DDSM digitized-film ROI crops; ctchest =
+ * bv-chestct-v1, lung-nodule
  * malignancy CHARACTERIZATION (not detection — nodule pre-localized by radiologist annotation)
- * on a genuine random 400-patient LIDC-IDRI sample, CC BY 3.0; vascularus = vascularus-carotid-
- * imt-v1, scalar carotid intima-media-thickness regressor on CUBS CC BY 4.0 — WEAK (R² 0.28),
- * box is the expert measurement region not a model localization; abdominalus = abdominalus-
- * organ-v1, 10-class abdominal ORGAN RECOGNITION (not disease screening) on MSU US CC BY 4.0,
- * cross-radiologist held-out test; spinemri = spinemri-degen-v1, 6-label lumbar-spine
+ * on a genuine random 400-patient LIDC-IDRI sample, CC BY 3.0; abdominalus = bv-abdus-v1,
+ * 10-class abdominal ORGAN RECOGNITION (not disease screening) on MSU US CC BY 4.0,
+ * cross-radiologist held-out test; spinemri = bv-lumbarmr-v1, 6-label lumbar-spine
  * degenerative-finding multilabel on SPIDER CC BY 4.0, STUDY-LEVEL not per-disc/volumetric —
  * disc_bulging/narrowing strong, disc_herniation/spondylolisthesis genuinely weak (rare-label);
- * gliomarg = gliomarg-idh-v1, RADIOGENOMICS — predicts IDH-mutation status (a MOLECULAR marker,
- * invisible to the eye) from 2.5D tumor-centered multi-sequence MRI on UCSF-PDGM CC BY 4.0.
- * ⚠ its headline AUROC is mostly the GRADE SHORTCUT (WHO grade alone scores 0.838); the honest
- * result is the residual within-grade-4 signal (0.854). Decision-SUPPORT, never a molecular
- * diagnosis — WHO CNS5 requires sequencing/IHC — all R&D benchmarks, not clinical.)
+ * all R&D benchmarks, not clinical.)
  * Entry = #chooser (cards); each modality loads data/<modality>/session.json (+
- * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|obus|ctchest|vascularus|abdominalus|spinemri|gliomarg. */
+ * img/NN.jpg, cam/NN.png), SAME schema. Deep-link: ?m=chest|limb|brain|breast|headct|mammo|ctchest|abdominalus|spinemri. */
 (function () {
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -39,93 +33,72 @@
       controlsEl = document.querySelector('footer.controls'), demotag = $('demotag'),
       bmodel = $('bmodel'), hudsrc = $('hudsrc'), ptag = $('ptag'), pmeta = $('pmeta');
   var cases = [], N = 0, cur = 0, playing = true, timers = [], META = {}, pdfUrl = null;
-  var DV = '?d=20260708a';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
+  var DV = '?d=20260713b';  // data cache-buster: data/* are plain-named, so bump this when the data changes (Cloudflare)
 
   // ---- modality registry: everything chest-vs-limb lives here (same session schema) ----
   var MODS = {
     chest: {
-      model: 'proxy-txv-v1', hud: 'DX · CHEST', src: 'NIH ChestX-ray14', examTitle: 'LAUDO DE TÓRAX',
-      chip: 'confirmado · NIH', ptag: 'referência NIH + modelo',
-      pmeta: 'achado: NIH · caixa + calor: atenção do modelo (Grad-CAM) · pontuação não calibrada',
-      demo: 'Demo · saída real do modelo · achados descritivos, não diagnósticos · dados NIH ChestX-ray14 (pesquisa)',
+      model: 'bv-chesxr-v1', hud: 'DX · CHEST', src: 'NIH ChestX-ray14', examTitle: 'LAUDO DE TÓRAX',
+      chip: 'confirmado · NIH', ptag: 'modelo · 14 achados',
+      pmeta: 'Achado NIH · atenção Grad-CAM · pontuação não calibrada',
+      demo: 'Demo · bv-chesxr-v1 · NIH ChestX-ray14 · pesquisa',
       alt: 'Radiografia de tórax'
     },
     limb: {
-      model: 'limbfrac-fracatlas-v1', hud: 'DX · LIMB', src: 'FracAtlas', examTitle: 'LAUDO DE MEMBRO',
-      chip: 'modelo · FracAtlas', ptag: 'referência FracAtlas + modelo',
-      pmeta: 'achado: FracAtlas · caixa + calor: atenção do modelo (Grad-CAM) · pontuação não calibrada',
-      demo: 'Demo · saída real do modelo · achados descritivos, não diagnósticos · dados FracAtlas (pesquisa)',
+      model: 'bv-limbfx-v1', hud: 'DX · LIMB', src: 'FracAtlas', examTitle: 'LAUDO DE MEMBRO',
+      chip: 'modelo · FracAtlas', ptag: 'modelo · fratura',
+      pmeta: 'Referência FracAtlas · atenção Grad-CAM · pontuação não calibrada',
+      demo: 'Demo · bv-limbfx-v1 · FracAtlas · pesquisa',
       alt: 'Radiografia de membro'
     },
     brain: {
-      model: 'braintumor-classifier-v1', hud: 'RM · BRAIN', src: 'agregado (P&D)', examTitle: 'LAUDO DE RM DE CRÂNIO',
+      model: 'bv-brainmr-v1', hud: 'RM · BRAIN', src: 'agregado (P&D)', examTitle: 'LAUDO DE RM DE CRÂNIO',
       chip: 'modelo · 4 classes', ptag: 'predição do modelo (4 classes)',
-      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · escore não calibrado · ~99% = teto de benchmark curado, não clínico',
-      demo: 'Demo · saída real do modelo · classificação descritiva, não diagnóstica · dados agregados de licença incerta → apenas P&D, não é produto',
+      pmeta: 'Quatro classes · corte único · Grad-CAM · pontuação não calibrada · benchmark curado',
+      demo: 'Demo · bv-brainmr-v1 · benchmark curado · P&D',
       alt: 'RM de crânio'
     },
     breast: {
-      model: 'breastus-busi-v1', hud: 'US · MAMA', src: 'BUSI · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE ULTRASSONOGRAFIA MAMÁRIA',
+      model: 'bv-breastus-v1', hud: 'US · MAMA', src: 'BUSI · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE ULTRASSONOGRAFIA MAMÁRIA',
       chip: 'modelo · 3 classes', ptag: 'predição do modelo (3 classes)',
-      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · escore não calibrado · BUSI de sítio único (P&D), não clínico',
-      demo: 'Demo · saída real do modelo · classificação descritiva, não diagnóstica · dados BUSI CC BY 4.0 (sítio único, pesquisa) → não é produto',
+      pmeta: 'Três classes · quadro único · Grad-CAM · pontuação não calibrada · BUSI',
+      demo: 'Demo · bv-breastus-v1 · BUSI · pesquisa',
       alt: 'Ultrassonografia mamária'
     },
     headct: {
-      model: 'headct-ich-v1', hud: 'TC · CRÂNIO', src: 'RSNA-ICH (P&D)', examTitle: 'LAUDO DE TC DE CRÂNIO',
+      model: 'bv-headct-v1', hud: 'TC · CRÂNIO', src: 'RSNA-ICH (P&D)', examTitle: 'LAUDO DE TC DE CRÂNIO',
       chip: 'modelo · multi-rótulo', ptag: 'predição do modelo (multi-rótulo)',
-      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · escore não calibrado · corte único (não o volume 3D) · amostra não aleatória, não clínico',
-      demo: 'Demo · saída real do modelo · classificação descritiva, não diagnóstica · recorte não aleatório de dado de licença não comercial (P&D) → não é produto',
+      pmeta: 'Seis rótulos · corte único · Grad-CAM · pontuação não calibrada · amostra parcial',
+      demo: 'Demo · bv-headct-v1 · RSNA-ICH · P&D',
       alt: 'Tomografia de crânio'
     },
     mammo: {
-      model: 'mammo-cbisddsm-v1', hud: 'MG · MAMA', src: 'CBIS-DDSM (P&D)', examTitle: 'LAUDO DE MAMOGRAFIA',
+      model: 'bv-mammo-v1', hud: 'MG · MAMA', src: 'CBIS-DDSM (P&D)', examTitle: 'LAUDO DE MAMOGRAFIA',
       chip: 'modelo · 2 classes', ptag: 'predição do modelo (2 classes)',
-      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · escore não calibrado · filme digitalizado (não FFDM), não clínico',
-      demo: 'Demo · saída real do modelo · classificação descritiva, não diagnóstica · dados CBIS-DDSM CC BY 4.0 (filme digitalizado, pesquisa) → não é produto',
+      pmeta: 'Duas classes · ROI de filme digitalizado · Grad-CAM · pontuação não calibrada',
+      demo: 'Demo · bv-mammo-v1 · CBIS-DDSM · pesquisa',
       alt: 'Mamografia'
     },
-    obus: {
-      model: 'obus-hc-v1', hud: 'US · OBSTÉTRICA', src: 'HC18 (P&D)', examTitle: 'LAUDO DE ULTRASSONOGRAFIA OBSTÉTRICA',
-      chip: 'modelo · regressão', ptag: 'medida do modelo (regressão escalar)',
-      pmeta: 'medida do modelo · caixa: elipse de REFERÊNCIA do HC18 (verdade de base, não localização do modelo) · regressor escalar sem segmentação · plano único (2D), não clínico',
-      demo: 'Demo · saída real do modelo · medida descritiva, não diagnóstica · dados HC18 CC BY 4.0 (pesquisa) → não é produto',
-      alt: 'Ultrassonografia obstétrica'
-    },
     ctchest: {
-      model: 'ctchest-nodule-v1', hud: 'TC · TÓRAX', src: 'LIDC-IDRI · CC BY 3.0 (P&D)', examTitle: 'LAUDO DE TC DE TÓRAX (NÓDULO)',
+      model: 'bv-chestct-v1', hud: 'TC · TÓRAX', src: 'LIDC-IDRI · CC BY 3.0 (P&D)', examTitle: 'LAUDO DE TC DE TÓRAX (NÓDULO)',
       chip: 'modelo · malignidade', ptag: 'predição do modelo (caracterização de malignidade)',
-      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM sobre o nódulo já localizado pela anotação · caracterização, não detecção · corte único, não clínico',
-      demo: 'Demo · saída real do modelo · caracterização descritiva, não diagnóstica · amostra aleatória LIDC-IDRI CC BY 3.0 (pesquisa) → não é produto',
+      pmeta: 'Caracterização de nódulo já localizado · corte único · Grad-CAM · pontuação não calibrada',
+      demo: 'Demo · bv-chestct-v1 · LIDC-IDRI · pesquisa',
       alt: 'Tomografia de tórax'
     },
-    vascularus: {
-      model: 'vascularus-carotid-imt-v1', hud: 'US · CARÓTIDA', src: 'CUBS · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE ULTRASSONOGRAFIA DE CARÓTIDA (EIM)',
-      chip: 'modelo · regressão (fraco)', ptag: 'medida do modelo (regressão escalar, sinal fraco)',
-      pmeta: 'medida do modelo · caixa: região de medição de REFERÊNCIA (especialista), não localização do modelo · regressor escalar fraco (R² 0,28), sem segmentação de bordas · não é DVT nem estenose, não clínico',
-      demo: 'Demo · saída real do modelo · medida descritiva fraca, não diagnóstica · dados CUBS CC BY 4.0 (pesquisa) → não é produto',
-      alt: 'Ultrassonografia de carótida'
-    },
     abdominalus: {
-      model: 'abdominalus-organ-v1', hud: 'US · ABDOME', src: 'MSU · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE ULTRASSONOGRAFIA ABDOMINAL (RECONHECIMENTO DE ÓRGÃO)',
+      model: 'bv-abdus-v1', hud: 'US · ABDOME', src: 'MSU · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE ULTRASSONOGRAFIA ABDOMINAL (RECONHECIMENTO DE ÓRGÃO)',
       chip: 'modelo · 10 classes', ptag: 'predição do modelo (reconhecimento de órgão)',
-      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · RECONHECIMENTO DE ÓRGÃO, não triagem de doença · classe rara (veia porta) com recall fraco, não clínico',
-      demo: 'Demo · saída real do modelo · reconhecimento descritivo de órgão, não diagnóstico · dados MSU CC BY 4.0 (pesquisa, teste cross-radiologista) → não é produto',
+      pmeta: 'Reconhecimento de órgão · quadro único · Grad-CAM · pontuação não calibrada',
+      demo: 'Demo · bv-abdus-v1 · MSU · pesquisa',
       alt: 'Ultrassonografia abdominal'
     },
     spinemri: {
-      model: 'spinemri-degen-v1', hud: 'RM · COLUNA', src: 'SPIDER · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE RM DE COLUNA LOMBAR (ACHADOS DEGENERATIVOS)',
+      model: 'bv-lumbarmr-v1', hud: 'RM · COLUNA', src: 'SPIDER · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE RM DE COLUNA LOMBAR (ACHADOS DEGENERATIVOS)',
       chip: 'modelo · multi-rótulo', ptag: 'predição do modelo (multi-rótulo, nível de estudo)',
-      pmeta: 'predição do modelo · caixa + calor: atenção Grad-CAM (grosseira, não localiza) · NÍVEL DE ESTUDO, não por disco/volumétrico (não localiza qual nível) · abaulamento/redução fortes, hérnia/espondilolistese fracos (classe rara), não clínico',
-      demo: 'Demo · saída real do modelo · achados descritivos, não diagnósticos · dados SPIDER CC BY 4.0 (pesquisa) → não é produto',
+      pmeta: 'Seis rótulos no nível do estudo · corte mediossagital · Grad-CAM · pontuação não calibrada',
+      demo: 'Demo · bv-lumbarmr-v1 · SPIDER · pesquisa',
       alt: 'Ressonância magnética de coluna lombar'
-    },
-    gliomarg: {
-      model: 'gliomarg-idh-v1', hud: 'RM · GLIOMA (IDH)', src: 'UCSF-PDGM · CC BY 4.0 (P&D)', examTitle: 'LAUDO DE RM DE ENCÉFALO — RADIOGENÔMICA (STATUS IDH)',
-      chip: 'radiogenômica · IDH', ptag: 'predição molecular do modelo (IDH mutante vs selvagem)',
-      pmeta: 'predição do modelo · entrada 2,5D multissequência centrada no tumor (R=T1c, G=FLAIR, B=T2) · ⚠ CONFUNDIMENTO: o grau da OMS sozinho já atinge AUROC 0,838 — o sinal honesto é o residual DENTRO do grau 4 (0,854) · validação interna apenas, não calibrado · APOIO À DECISÃO, NUNCA diagnóstico molecular (a OMS CNS5 exige sequenciamento/IHQ)',
-      demo: 'Demo · saída real do modelo · predição molecular descritiva, NÃO diagnóstica · nunca substitui nem adia o teste molecular · dados UCSF-PDGM CC BY 4.0 (pesquisa) → não é produto',
-      alt: 'Ressonância magnética de encéfalo (glioma)'
     }
   };
   var modality = null, MOD = null, DATA_ROOT = '';
@@ -382,7 +355,7 @@
     findings.innerHTML = ''; rtec.textContent = ''; rach.innerHTML = ''; rimp.innerHTML = '';
     signed.hidden = true; signbtn.disabled = false; pdfbtn.hidden = true;
     rv1.textContent = 'Aguardando assinatura'; rv2.textContent = 'Dr. ____ · CRM ____ / SP';
-    counter.textContent = '— / —'; studyid.textContent = '—';
+    counter.textContent = '- / -'; studyid.textContent = '-';
     // modality-fixed chrome (data-independent)
     demotag.textContent = MOD.demo;
     hudsrc.textContent = MOD.src;

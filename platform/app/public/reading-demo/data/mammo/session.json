@@ -1,5 +1,5 @@
 {
- "model": "mammo-cbisddsm-v1",
+ "model": "bv-mammo-v1",
  "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · benigno/maligno",
  "benchmark": "held-out test: AUROC 0.748 · sensibilidade 0.626 · n=627",
  "gt_source": "predição do modelo (2 classes; caixa/calor = atenção Grad-CAM)",

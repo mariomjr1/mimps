@@ -1,5 +1,5 @@
 {
- "model": "limbfrac-fracatlas-v1",
+ "model": "bv-limbfx-v1",
  "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · FracAtlas",
  "benchmark": "AUROC 0.89 · teste FracAtlas",
  "gt_source": "FracAtlas (CC BY 4.0) · caixa = Grad-CAM do modelo",

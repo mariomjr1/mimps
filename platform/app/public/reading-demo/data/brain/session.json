@@ -1,5 +1,5 @@
 {
- "model": "braintumor-classifier-v1",
+ "model": "bv-brainmr-v1",
  "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · 4 classes",
  "benchmark": "held-out test: acurácia 0.990 · macro AUROC (OvR) 0.999 · n=1055",
  "gt_source": "predição do modelo (classificação 4 classes; o dataset não tem caixas-verdade)",

@@ -1,5 +1,5 @@
 {
- "model": "breastus-busi-v1",
+ "model": "bv-breastus-v1",
  "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · 3 classes",
  "benchmark": "held-out test: acurácia 0.864 · macro AUROC (OvR) 0.972 · maligno-vs-resto AUROC 0.980 · n=118",
  "gt_source": "predição do modelo (classificação 3 classes; caixa/calor = atenção Grad-CAM)",

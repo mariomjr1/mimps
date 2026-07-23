@@ -1,5 +1,5 @@
 {
- "model": "spinemri-degen-v1",
+ "model": "bv-lumbarmr-v1",
  "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · 6-label multilabel (study-level)",
  "benchmark": "held-out test: macro-AUROC 0.762 · n=32",
  "gt_source": "predicao do modelo (multi-rotulo, nivel de estudo; caixa/calor = atencao Grad-CAM)",

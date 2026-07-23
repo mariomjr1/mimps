@@ -1,5 +1,5 @@
 {
- "model": "abdominalus-organ-v1",
+ "model": "bv-abdus-v1",
  "arch": "torchvision ResNet-18 (ImageNet) transfer-learn · 10-class softmax (abdominal organ)",
  "benchmark": "held-out test (radiologista-2 independente): acuracia 82% · macro-AUROC 0.978 · macro-F1 0.732 · n=1334",
  "gt_source": "predicao do modelo (10 classes de orgao; caixa/calor = atencao Grad-CAM)",
